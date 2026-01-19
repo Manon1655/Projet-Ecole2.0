@@ -1,0 +1,251 @@
+/* ===============================
+   VARIABLES
+================================ */
+
+:root {
+  --beige: #f3efe6;
+  --beige-dark: #e4dccf;
+  --ink: #3a3a32;
+  --shadow: rgba(0, 0, 0, 0.25);
+}
+
+/* ===============================
+   SCÈNE GLOBALE
+================================ */
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Georgia", serif;
+  background: #000;
+}
+
+/* ===============================
+   FOND IMAGE
+================================ */
+
+.bg-image {
+  position: absolute;
+  inset: 0;
+  background-image: url("/assets/background/image.png");
+  background-size: cover;
+  background-position: center bottom;
+  filter: brightness(0.95) saturate(1.1);
+  transform: scale(1.05);
+  animation: slowZoom 40s ease-in-out infinite alternate;
+  z-index: 0;
+}
+
+@keyframes slowZoom {
+  from {
+    transform: scale(1.05) translateY(0);
+  }
+  to {
+    transform: scale(1.12) translateY(-20px);
+  }
+}
+
+/* Lumière douce */
+.bg-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(255, 220, 160, 0.25),
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===============================
+   LIVRE
+================================ */
+
+.book-container {
+  position: relative;
+  z-index: 10;
+  width: 460px;
+  height: 85vh;
+  max-height: 780px;
+  margin: auto;
+  perspective: 3400px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Zoom immersif */
+.book-container.opening {
+  animation: bookZoom 1.8s cubic-bezier(.15,.85,.1,1) forwards;
+}
+
+@keyframes bookZoom {
+  from {
+    transform: scale(1) translateZ(0);
+  }
+  to {
+    transform: scale(2.6) translateZ(1100px);
+  }
+}
+
+/* ===============================
+   STRUCTURE 3D
+================================ */
+
+.book-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* ===============================
+   COUVERTURE DU LIVRE
+================================ */
+
+.book-cover {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--beige), var(--beige-dark));
+  border-radius: 28px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow:
+    0 60px 120px var(--shadow),
+    inset 0 0 0 2px rgba(255,255,255,0.6),
+    inset -10px 0 20px rgba(0,0,0,0.12);
+  transform-origin: left;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Grain papier */
+.book-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(0,0,0,0.03),
+    rgba(0,0,0,0.03) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Ouverture couverture */
+.book-container.opening .book-cover {
+  transform: rotateY(-165deg);
+}
+
+/* ===============================
+   TITRE COUVERTURE
+================================ */
+
+.book-title {
+  font-size: 3.2rem;
+  letter-spacing: 3px;
+  color: var(--ink);
+  text-shadow:
+    0 1px 0 #fff,
+    0 2px 4px rgba(0,0,0,0.25);
+  margin-bottom: 14px;
+}
+
+.book-subtitle {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #5a5a4a;
+  opacity: 0.85;
+}
+
+/* ===============================
+   PAGES INTÉRIEURES
+================================ */
+
+.pages-inner {
+  position: absolute;
+  inset: 40px;
+  transform-style: preserve-3d;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.book-container.opening .pages-inner {
+  opacity: 1;
+}
+
+.page {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #fbfaf8, #f1eee8);
+  border-radius: 14px;
+  transform-origin: left;
+  box-shadow:
+    inset 0 0 20px rgba(0,0,0,0.06),
+    0 8px 16px rgba(0,0,0,0.1);
+  backface-visibility: hidden;
+}
+
+/* Texte des pages */
+.page-content {
+  padding: 80px 90px;
+  font-size: 1em;
+  line-height: 1.8;
+  color: #2f2f2f;
+}
+
+.page-content h2 {
+  margin-bottom: 20px;
+  color: #2f4f3f;
+}
+
+/* Feuilletage */
+.book-container.opening .page {
+  animation: pageTurn 1.6s ease forwards;
+}
+
+.book-container.opening .page:nth-child(1) { animation-delay: 0.3s; }
+.book-container.opening .page:nth-child(2) { animation-delay: 0.6s; }
+.book-container.opening .page:nth-child(3) { animation-delay: 0.9s; }
+
+@keyframes pageTurn {
+  0% { transform: rotateY(0deg); }
+  70% { transform: rotateY(-120deg); }
+  100% { transform: rotateY(-150deg); }
+}
+
+/* ===============================
+   ÉTOILES / PARTICULES
+================================ */
+
+.stars {
+  position: absolute;
+  inset: -300px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
+  background-size: 120px 120px, 200px 200px;
+  animation: starFloat 40s linear infinite;
+  z-index: 9;
+}
+
+@keyframes starFloat {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-300px);
+  }
+}
