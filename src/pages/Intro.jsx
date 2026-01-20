@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/intro.css";
 
@@ -7,6 +7,14 @@ const OPEN_ANIMATION_DURATION = 1800;
 export default function Intro() {
   const navigate = useNavigate();
   const [isOpening, setIsOpening] = useState(false);
+
+  /* 👉 Ajout / retrait de la classe body */
+  useEffect(() => {
+    document.body.classList.add("intro-page");
+    return () => {
+      document.body.classList.remove("intro-page");
+    };
+  }, []);
 
   const handleOpenBook = useCallback(() => {
     if (isOpening) return;
@@ -24,6 +32,9 @@ export default function Intro() {
       <div className="bg-image" />
       <div className="bg-light" />
 
+      {/* Étoiles */}
+      <div className="fairy-dust" />
+
       {/* Livre */}
       <div
         className={`book-container ${isOpening ? "opening" : ""}`}
@@ -34,7 +45,7 @@ export default function Intro() {
       >
         <div className="book-wrapper">
 
-          {/* Pages intérieures */}
+          {/* Pages */}
           <div className="pages-inner">
             <div className="page">
               <div className="page-content">
@@ -43,9 +54,7 @@ export default function Intro() {
                   Depuis toujours, les histoires façonnent notre monde.
                   Chaque page est une porte, chaque mot une lumière.
                 </p>
-                <p>
-                  Ici commence votre voyage.
-                </p>
+                <p>Ici commence votre voyage.</p>
               </div>
             </div>
 
@@ -74,9 +83,6 @@ export default function Intro() {
             <div className="book-title">OmbreLune</div>
             <div className="book-subtitle">Bibliothèque vivante</div>
           </div>
-
-          {/* Particules d’étoiles */}
-          <div className="stars" />
 
         </div>
       </div>
