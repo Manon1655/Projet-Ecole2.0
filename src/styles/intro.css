@@ -6,8 +6,6 @@
   --beige: #f3efe6;
   --beige-dark: #e4dccf;
   --ink: #3a3a32;
-  --shadow: rgba(0, 0, 0, 0.25);
-  
 }
 
 /* ===============================
@@ -32,20 +30,10 @@
   inset: 0;
   background-image: url("/assets/background/image.png");
   background-size: cover;
-  background-position: center center;
+  background-position: center;
   filter: brightness(0.95) saturate(1.1);
   transform: scale(1.05);
-  animation: slowZoom 40s ease-in-out infinite alternate;
   z-index: 0;
-}
-
-@keyframes slowZoom {
-  from {
-    transform: scale(1.05) translateY(0);
-  }
-  to {
-    transform: scale(1.12) translateY(-20px);
-  }
 }
 
 /* Lumière douce */
@@ -54,352 +42,223 @@
   inset: 0;
   background: radial-gradient(
     circle at 50% 45%,
-    rgb(255, 220, 160),
+    rgba(255,220,160,0.6),
     transparent 60%
   );
   pointer-events: none;
   z-index: 1;
 }
-body.intro-page footer {
-  display: none;
-}
 
+body.intro-page footer,
 body.intro-page nav,
 body.intro-page header,
 body.intro-page .navbar {
   display: none;
 }
 
-
-
 /* ===============================
-   LIVRE
-================================ */
-
-.book-container {
-  position: relative;
-  z-index: 10;
-  width: 460px;
-  height: 85vh;
-  max-height: 780px;
-  margin: auto;
-  perspective: 3400px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Zoom immersif */
-.book-container.opening {
-  animation: bookZoom 1.8s cubic-bezier(.15,.85,.1,1) forwards;
-}
-
-@keyframes bookZoom {
-  from {
-    transform: scale(1) translateZ(0);
-  }
-  to {
-    transform: scale(2.6) translateZ(1100px);
-  }
-}
-
-/* ===============================
-   STRUCTURE 3D
-================================ */
-
-.book-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-}
-
-/* ===============================
-   COUVERTURE DU LIVRE
-================================ */
-
-.book-cover {
-  position: absolute;
-  inset: 0;
-
-  background: linear-gradient(135deg, var(--beige), var(--beige-dark));
-  border-radius: 28px;
-
-  border: 2px solid transparent;
-  background-clip: padding-box;
-
-  box-shadow:
-    0 50px 100px rgba(0,0,0,0.35),
-    0 0 40px rgba(212,175,55,0.25);
-
-  transform-origin: left;
-  backface-visibility: hidden;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-
-/* Grain papier */
-.book-cover::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    135deg,
-    rgba(0,0,0,0.03),
-    rgba(0,0,0,0.03) 1px,
-    transparent 1px,
-    transparent 5px
-  );
-  border-radius: inherit;
-  pointer-events: none;
-   content: "";
-  position: absolute;
-  inset: 12px;
-  border-radius: 20px;
-
-  border: 1.5px solid transparent;
-  background:
-    linear-gradient(
-      135deg,
-      var(--gold-light),
-      var(--gold),
-      var(--gold-dark)
-    ) border-box;
-
-  -webkit-mask:
-    linear-gradient(#fff 0 0) padding-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-
-  pointer-events: none;
-}
-
-.book-cover {
-  box-shadow:
-    0 50px 100px rgba(0,0,0,0.35),
-    0 0 60px rgba(212,175,55,0.35),
-    inset 0 0 0 1px rgba(255,255,255,0.4);
-}
-
-/* Ouverture couverture */
-.book-container.opening .book-cover {
-  transform: rotateY(-165deg);
-}
-
-/* ===============================
-   TITRE COUVERTURE
-================================ */
-
-.book-title {
-  font-size: 3.7rem;
-  letter-spacing: 5px;
-  font-weight: 600;
-  position: relative;
-  z-index: 5;
-
-  /* Couleur de secours (important) */
-  color: var(--gold);
-
-  /* Dégradé or */
-  background: linear-gradient(
-    120deg,
-    var(--gold-light),
-    var(--gold),
-    var(--gold-dark),
-    var(--gold),
-    var(--gold-light)
-  );
-  background-size: 200% auto;
-
-  /* Support multi-navigateurs */
-  background-clip: text;
-  -webkit-background-clip: text;
-
-  text-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.788),
-    0 0 22px rgb(212, 175, 55);
-
-  animation: goldShimmer 7s ease-in-out infinite;
-}
-
-@keyframes goldShimmer {
-  0% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-  100% { background-position: 0% center; }
-}
-
-
-.book-subtitle {
-  font-size: 1.15rem;
-  margin-top: 10px;
-  letter-spacing: 2px;
-  color: rgba(160, 130, 60, 0.85);
-  font-style: italic;
-}
-
-
-/* ===============================
-   PAGES INTÉRIEURES
-================================ */
-
-.pages-inner {
-  position: absolute;
-  inset: 40px;
-  transform-style: preserve-3d;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.book-container.opening .pages-inner {
-  opacity: 1;
-}
-
-.page {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #fbfaf8, #f1eee8);
-  border-radius: 14px;
-  transform-origin: left;
-  box-shadow:
-    inset 0 0 20px rgba(0,0,0,0.06),
-    0 8px 16px rgba(0,0,0,0.1);
-  backface-visibility: hidden;
-}
-
-/* Texte des pages */
-.page-content {
-  padding: 80px 90px;
-  font-size: 1em;
-  line-height: 1.8;
-  color: #2f2f2f;
-}
-
-.page-content h2 {
-  margin-bottom: 20px;
-  color: #2f4f3f;
-}
-
-/* Feuilletage */
-.book-container.opening .page {
-  animation: pageTurn 1.6s ease forwards;
-}
-
-.book-container.opening .page:nth-child(1) { animation-delay: 0.3s; }
-.book-container.opening .page:nth-child(2) { animation-delay: 0.6s; }
-.book-container.opening .page:nth-child(3) { animation-delay: 0.9s; }
-
-@keyframes pageTurn {
-  0% { transform: rotateY(0deg); }
-  70% { transform: rotateY(-120deg); }
-  100% { transform: rotateY(-150deg); }
-}
-
-
-/* ===============================
-   POUSSIÈRES D'ÉTOILES (FÉERIE)
+   ÉTOILES — FOND VIVANT
 ================================ */
 
 .fairy-dust {
   position: absolute;
-  inset: -350px;
+  inset: -400px;
   pointer-events: none;
   z-index: 5;
-  transform-origin: center;
-  animation:
-    starOrbit 160s linear infinite,
-    starTwinkle 4s ease-in-out infinite alternate;
 
   background:
-    /* Étoiles vives */
-    radial-gradient(circle at center,
-      rgba(255,255,255,1) 0.8px,
-      rgba(255,255,255,0.9) 1.4px,
-      rgba(255,255,255,0.4) 3px,
-      transparent 6px
-    ),
-    /* Étoiles dorées */
-    radial-gradient(circle at center,
-      rgba(255,235,190,1) 1px,
-      rgba(255,220,160,0.8) 2px,
-      rgba(255,220,160,0.35) 4px,
-      transparent 7px
-    ),
-    /* Étoiles lointaines */
-    radial-gradient(circle at center,
-      rgba(255,255,255,0.9) 0.6px,
-      rgba(255,255,255,0.3) 2px,
-      transparent 5px
-    );
+    radial-gradient(circle, rgba(255,255,255,0.9) 0.8px, rgba(255,255,255,0.4) 2px, transparent 6px),
+    radial-gradient(circle, rgba(255,235,190,0.9) 1px, rgba(255,220,160,0.4) 3px, transparent 7px),
+    radial-gradient(circle, rgba(255,255,255,0.6) 0.6px, rgba(255,255,255,0.2) 2px, transparent 5px);
 
-  background-size:
-    180px 180px,
-    300px 300px,
-    480px 480px;
+  background-size: 200px 200px, 340px 340px, 520px 520px;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.35));
 
   animation:
-    starOrbit 120s linear infinite,
-    starTwinkle 5s ease-in-out infinite;
-
-  filter: drop-shadow(0 0 6px rgba(255,255,255,0.4));
+    starDrift 260s linear infinite,
+    starTwinkle 6s ease-in-out infinite;
 }
 
-/* Rotation cosmique globale */
-@keyframes starOrbit {
-  from {
-    transform: rotate(0deg);
-  }
+@keyframes starDrift {
   to {
-    transform: rotate(360deg);
+    background-position:
+      1600px -1200px,
+      -2000px 1800px,
+      1200px 2400px;
   }
 }
 
-/* Scintillement réaliste (pulsation) */
 @keyframes starTwinkle {
-  0% {
-    opacity: 0.35;
-    filter: drop-shadow(0 0 2px rgba(255,255,255,0.25));
+  0% { opacity: 0.4; }
+  30% { opacity: 1; }
+  60% { opacity: 0.6; }
+  100% { opacity: 0.85; }
+}
+
+/* ===============================
+   POUSSIÈRES SOURIS
+================================ */
+
+.mouse-dust-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.mouse-dust {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, white, rgba(255,220,160,0.6), transparent);
+  filter: drop-shadow(0 0 6px rgba(255,220,160,0.8));
+  animation: mouseDustLife 1.6s ease-out forwards;
+}
+
+@keyframes mouseDustLife {
+  0% { transform: scale(0.5); opacity: 0; }
+  15% { opacity: 1; }
+  100% {
+    transform: scale(1.6) translate(
+      calc(-20px + var(--dx)),
+      calc(-40px + var(--dy))
+    );
+    opacity: 0;
   }
-  30% {
+}
+
+/* ===============================
+   FÉE — ARRIVÉE PLUS TÔT
+================================ */
+
+.guardian {
+  position: absolute;
+  bottom: -40%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 520px;
+  opacity: 0;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,255,255,0.45),
+      rgba(255,220,160,0.25),
+      transparent 70%
+    );
+
+  filter:
+    blur(1.4px)
+    drop-shadow(0 0 50px rgba(255,240,200,1))
+    drop-shadow(0 0 120px rgba(255,220,160,0.9));
+
+  animation: guardianEnter 3s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+@keyframes guardianEnter {
+  to {
+    bottom: 26%;
     opacity: 1;
-    filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
   }
-  55% {
-    opacity: 0.6;
+}
+
+/* ===============================
+   MAIN — TOUCHER PLUS RAPIDE
+================================ */
+
+.guardian-hand {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  width: 68px;
+  height: 68px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,1),
+      rgba(255,240,200,0.9),
+      rgba(255,220,160,0.6),
+      transparent 75%
+    );
+
+  box-shadow:
+    0 0 30px rgba(255,255,255,1),
+    0 0 80px rgba(255,240,200,1),
+    0 0 160px rgba(255,220,160,0.9);
+
+  animation:
+    handReach 2.4s cubic-bezier(.22,.68,.18,1) forwards,
+    fairyPulse 1.6s ease-in-out infinite;
+
+  animation-delay: 0.8s;
+}
+
+@keyframes handReach {
+  0% { transform: translateX(-50%) translateY(0) scale(0.6); opacity: 0; }
+  25% { opacity: 1; }
+  70% { transform: translateX(-52%) translateY(-160px) scale(1); }
+  100% { transform: translateX(-50%) translateY(-260px) scale(1.15); }
+}
+
+@keyframes fairyPulse {
+  0%,100% { transform: translateX(-50%) scale(1); opacity: 0.85; }
+  50% { transform: translateX(-50%) scale(1.35); opacity: 1; }
+}
+
+/* ===============================
+   EXPLOSION D'ÉTOILES — REFAITE
+================================ */
+
+.scene.touched .fairy-dust {
+  animation:
+    starBurst 1.4s cubic-bezier(.2,.8,.2,1) forwards,
+    starTwinkle 0.6s ease-in-out infinite;
+}
+
+@keyframes starBurst {
+  0% {
+    transform: scale(1);
     filter: drop-shadow(0 0 4px rgba(255,255,255,0.4));
   }
   100% {
-    opacity: 0.85;
-    filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+    transform: scale(1.6);
+    filter: drop-shadow(0 0 16px rgba(255,240,200,1));
   }
 }
 
-/* Magie renforcée à l’ouverture */
-.book-container.opening ~ .fairy-dust {
-  animation-duration: 60s, 2.8s;
-  opacity: 1;
+/* ===============================
+   OUVERTURE DU MONDE
+================================ */
+
+.scene.touched {
+  animation: worldOpen 0.9s ease-out forwards;
 }
 
-.fairy-dust::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: inherit;
-  animation: starOrbitReverse 240s linear infinite;
-  opacity: 0.5;
+@keyframes worldOpen {
+  to {
+    filter: brightness(1.35) saturate(1.25);
+  }
 }
 
-@keyframes starOrbitReverse {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
+/* ===============================
+   SORTIE INTRO
+================================ */
+
+.scene.exit {
+  animation: introExit 1s ease forwards;
 }
 
-
-
+@keyframes introExit {
+  to {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.05);
+    pointer-events: none;
+  }
+}

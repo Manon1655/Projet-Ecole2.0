@@ -1,13 +1,89 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>projetecolefinal</title>
+    <title>OmbreLune</title>
   </head>
-  <body>
+
+  <body class="intro-page">
+    <!-- Scène d’introduction -->
+    <div class="scene intro">
+      <div class="bg-image"></div>
+      <div class="bg-light"></div>
+
+      <div class="fairy-dust layer-1"></div>
+      <div class="fairy-dust layer-2"></div>
+      <div class="fairy-dust layer-3"></div>
+
+      <div class="mouse-dust-layer"></div>
+      <div class="guardian">
+  <div class="guardian-hand"></div>
+</div>
+
+    </div>
+
+    <!-- Root React -->
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Poussières déclenchées par la souris -->
+    <script>
+      const dustLayer = document.querySelector('.mouse-dust-layer');
+      let lastTime = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        if (!dustLayer) return;
+
+        const now = performance.now();
+        if (now - lastTime < 40) return; // limite (performance)
+        lastTime = now;
+
+        const dust = document.createElement('div');
+        dust.className = 'mouse-dust';
+
+        const dx = (Math.random() - 0.5) * 40 + 'px';
+        const dy = (Math.random() - 0.5) * 40 + 'px';
+
+        dust.style.left = e.clientX + 'px';
+        dust.style.top = e.clientY + 'px';
+        dust.style.setProperty('--dx', dx);
+        dust.style.setProperty('--dy', dy);
+
+        dustLayer.appendChild(dust);
+
+        dust.addEventListener('animationend', () => {
+          dust.remove();
+        });
+      });
+    </script>
+    <script>
+  setTimeout(() => {
+    document.querySelector('.scene')?.classList.add('touched');
+  }, 9000);
+
+  setTimeout(() => {
+    document.querySelector('.scene')?.classList.add('exit');
+  }, 11000);
+</script>
+
+<script>
+  // Fin de l’intro → accès au site
+  setTimeout(() => {
+    const scene = document.querySelector('.scene');
+    if (!scene) return;
+
+    scene.classList.add('exit');
+
+    // Supprime complètement l’intro après l’animation
+    setTimeout(() => {
+      scene.remove();
+      document.body.classList.remove('intro-page');
+    }, 2000);
+  }, 11000); // adapte au timing de ta scène
+</script>
+
   </body>
 </html>
