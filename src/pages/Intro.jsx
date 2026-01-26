@@ -6,7 +6,7 @@ const OPEN_ANIMATION_DURATION = 1800;
 
 export default function Intro() {
   const navigate = useNavigate();
-  const [isOpening, setIsOpening] = useState(false);
+  const [isOpening, setIsOpening] = useState(true);
 
   /* 👉 Ajout / retrait de la classe body */
   useEffect(() => {
@@ -15,6 +15,15 @@ export default function Intro() {
       document.body.classList.remove("intro-page");
     };
   }, []);
+
+  /* 👉 Lance l'animation automatiquement au chargement */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/home");
+    }, OPEN_ANIMATION_DURATION);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   const handleOpenBook = useCallback(() => {
     if (isOpening) return;

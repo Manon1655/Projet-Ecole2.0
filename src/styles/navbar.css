@@ -68,6 +68,9 @@
   font-weight: 500;
   cursor: pointer;
   transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .nav-item:hover {
@@ -80,6 +83,90 @@
 }
 
 /* ===============================
+   DROPDOWN MENU
+================================ */
+
+.nav-item-dropdown {
+  position: relative;
+  display: inline-block;
+  padding: 8px 0;
+}
+
+.dropdown-menu {
+  display: block;
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  min-width: 200px;
+  padding: 8px 0;
+  padding-top: 16px;
+  margin-top: 0;
+  z-index: 1000;
+}
+
+.nav-item-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 12px 20px;
+  color: #666;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background: #f5f5f5;
+  color: #3f5f4c;
+  padding-left: 24px;
+}
+
+.dropdown-category h4 {
+  color: #3f5f4c;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+  letter-spacing: 1px;
+}
+
+.dropdown-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dropdown-category li {
+  margin: 0;
+}
+
+.dropdown-category a {
+  text-decoration: none;
+  color: #666;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: block;
+}
+
+.dropdown-category a:hover {
+  background: #f5f5f5;
+  color: #3f5f4c;
+  padding-left: 12px;
+}
+
+/* ===============================
    ICÔNES DROITE
 ================================ */
 
@@ -87,6 +174,11 @@
   display: flex;
   gap: 26px;
   align-items: center;
+}
+
+.nav-icon-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .nav-icon {
@@ -99,6 +191,22 @@
 .nav-icon:hover {
   transform: translateY(-2px);
   opacity: 0.7;
+}
+
+.icon-badge {
+  position: absolute;
+  top: -8px;
+  right: -12px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
 }
 
 /* ===============================

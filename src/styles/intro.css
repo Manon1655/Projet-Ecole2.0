@@ -49,6 +49,11 @@
   z-index: 1;
 }
 
+body.intro-page {
+  overflow: hidden;
+  height: 100vh;
+}
+
 body.intro-page footer,
 body.intro-page nav,
 body.intro-page header,

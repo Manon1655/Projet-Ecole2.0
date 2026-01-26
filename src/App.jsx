@@ -7,28 +7,35 @@ import Book from "./pages/Book";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
+import Favorites from "./pages/Favorites";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import { AuthProvider } from "./context/AuthContext";
 import { SubscriptionProvider } from "./context/SubscriptionContext";
+import { CartProvider } from "./context/CartContext";
 
 export default function App() {
   return (
     <AuthProvider>
       <SubscriptionProvider>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Intro />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/book/:id" element={<Book />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-        <Footer />
+        <CartProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Intro />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/book/:id" element={<Book />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/favorites" element={<Favorites />} />
+          </Routes>
+          <Footer />
+        </CartProvider>
       </SubscriptionProvider>
     </AuthProvider>
   );
