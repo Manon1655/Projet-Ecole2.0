@@ -6,23 +6,13 @@ export default function Footer() {
       <div className="footer-top">
         <div className="footer-container">
           <div className="footer-section">
-            <h3>📚 OmbreLune</h3>
+            <h3>OmbreLune</h3>
             <p>Une bibliothèque vivante, nichée entre nature et poésie. Découvrez des histoires qui transforment.</p>
             <div className="footer-social">
               <a href="#" className="social-icon">𝕱</a>
               <a href="#" className="social-icon">𝕿</a>
               <a href="#" className="social-icon">ⓘ</a>
             </div>
-          </div>
-
-          <div className="footer-section">
-            <h3>Naviguer</h3>
-            <ul>
-              <li><a href="/home">Accueil</a></li>
-              <li><a href="/library">Bibliothèque</a></li>
-              <li><a href="/favorites">Mes Favoris</a></li>
-              <li><a href="/cart">Panier</a></li>
-            </ul>
           </div>
 
           <div className="footer-section">

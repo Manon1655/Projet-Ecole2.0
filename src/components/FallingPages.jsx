@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+/*import { useEffect } from "react";
 
 export default function FallingPages() {
   useEffect(() => {
@@ -29,4 +29,4 @@ export default function FallingPages() {
   }, []);
 
   return <canvas id="pagesCanvas" className="background-canvas"></canvas>;
-}
+}*/
