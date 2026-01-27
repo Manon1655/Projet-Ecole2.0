@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
+import Subscription from "./pages/Subscription";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -16,25 +17,29 @@ import Footer from "./components/Footer";
 import { AuthProvider } from "./context/AuthContext";
 import { SubscriptionProvider } from "./context/SubscriptionContext";
 import { CartProvider } from "./context/CartContext";
+import { CommentsProvider } from "./context/CommentsContext";
 
 export default function App() {
   return (
     <AuthProvider>
       <SubscriptionProvider>
         <CartProvider>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Intro />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/book/:id" element={<Book />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/favorites" element={<Favorites />} />
-          </Routes>
-          <Footer />
+          <CommentsProvider>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Intro />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/book/:id" element={<Book />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/subscription" element={<Subscription />} />
+            </Routes>
+            <Footer />
+          </CommentsProvider>
         </CartProvider>
       </SubscriptionProvider>
     </AuthProvider>

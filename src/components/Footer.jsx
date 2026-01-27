@@ -26,7 +26,7 @@ export default function Footer() {
             <h3>Newsletter</h3>
             <p>Recevez nos dernières nouveautés et sélections.</p>
             <div className="footer-newsletter">
-              <input type="email" placeholder="Votre email..." />
+              <input type="email" placeholder="Votre email..." />  
               <button>S'inscrire</button>
             </div>
           </div>

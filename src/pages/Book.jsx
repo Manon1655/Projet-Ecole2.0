@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import React from "react";
 import { useCart } from "../context/CartContext";
 import { useSubscription } from "../context/SubscriptionContext";
+import Comments from "../components/Comments";
 import books from "../data/books";
 import "../styles/book.css";
 
@@ -100,8 +101,11 @@ export default function Book() {
         {previewPages.length > 0 ? (
           <div className="preview-container">
             <div className="page-display">
+              <div className="page-header">
+                <h3>{previewPages[currentPageIndex].title || `Chapitre ${currentPageIndex + 1}`}</h3>
+              </div>
               <div className="page-content">
-                {previewPages[currentPageIndex]}
+                {previewPages[currentPageIndex].content}
               </div>
               
               {!canReadMore && currentPageIndex === previewPages.length - 1 && (
@@ -127,7 +131,7 @@ export default function Book() {
               </button>
               
               <span className="page-indicator">
-                Page {currentPageIndex + 1} / {previewPages.length}
+                Chapitre {currentPageIndex + 1} / {previewPages.length}
               </span>
               
               <button 
@@ -143,6 +147,9 @@ export default function Book() {
           <p className="no-preview">Aucun aperçu disponible pour ce livre</p>
         )}
       </section>
+
+      {/* Comments Section */}
+      <Comments bookId={book.id} />
     </div>
   );
 }

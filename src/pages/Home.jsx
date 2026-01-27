@@ -85,7 +85,7 @@ export default function Home() {
                   <p className="author">{book.author}</p>
                   <div className="rating">
                     <span className="stars">{renderStars(book.rating)}</span>
-                    <span className="reviews">({book.reviews.toLocaleString()})</span>
+                    <span className="reviews">({book.reviews.toLocaleString()} avis)</span>
                   </div>
                   <div className="price-section">
                     {book.originalPrice > book.price && (

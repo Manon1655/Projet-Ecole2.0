@@ -76,8 +76,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <Link to="/new" className="nav-item">Nouveautés</Link>
-          <Link to="/best" className="nav-item">Best-sellers</Link>
+          <Link to="/subscription" className="nav-item">Abonnements</Link>
           <Link to="/login" className="nav-item">Connexion</Link>
         </div>
 
