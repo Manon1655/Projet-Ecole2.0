@@ -274,7 +274,8 @@
   padding: 32px;
   border-radius: 0 0 12px 12px;
   text-align: center;
-  color: white;
+  color: white;<div className="home-hero spring">
+
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 

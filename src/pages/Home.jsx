@@ -67,7 +67,7 @@ export default function Home() {
         <div className="books-carousel">
           {recommendations.map((book) => (
             <div key={book.id} className="book-card-wrapper" onClick={() => handleCardClick(book.id)} style={{cursor: 'pointer'}}>
-              <div className="book-card-container">
+              <div className="book-card-container magic-card">
                 <div className="book-image-container">
                   {book.isBestseller && <span className="bestseller-badge">Best-seller</span>}
                   <button
@@ -118,7 +118,7 @@ export default function Home() {
           <div className="books-grid carousel-grid">
             {booksToShow.map((book) => (
               <div key={book.id} className="book-card-wrapper" onClick={() => handleCardClick(book.id)} style={{cursor: 'pointer'}}>
-                <div className="book-card-container">
+                <div className="book-card-container magic-card">
                   <div className="book-image-container">
                     {book.isBestseller && <span className="bestseller-badge">Best-seller</span>}
                     <button

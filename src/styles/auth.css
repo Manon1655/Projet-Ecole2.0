@@ -1,69 +1,106 @@
+/* =========================
+   CONTAINER
+========================= */
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 200px);
   padding: 20px;
+  background: #fafafa;
 }
 
+/* =========================
+   FORM CARD
+========================= */
 .auth-form {
-  background: white;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 40px 35px;
+  border-radius: 16px;
   width: 100%;
   max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
+/* =========================
+   TITLE
+========================= */
 .auth-form h1 {
   text-align: center;
-  color: #333;
+  color: #9bc583;
   margin-bottom: 30px;
+  font-size: 32px;
+  font-weight: 700;
 }
 
+/* =========================
+   FORM LAYOUT
+========================= */
 .auth-form form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
+/* =========================
+   INPUTS
+========================= */
 .auth-form input {
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: border-color 0.3s;
+  padding: 14px;
+  background-color: #f9f9f9; /* enlève le fond noir */
+  color: #333;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.25s ease;
 }
 
+/* Placeholder */
+.auth-form input::placeholder {
+  color: #999;
+}
+
+/* Focus */
 .auth-form input:focus {
   outline: none;
-  border-color: #667eea;
+  background-color: #ffffff;
+  border-color: #9bc583;
+  box-shadow: 0 0 0 3px rgba(155, 197, 131, 0.25);
 }
 
+/* =========================
+   BUTTON
+========================= */
 .auth-form button {
-  padding: 12px;
-  background: #667eea;
-  color: white;
+  margin-top: 10px;
+  padding: 14px;
+  background: #9bc583;
+  color: #ffffff;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .auth-form button:hover {
-  background: #764ba2;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(155, 197, 131, 0.4);
 }
 
+/* =========================
+   TEXT / LINKS
+========================= */
 .auth-form p {
   text-align: center;
   margin-top: 20px;
-  color: #666;
+  color: #333;
+  font-size: 14px;
 }
 
 .auth-form a {
-  color: #667eea;
+  color: #9bc583;
   text-decoration: none;
   font-weight: 600;
 }
@@ -72,11 +109,23 @@
   text-decoration: underline;
 }
 
+/* =========================
+   ERROR MESSAGE
+========================= */
 .error {
-  background: #ff6b6b;
-  color: white;
+  background: #ffe3e3;
+  color: #c0392b;
   padding: 12px;
-  border-radius: 5px;
+  border-radius: 8px;
   margin-bottom: 15px;
   text-align: center;
+  font-weight: 500;
+}
+
+/* =========================
+   SAFETY (dark mode / reset)
+========================= */
+.auth-form input {
+  background-color: #f9f9f9 !important;
+  color: #333 !important;
 }
