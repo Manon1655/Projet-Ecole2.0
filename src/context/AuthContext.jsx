@@ -2,6 +2,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const AuthContext = createContext()
+const API_BASE = "http://localhost:8080/api"
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -12,11 +13,41 @@ export function AuthProvider({ children }) {
       return null
     }
   })
-  const [loading] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData))
-    setUser(userData)
+  const login = async (userData) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: userData.username,
+          password: userData.password
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Connexion échouée')
+      }
+
+      const data = await response.json()
+      const userObj = {
+        id: data.userId,
+        username: data.username,
+        email: data.email
+      }
+      localStorage.setItem('user', JSON.stringify(userObj))
+      setUser(userObj)
+      return data
+    } catch (err) {
+      setError(err.message)
+      throw err
+    } finally {
+      setLoading(false)
+    }
   }
 
   const logout = () => {
@@ -24,13 +55,46 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
-  const register = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData))
-    setUser(userData)
+  const register = async (userData) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: userData.username,
+          email: userData.email,
+          password: userData.password,
+          firstName: userData.firstName || '',
+          lastName: userData.lastName || ''
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Enregistrement échoué')
+      }
+
+      const data = await response.json()
+      const userObj = {
+        id: data.userId,
+        username: data.username,
+        email: data.email
+      }
+      localStorage.setItem('user', JSON.stringify(userObj))
+      setUser(userObj)
+      return data
+    } catch (err) {
+      setError(err.message)
+      throw err
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, register, loading, error }}>
       {children}
     </AuthContext.Provider>
   )

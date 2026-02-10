@@ -4,21 +4,31 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    setError("");
+    
+    if (!username || !password) {
       setError("Tous les champs sont requis");
       return;
     }
 
-    login({ email, username: email.split("@")[0] });
-    navigate("/home");
+    setLoading(true);
+    try {
+      await login({ username, password });
+      navigate("/home");
+    } catch (err) {
+      setError(err.message || "Identifiants invalides");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,19 +38,21 @@ export default function Login() {
         {error && <div className="error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="Nom d'utilisateur ou Email"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
           <input
             type="password"
             placeholder="Mot de passe"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
-          <button type="submit" className="btn-primary">
-            Se connecter
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? "Connexion en cours..." : "Se connecter"}
           </button>
         </form>
         <p>
