@@ -30,7 +30,13 @@ export function AuthProvider({ children }) {
       })
 
       if (!response.ok) {
-        throw new Error('Connexion échouée')
+        // try to read API error message
+        try {
+          const errJson = await response.json()
+          throw new Error(errJson.error || 'Connexion échouée')
+        } catch (_) {
+          throw new Error('Connexion échouée')
+        }
       }
 
       const data = await response.json()
@@ -43,8 +49,13 @@ export function AuthProvider({ children }) {
       setUser(userObj)
       return data
     } catch (err) {
-      setError(err.message)
-      throw err
+      // network failures (server down / CORS) often surface as TypeError or 'Failed to fetch'
+      const isNetwork = err instanceof TypeError || /failed to fetch/i.test(String(err.message))
+      const msg = isNetwork
+        ? 'Impossible de joindre le serveur API. Vérifiez qu\'il est démarré (http://localhost:8080).' 
+        : err.message || 'Erreur lors de la connexion'
+      setError(msg)
+      throw new Error(msg)
     } finally {
       setLoading(false)
     }
@@ -72,8 +83,13 @@ export function AuthProvider({ children }) {
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Enregistrement échoué')
+        // API returns { error: "..." } on failure
+        try {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Enregistrement échoué')
+        } catch (_) {
+          throw new Error('Enregistrement échoué')
+        }
       }
 
       const data = await response.json()
@@ -86,8 +102,12 @@ export function AuthProvider({ children }) {
       setUser(userObj)
       return data
     } catch (err) {
-      setError(err.message)
-      throw err
+      const isNetwork = err instanceof TypeError || /failed to fetch/i.test(String(err.message))
+      const msg = isNetwork
+        ? 'Impossible de joindre le serveur API. Vérifiez qu\'il est démarré (http://localhost:8080).'
+        : err.message || 'Erreur lors de l\'enregistrement'
+      setError(msg)
+      throw new Error(msg)
     } finally {
       setLoading(false)
     }
