@@ -56,6 +56,52 @@ public class BookController {
         }
     }
 
+    @PostMapping("/import")
+    public ResponseEntity<?> importBooks(@RequestBody List<BookDTO> books) {
+        try {
+            List<BookDTO> savedBooks = books.stream()
+                    .map(bookDTO -> {
+                        Book book = Book.builder()
+                                .title(bookDTO.getTitle())
+                                .author(bookDTO.getAuthor())
+                                .description(bookDTO.getDescription())
+                                .coverImage(bookDTO.getCoverImage())
+                                .price(bookDTO.getPrice())
+                                .rating(bookDTO.getRating())
+                                .publicationDate(bookDTO.getPublicationDate())
+                                .genre(bookDTO.getGenre())
+                                .build();
+
+                        Book saved = bookService.createBook(book);
+
+                        return BookDTO.builder()
+                                .id(saved.getId())
+                                .title(saved.getTitle())
+                                .author(saved.getAuthor())
+                                .description(saved.getDescription())
+                                .coverImage(saved.getCoverImage())
+                                .price(saved.getPrice())
+                                .rating(saved.getRating())
+                                .publicationDate(saved.getPublicationDate())
+                                .genre(saved.getGenre())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new HashMap<String, Object>() {{
+                        put("message", "Successfully imported " + savedBooks.size() + " books");
+                        put("count", savedBooks.size());
+                        put("books", savedBooks);
+                    }});
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new HashMap<String, String>() {{
+                        put("error", "Failed to import books: " + e.getMessage());
+                    }});
+        }
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllBooks() {
         try {

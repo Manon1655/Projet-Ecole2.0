@@ -3,6 +3,7 @@ package com.ombrelune.service;
 import com.ombrelune.entity.User;
 import com.ombrelune.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,12 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+
+        // Hash password before saving
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String hashed = encoder.encode(user.getPassword());
+        user.setPassword(hashed);
+
         return userRepository.save(user);
     }
 
@@ -45,7 +52,7 @@ public class UserService {
     }
 
     public boolean validatePassword(String rawPassword, String storedPassword) {
-        // Simple comparison for MVP - in production use BCrypt or similar
-        return rawPassword.equals(storedPassword);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(rawPassword, storedPassword);
     }
 }

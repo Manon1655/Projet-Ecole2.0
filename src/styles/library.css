@@ -23,6 +23,12 @@
   min-width: 200px;
 }
 
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .btn-add-book {
   padding: 12px 25px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -39,6 +45,28 @@
 .btn-add-book:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-settings {
+  background: white;
+  color: #667eea;
+  font-size: 1.3rem;
+  width: 45px;
+  height: 45px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-settings:hover {
+  transform: rotate(20deg) scale(1.05);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 .search-input {
@@ -234,18 +262,93 @@
   background: #e0e0e0;
 }
 
+/* Settings Modal Content */
+.settings-content {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setting-item {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.setting-item h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.setting-item p {
+  margin: 0 0 15px 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.btn-import {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.btn-import:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-import:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.info-box {
+  background: #e3f2fd;
+  border-left-color: #2196f3;
+}
+
+.info-box p {
+  margin: 0;
+  color: #1565c0;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .library-header {
     justify-content: center;
+    gap: 10px;
   }
 
   .library-container h1 {
     width: 100%;
     text-align: center;
+    font-size: 24px;
+  }
+
+  .header-buttons {
+    width: 100%;
+    gap: 8px;
   }
 
   .btn-add-book {
-    width: 100%;
+    flex: 1;
+    font-size: 0.9em;
+    padding: 10px 15px;
+  }
+
+  .btn-settings {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
   }
 
   .books-grid {
