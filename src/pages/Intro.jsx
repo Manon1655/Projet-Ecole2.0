@@ -1,100 +1,44 @@
-import { useState, useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/intro.css";
 
-const OPEN_ANIMATION_DURATION = 1800;
+const TRANSITION_DURATION = 1800; // plus lent, plus cinéma
 
 export default function Intro() {
   const navigate = useNavigate();
-  const [isOpening, setIsOpening] = useState(true);
+  const [touched, setTouched] = useState(false);
 
-  /* 👉 Ajout / retrait de la classe body */
   useEffect(() => {
     document.body.classList.add("intro-page");
-    return () => {
-      document.body.classList.remove("intro-page");
-    };
+    return () => document.body.classList.remove("intro-page");
   }, []);
 
-  /* 👉 Lance l'animation automatiquement au chargement */
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/home");
-    }, OPEN_ANIMATION_DURATION);
-
-    return () => clearTimeout(timer);
-  }, [navigate]);
-
-  const handleOpenBook = useCallback(() => {
-    if (isOpening) return;
-
-    setIsOpening(true);
+  const handleTouch = () => {
+    if (touched) return;
+    setTouched(true);
 
     setTimeout(() => {
       navigate("/home");
-    }, OPEN_ANIMATION_DURATION);
-  }, [isOpening, navigate]);
+    }, TRANSITION_DURATION);
+  };
 
   return (
-    <div className="scene">
-      {/* Fond */}
-      <div className="bg-image" />
+    <div
+      className={`scene ${touched ? "touched" : ""}`}
+      onClick={handleTouch}
+      role="button"
+      tabIndex={0}
+      aria-label="Entrer dans le monde magique"
+    >
       <div className="bg-light" />
 
-      {/* Étoiles */}
-      <div className="fairy-dust" />
+      <div className="stars-back" />
+      <div className="stars-mid" />
+      <div className="stars-front" />
 
-      {/* Livre */}
-      <div
-        className={`book-container ${isOpening ? "opening" : ""}`}
-        onClick={handleOpenBook}
-        role="button"
-        tabIndex={0}
-        aria-label="Entrer dans le livre"
-      >
-        <div className="book-wrapper">
+      <div className="portal" />
 
-          {/* Pages */}
-          <div className="pages-inner">
-            <div className="page">
-              <div className="page-content">
-                <h2>Le Commencement</h2>
-                <p>
-                  Depuis toujours, les histoires façonnent notre monde.
-                  Chaque page est une porte, chaque mot une lumière.
-                </p>
-                <p>Ici commence votre voyage.</p>
-              </div>
-            </div>
-
-            <div className="page">
-              <div className="page-content">
-                <h2>À la Découverte</h2>
-                <p>
-                  Explorer, apprendre, grandir.
-                  Les savoirs prennent racine dans l’imaginaire.
-                </p>
-              </div>
-            </div>
-
-            <div className="page">
-              <div className="page-content">
-                <h2>OmbreLune</h2>
-                <p>
-                  Une bibliothèque vivante, nichée entre nature et poésie.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Couverture */}
-          <div className="book-cover">
-            <div className="book-title">OmbreLune</div>
-            <div className="book-subtitle">Bibliothèque vivante</div>
-          </div>
-
-        </div>
-      </div>
+      <div className="guardian" />
+      <div className="guardian-hand" />
     </div>
   );
 }
