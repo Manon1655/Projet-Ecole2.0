@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Library from "./pages/Library";
@@ -26,6 +26,7 @@ export default function App() {
           <CommentsProvider>
             <Navbar />
             <Routes>
+              <Route path="/" element={<Navigate to="/home" />} />
               <Route path="/home" element={<Home />} />
               <Route path="/library" element={<Library />} />
               <Route path="/book/:id" element={<Book />} />
