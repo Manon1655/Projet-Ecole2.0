@@ -1,105 +1,106 @@
+/* ===============================
+   GLOBAL PAGE
+================================= */
+
+body {
+  background: #f9fbf9;
+}
+
 .library-container {
   max-width: 1200px;
   margin: 40px auto;
   padding: 0 20px;
   min-height: calc(100vh - 300px);
+  color: #000;
+  font-family: 'Segoe UI', sans-serif;
 }
+
+/* ===============================
+   HEADER
+================================= */
 
 .library-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   flex-wrap: wrap;
   gap: 20px;
 }
 
 .library-container h1 {
-  text-align: center;
-  font-size: 36px;
+  font-size: 40px;
+  font-weight: 700;
   margin: 0;
-  color: #333;
-  flex: 1;
-  min-width: 200px;
+  color: #1F4037;
 }
 
-.header-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+/* ===============================
+   BOUTON AJOUTER LIVRE
+================================= */
 
 .btn-add-book {
-  padding: 12px 25px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: 14px 28px;
+  border-radius: 12px;
   border: none;
-  border-radius: 8px;
+  background: #A8DDB5;
+  color: #1F4037;
   font-weight: 600;
-  font-size: 1em;
+  font-size: 15px;
   cursor: pointer;
-  transition: all 0.3s;
-  white-space: nowrap;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .btn-add-book:hover {
+  background: #95D3A6;
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
-.btn-settings {
-  background: white;
-  color: #667eea;
-  font-size: 1.3rem;
-  width: 45px;
-  height: 45px;
-  padding: 0;
-  border: none;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.btn-settings:hover {
-  transform: rotate(20deg) scale(1.05);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-}
+/* ===============================
+   SEARCH BAR
+================================= */
 
 .search-input {
   width: 100%;
   max-width: 500px;
   display: block;
-  margin: 0 auto 40px;
-  padding: 12px 20px;
-  border: 2px solid #667eea;
-  border-radius: 5px;
+  margin: 0 auto 60px;
+  padding: 15px 20px;
+  border: 2px solid #e5e5e5;
+  border-radius: 12px;
   font-size: 16px;
-  transition: border-color 0.3s;
+  color: #000;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.04);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #764ba2;
+  border-color: #A8DDB5;
+  box-shadow: 0 0 0 3px rgba(168, 221, 181, 0.25);
 }
+
+/* ===============================
+   GRID LIVRES
+================================= */
 
 .books-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 35px;
 }
 
-/* Modal Styles */
+/* ===============================
+   MODAL OVERLAY
+================================= */
+
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,16 +108,21 @@
   padding: 20px;
 }
 
+/* ===============================
+   MODAL CONTENT
+================================= */
+
 .modal-content {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
+  background: #ffffff;
+  border-radius: 18px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 650px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
   animation: slideUp 0.3s ease-out;
+  overflow: hidden;
 }
+
+/* Animation */
 
 @keyframes slideUp {
   from {
@@ -129,51 +135,67 @@
   }
 }
 
+/* ===============================
+   MODAL HEADER
+================================= */
+
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-bottom: 2px solid #f0f0f0;
+  background: #E6F7EC;
+  padding: 30px;
+  text-align: center;
+  position: relative;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.8em;
+  color: #1F4037;
+  font-weight: 600;
 }
 
+/* ===============================
+   BOUTON FERMER
+================================= */
+
 .close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2em;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #e5e5e5;
+  background: #ffffff;
+  color: #000;
+  font-size: 1.1em;
   cursor: pointer;
-  padding: 0;
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
+  transition: all 0.25s ease;
 }
 
 .close-btn:hover {
+  background: #f4f4f4;
+  border-color: #A8DDB5;
   transform: rotate(90deg);
 }
 
+/* ===============================
+   FORM
+================================= */
+
 .add-book-form {
-  padding: 30px;
+  padding: 35px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 20px;
 }
 
 .form-group {
@@ -188,177 +210,109 @@
 
 .form-group label {
   font-weight: 600;
-  color: #333;
-  font-size: 0.9em;
-  text-transform: uppercase;
+  color: #000;
+  font-size: 0.85em;
   letter-spacing: 0.5px;
 }
+
+/* ===============================
+   INPUTS + SELECT + TEXTAREA
+================================= */
 
 .form-group input,
-.form-group textarea {
-  padding: 12px 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+.form-group textarea,
+.form-group select {
+  padding: 14px 15px;
+  border: 2px solid #e5e5e5;
+  border-radius: 10px;
   font-size: 1em;
-  font-family: inherit;
-  transition: all 0.3s;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.form-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-  padding-top: 20px;
-  border-top: 2px solid #f0f0f0;
-}
-
-.btn-submit,
-.btn-cancel {
-  flex: 1;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1em;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.btn-submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-cancel {
-  background: #f0f0f0;
-  color: #333;
-}
-
-.btn-cancel:hover {
-  background: #e0e0e0;
-}
-
-/* Settings Modal Content */
-.settings-content {
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.setting-item {
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  border-left: 4px solid #667eea;
-}
-
-.setting-item h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 1.1rem;
-}
-
-.setting-item p {
-  margin: 0 0 15px 0;
-  color: #666;
-  line-height: 1.5;
-}
-
-.btn-import {
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.95rem;
+  background: #ffffff;
+  color: #000;
   transition: all 0.3s ease;
 }
 
-.btn-import:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+/* Placeholder */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #888;
 }
 
-.btn-import:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Focus */
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #A8DDB5;
+  box-shadow: 0 0 0 3px rgba(168, 221, 181, 0.3);
 }
 
-.info-box {
-  background: #e3f2fd;
-  border-left-color: #2196f3;
+/* ===============================
+   LISTE DÉROULANTE FLÈCHE PERSONNALISÉE
+================================= */
+
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='14' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 14px;
+  cursor: pointer;
 }
 
-.info-box p {
-  margin: 0;
-  color: #1565c0;
-  font-size: 0.9rem;
+/* ===============================
+   BOUTONS FORM
+================================= */
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 15px;
 }
+
+.btn-submit {
+  padding: 15px 40px;
+  border-radius: 12px;
+  border: none;
+  background: #A8DDB5;
+  color: #1F4037;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  background: #95D3A6;
+  transform: translateY(-3px);
+}
+
+.btn-cancel {
+  padding: 15px 40px;
+  border-radius: 12px;
+  border: 2px solid #e5e5e5;
+  background: #ffffff;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #f4f4f4;
+}
+
+/* ===============================
+   RESPONSIVE
+================================= */
 
 @media (max-width: 768px) {
+
   .library-header {
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .library-container h1 {
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    font-size: 24px;
-  }
-
-  .header-buttons {
-    width: 100%;
-    gap: 8px;
-  }
-
-  .btn-add-book {
-    flex: 1;
-    font-size: 0.9em;
-    padding: 10px 15px;
-  }
-
-  .btn-settings {
-    width: 40px;
-    height: 40px;
-    font-size: 1.1rem;
-  }
-
-  .books-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 20px;
-  }
-
-  .modal-content {
-    margin: 20px;
-    max-height: 85vh;
   }
 
   .form-row {
@@ -367,10 +321,12 @@
 
   .form-actions {
     flex-direction: column;
+    align-items: center;
   }
 
   .btn-submit,
   .btn-cancel {
     width: 100%;
+    max-width: 320px;
   }
 }

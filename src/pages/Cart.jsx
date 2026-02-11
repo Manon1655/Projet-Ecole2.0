@@ -6,54 +6,113 @@ export default function Cart() {
   const { cart, removeFromCart, updateCartQuantity } = useCart();
   const navigate = useNavigate();
 
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  /* ===============================
+     CALCUL TOTAL
+  ================================= */
+
+  const total = cart.reduce(
+    (sum, item) =>
+      sum + Number(item.price) * Number(item.quantity),
+    0
+  );
+
+  const totalItems = cart.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  /* ===============================
+     PANIER VIDE
+  ================================= */
 
   if (cart.length === 0) {
     return (
-      <div className="books-container">
-        <h1>Panier</h1>
-        <p>Votre panier est vide</p>
-        <button onClick={() => navigate("/library")} className="btn-primary">
-          Continuer les achats
+      <div className="cart-empty">
+        <h1>Votre panier est vide</h1>
+        <p>Ajoutez des livres pour commencer 📚</p>
+        <button
+          onClick={() => navigate("/library")}
+          className="btn-primary"
+        >
+          Explorer la bibliothèque
         </button>
       </div>
     );
   }
 
+  /* ===============================
+     AFFICHAGE PANIER
+  ================================= */
+
   return (
-    <div className="books-container">
-      <h1>Panier ({cart.length} article{cart.length > 1 ? 's' : ''})</h1>
-      
-      <div className="cart-content">
+    <div className="cart-container">
+      <h1 className="cart-title">
+        Panier ({totalItems} article{totalItems > 1 ? "s" : ""})
+      </h1>
+
+      <div className="cart-layout">
+        {/* LISTE DES PRODUITS */}
         <div className="cart-items">
           {cart.map((item) => (
-            <div key={item.id} className="cart-item">
-              <div className="cart-item-image">
-                <img src={item.cover || "https://via.placeholder.com/100x150"} alt={item.title} />
-              </div>
-              
-              <div className="cart-item-details">
+            <div key={item.id} className="cart-card">
+              <img
+                src={
+                  item.cover ||
+                  "https://via.placeholder.com/100x150"
+                }
+                alt={item.title}
+                className="cart-image"
+              />
+
+              <div className="cart-info">
                 <h3>{item.title}</h3>
                 <p className="author">{item.author}</p>
-                <p className="price">{item.price}€</p>
+                <p className="price">
+                  {Number(item.price).toFixed(2)}€
+                </p>
               </div>
 
-              <div className="cart-item-quantity">
-                <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)}>-</button>
-                <input 
-                  type="number" 
-                  value={item.quantity}
-                  onChange={(e) => updateCartQuantity(item.id, parseInt(e.target.value) || 1)}
+              <div className="cart-quantity">
+                <button
+                  onClick={() =>
+                    updateCartQuantity(
+                      item.id,
+                      item.quantity - 1
+                    )
+                  }
+                >
+                  −
+                </button>
+
+                <input
+                  type="number"
                   min="1"
+                  value={item.quantity}
+                  onChange={(e) =>
+                    updateCartQuantity(
+                      item.id,
+                      parseInt(e.target.value) || 1
+                    )
+                  }
                 />
-                <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)}>+</button>
+
+                <button
+                  onClick={() =>
+                    updateCartQuantity(
+                      item.id,
+                      item.quantity + 1
+                    )
+                  }
+                >
+                  +
+                </button>
               </div>
 
-              <div className="cart-item-total">
+              <div className="cart-total">
                 {(item.price * item.quantity).toFixed(2)}€
               </div>
 
-              <button 
+              <button
                 className="btn-remove"
                 onClick={() => removeFromCart(item.id)}
               >
@@ -63,22 +122,30 @@ export default function Cart() {
           ))}
         </div>
 
+        {/* RÉSUMÉ */}
         <div className="cart-summary">
-          <h2>Résumé</h2>
+          <h2>Résumé de commande</h2>
+
           <div className="summary-row">
-            <span>Sous-total:</span>
+            <span>Sous-total</span>
             <span>{total.toFixed(2)}€</span>
           </div>
+
           <div className="summary-row">
-            <span>Livraison:</span>
+            <span>Livraison</span>
             <span>Gratuite</span>
           </div>
+
           <div className="summary-total">
-            <span>Total:</span>
+            <span>Total</span>
             <span>{total.toFixed(2)}€</span>
           </div>
-          <button className="btn-checkout">Procéder au paiement</button>
-          <button 
+
+          <button className="btn-checkout">
+            Procéder au paiement
+          </button>
+
+          <button
             className="btn-secondary"
             onClick={() => navigate("/library")}
           >

@@ -6,12 +6,33 @@ import "../styles/library.css";
 
 const API_BASE = "http://localhost:8080/api";
 
+/* ===============================
+   LISTE DES GENRES
+================================= */
+const GENRES = [
+  "Fiction",
+  "Science-Fiction",
+  "Fantasy",
+  "Thriller",
+  "Romance",
+  "Historique",
+  "Biographie",
+  "Développement personnel",
+  "Philosophie",
+  "Jeunesse",
+  "Manga",
+  "Poésie",
+  "Autre"
+];
+
 export default function Library() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchParams] = useSearchParams();
   const [filteredBooks, setFilteredBooks] = useState(booksData);
   const [showAddBookModal, setShowAddBookModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [newBook, setNewBook] = useState({
     title: "",
     author: "",
@@ -19,27 +40,28 @@ export default function Library() {
     genre: "",
     price: 0,
     rating: 5,
-    publicationDate: "",
+    publicationDate: null,
     coverImage: "",
   });
-  const [loading, setLoading] = useState(false);
 
   const categoryFilter = searchParams.get("category");
 
   useEffect(() => {
-    // Charger les livres depuis l'API
     fetchBooks();
   }, []);
 
   useEffect(() => {
-    // Filtrer les livres localement
     const filtered = booksData.filter((book) => {
       const matchesSearch =
         book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         book.author.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = !categoryFilter || book.category === categoryFilter;
+
+      const matchesCategory =
+        !categoryFilter || book.category === categoryFilter;
+
       return matchesSearch && matchesCategory;
     });
+
     setFilteredBooks(filtered);
   }, [searchTerm, categoryFilter]);
 
@@ -58,7 +80,6 @@ export default function Library() {
   const handleImportBooks = async () => {
     setLoading(true);
     try {
-      // Préparer les données pour l'import
       const booksToImport = booksData.map((book) => ({
         title: book.title,
         author: book.author,
@@ -72,20 +93,16 @@ export default function Library() {
 
       const response = await fetch(`${API_BASE}/books/import`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(booksToImport),
       });
 
       if (response.ok) {
         const result = await response.json();
-        alert(
-          `✅ ${result.count} livres ont été importés avec succès dans la base de données!`
-        );
+        alert(`✅ ${result.count} livres importés avec succès !`);
         setShowSettings(false);
       } else {
-        alert("❌ Erreur lors de l'import des livres");
+        alert("❌ Erreur lors de l'import");
       }
     } catch (error) {
       console.error("Erreur:", error);
@@ -97,9 +114,13 @@ export default function Library() {
 
   const handleAddBookChange = (e) => {
     const { name, value } = e.target;
+
     setNewBook((prev) => ({
       ...prev,
-      [name]: name === "price" || name === "rating" ? parseFloat(value) : value,
+      [name]:
+        name === "price" || name === "rating"
+          ? parseFloat(value)
+          : value,
     }));
   };
 
@@ -110,23 +131,20 @@ export default function Library() {
     try {
       const response = await fetch(`${API_BASE}/books`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newBook),
       });
 
       if (response.ok) {
         const savedBook = await response.json();
-        // Ajouter le livre à la liste locale
+
         setFilteredBooks((prev) => [
           ...prev,
-          {
-            ...savedBook,
-            category: newBook.genre,
-          },
+          { ...savedBook, category: newBook.genre },
         ]);
+
         setShowAddBookModal(false);
+
         setNewBook({
           title: "",
           author: "",
@@ -134,16 +152,17 @@ export default function Library() {
           genre: "",
           price: 0,
           rating: 5,
-          publicationDate: "",
+          publicationDate: null,
           coverImage: "",
         });
-        alert("✅ Livre ajouté avec succès!");
+
+        alert("✅ Livre ajouté avec succès !");
       } else {
-        alert("❌ Erreur lors de l'ajout du livre");
+        alert("❌ Erreur lors de l'ajout");
       }
     } catch (error) {
       console.error("Erreur:", error);
-      alert("❌ Erreur lors de l'ajout du livre");
+      alert("❌ Erreur lors de l'ajout");
     } finally {
       setLoading(false);
     }
@@ -152,7 +171,8 @@ export default function Library() {
   return (
     <div className="library-container">
       <div className="library-header">
-        <h1>{categoryFilter ? `${categoryFilter}` : "Bibliothèque"}</h1>
+        <h1>{categoryFilter ? categoryFilter : "Bibliothèque"}</h1>
+
         <div className="header-buttons">
           <button
             onClick={() => setShowAddBookModal(true)}
@@ -160,6 +180,7 @@ export default function Library() {
           >
             + Ajouter un livre
           </button>
+
           <button
             onClick={() => setShowSettings(true)}
             className="btn-settings"
@@ -184,10 +205,19 @@ export default function Library() {
         ))}
       </div>
 
-      {/* Modal d'ajout de livre */}
+      {/* ===============================
+         MODAL AJOUT LIVRE
+      ================================= */}
+
       {showAddBookModal && (
-        <div className="modal-overlay" onClick={() => setShowAddBookModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-overlay"
+          onClick={() => setShowAddBookModal(false)}
+        >
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="modal-header">
               <h2>Ajouter un nouveau livre</h2>
               <button
@@ -208,9 +238,10 @@ export default function Library() {
                     value={newBook.title}
                     onChange={handleAddBookChange}
                     required
-                    placeholder="Entrez le titre du livre"
+                    placeholder="Entrez le titre"
                   />
                 </div>
+
                 <div className="form-group">
                   <label>Auteur *</label>
                   <input
@@ -227,15 +258,21 @@ export default function Library() {
               <div className="form-row">
                 <div className="form-group">
                   <label>Genre *</label>
-                  <input
-                    type="text"
+                  <select
                     name="genre"
                     value={newBook.genre}
                     onChange={handleAddBookChange}
                     required
-                    placeholder="ex: Fiction, Sci-Fi, etc."
-                  />
+                  >
+                    <option value="">-- Sélectionnez un genre --</option>
+                    {GENRES.map((genre) => (
+                      <option key={genre} value={genre}>
+                        {genre}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
                 <div className="form-group">
                   <label>Date de publication</label>
                   <input
@@ -257,9 +294,9 @@ export default function Library() {
                     onChange={handleAddBookChange}
                     step="0.01"
                     min="0"
-                    placeholder="0.00"
                   />
                 </div>
+
                 <div className="form-group">
                   <label>Note (0-5)</label>
                   <input
@@ -269,7 +306,6 @@ export default function Library() {
                     onChange={handleAddBookChange}
                     min="0"
                     max="5"
-                    placeholder="5"
                   />
                 </div>
               </div>
@@ -280,8 +316,8 @@ export default function Library() {
                   name="description"
                   value={newBook.description}
                   onChange={handleAddBookChange}
-                  placeholder="Décrivez le livre..."
                   rows="4"
+                  placeholder="Décrivez le livre..."
                 ></textarea>
               </div>
 
@@ -304,6 +340,7 @@ export default function Library() {
                 >
                   {loading ? "Ajout en cours..." : "Ajouter le livre"}
                 </button>
+
                 <button
                   type="button"
                   className="btn-cancel"
@@ -313,44 +350,6 @@ export default function Library() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* Modal Paramètres */}
-      {showSettings && (
-        <div className="modal-overlay" onClick={() => setShowSettings(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Paramètres de la Bibliothèque</h2>
-              <button
-                className="close-btn"
-                onClick={() => setShowSettings(false)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="settings-content">
-              <div className="setting-item">
-                <h3>Importer les livres du site</h3>
-                <p>Tous les {booksData.length} livres actuels du site seront importés dans la base de données.</p>
-                <button
-                  onClick={handleImportBooks}
-                  className="btn-import"
-                  disabled={loading}
-                >
-                  {loading ? "Import en cours..." : `📚 Importer ${booksData.length} livres`}
-                </button>
-              </div>
-
-              <div className="setting-item info-box">
-                <p>
-                  ℹ️ <strong>Note:</strong> Une fois importés, les livres seront stockés dans la base de données 
-                  et seront synchronisés entre votre site et votre API.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       )}
