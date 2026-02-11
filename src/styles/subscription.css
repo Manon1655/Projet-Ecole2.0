@@ -268,53 +268,57 @@
 }
 
 /* ===============================
-   FAQ SECTION
+   FAQ SECTION (CORRIGÉE & CENTRÉE)
 ================================ */
 
 .faq-section {
   max-width: 1200px;
-  margin: 80px auto 0;
-  padding: 80px 40px;
-  background: white;
-  border-radius: 16px;
-  margin-left: 40px;
-  margin-right: 40px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  margin: 100px auto;
+  padding: 80px 60px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
 }
 
 .faq-section h2 {
-  font-size: 40px;
+  font-size: 42px;
   font-family: 'Georgia', serif;
   color: #2c3e50;
-  margin: 0 0 50px 0;
+  margin: 0 0 60px 0;
   text-align: center;
   font-weight: 700;
   letter-spacing: -0.5px;
 }
 
+/* Grid centrée et harmonieuse */
+
 .faq-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 35px;
+  justify-content: center;
 }
 
+/* Cartes FAQ plus premium */
+
 .faq-item {
-  padding: 28px;
-  background: linear-gradient(135deg, #fafaf8 0%, #f5f3f0 100%);
-  border-radius: 12px;
-  border-left: 4px solid #a8cbb7;
+  padding: 30px;
+  background: #fafaf8;
+  border-radius: 16px;
+  border: 1px solid rgba(168, 203, 183, 0.2);
   transition: all 0.3s ease;
 }
 
 .faq-item:hover {
-  box-shadow: 0 8px 16px rgba(168, 203, 183, 0.15);
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(168, 203, 183, 0.2);
+  border-color: #a8cbb7;
 }
 
 .faq-item h3 {
   font-size: 18px;
   color: #2c3e50;
-  margin: 0 0 12px 0;
+  margin: 0 0 14px 0;
   font-weight: 700;
   font-family: 'Georgia', serif;
 }

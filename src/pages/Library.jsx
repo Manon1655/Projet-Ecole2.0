@@ -180,14 +180,6 @@ export default function Library() {
           >
             + Ajouter un livre
           </button>
-
-          <button
-            onClick={() => setShowSettings(true)}
-            className="btn-settings"
-            title="Paramètres"
-          >
-            ⚙️
-          </button>
         </div>
       </div>
 
