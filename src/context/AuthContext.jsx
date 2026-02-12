@@ -2,7 +2,7 @@
 import { createContext, useContext, useState } from 'react'
 
 const AuthContext = createContext()
-const API_BASE = "http://localhost:3306/projet_ecole_final"
+const API_BASE = "http://localhost:3001/projet_ecole_final"
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -52,7 +52,7 @@ export function AuthProvider({ children }) {
       // network failures (server down / CORS) often surface as TypeError or 'Failed to fetch'
       const isNetwork = err instanceof TypeError || /failed to fetch/i.test(String(err.message))
       const msg = isNetwork
-        ? 'Impossible de joindre le serveur API. Vérifiez qu\'il est démarré (http://localhost:3306).' 
+        ? 'Impossible de joindre le serveur API. Vérifiez qu\'il est démarré (http://localhost:3001).' 
         : err.message || 'Erreur lors de la connexion'
       setError(msg)
       throw new Error(msg)
@@ -104,7 +104,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       const isNetwork = err instanceof TypeError || /failed to fetch/i.test(String(err.message))
       const msg = isNetwork
-        ? 'Impossible de joindre le serveur API. Vérifiez qu\'il est démarré (http://localhost:3306).'
+        ? 'Impossible de joindre le serveur API. Vérifiez qu\'il est démarré (http://localhost:3301).'
         : err.message || 'Erreur lors de l\'enregistrement'
       setError(msg)
       throw new Error(msg)
