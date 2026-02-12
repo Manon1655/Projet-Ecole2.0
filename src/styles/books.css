@@ -1,9 +1,9 @@
 /* ===============================
-   CONTAINER
+   CART CONTAINER
 ================================= */
 
 .cart-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 60px auto;
   padding: 0 20px;
   font-family: 'Segoe UI', sans-serif;
@@ -37,21 +37,29 @@
   gap: 20px;
   padding: 20px;
   border-radius: 16px;
-  background: #ffffff;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-  margin-bottom: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
+  transition: 0.3s ease;
+}
+
+.cart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(168,203,183,0.2);
 }
 
 .cart-image {
-  width: 100px;
-  height: 140px;
-  object-fit: cover;
+  width: 80px;
   border-radius: 10px;
 }
+
+/* ===============================
+   INFO
+================================= */
 
 .cart-info h3 {
   margin: 0;
   font-size: 18px;
+  color: #2c3e50;
 }
 
 .cart-info .author {
@@ -60,13 +68,13 @@
 }
 
 .cart-info .price {
+  font-size: 20px;
   font-weight: 600;
-  margin-top: 5px;
-  color: #1F4037;
+  color: #1f4037;
 }
 
 /* ===============================
-   QUANTITY
+   QUANTITY BUTTONS (NEW DESIGN)
 ================================= */
 
 .cart-quantity {
@@ -89,7 +97,7 @@
 .cart-quantity input {
   width: 50px;
   text-align: center;
-  border: 2px solid #e5e5e5;
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
   padding: 5px;
 }
@@ -104,14 +112,16 @@
   font-size: 18px;
   cursor: pointer;
   color: #999;
+  transition: 0.3s ease;
 }
 
 .btn-remove:hover {
   color: #e74c3c;
+  transform: scale(1.2);
 }
 
 /* ===============================
-   SUMMARY
+   SUMMARY CARD
 ================================= */
 
 .cart-summary {
@@ -170,57 +180,18 @@
 
 .btn-secondary {
   width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: 2px solid #e5e5e5;
-  background: #ffffff;
-  cursor: pointer;
-}
-
-/* ===============================
-   EMPTY CART
-================================= */
-
-.cart-empty {
-  text-align: center;
-  margin-top: 120px;
-}
-
-.cart-empty h1 {
-  font-size: 32px;
-  color: #1F4037;
-}
-
-.cart-empty p {
-  color: #666;
-  margin-bottom: 25px;
-}
-
-.btn-primary {
-  padding: 14px 30px;
-  border-radius: 12px;
-  border: none;
-  background: #A8DDB5;
-  color: #1F4037;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #a8cbb7;
+  background: transparent;
+  color: #1f4037;
   font-weight: 600;
   cursor: pointer;
+  transition: 0.3s ease;
 }
 
-/* ===============================
-   RESPONSIVE
-================================= */
-
-@media (max-width: 900px) {
-  .cart-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .cart-card {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .cart-image {
-    margin: 0 auto;
-  }
+.btn-secondary:hover {
+  background: #a8cbb7;
+  color: white;
 }

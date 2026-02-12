@@ -6,16 +6,30 @@ export default function Cart() {
   const { cart, removeFromCart, updateCartQuantity } = useCart();
   const navigate = useNavigate();
 
+  /* ===============================
+     CALCUL TOTAL
+  ================================= */
+
   const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) =>
+      sum + Number(item.price) * Number(item.quantity),
     0
   );
+
+  const totalItems = cart.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  /* ===============================
+     PANIER VIDE
+  ================================= */
 
   if (cart.length === 0) {
     return (
       <div className="cart-empty">
         <h1>Votre panier est vide</h1>
-        <p>Ajoutez des livres pour commencer votre lecture 📚</p>
+        <p>Ajoutez des livres pour commencer 📚</p>
         <button
           onClick={() => navigate("/library")}
           className="btn-primary"
@@ -26,19 +40,26 @@ export default function Cart() {
     );
   }
 
+  /* ===============================
+     AFFICHAGE PANIER
+  ================================= */
+
   return (
     <div className="cart-container">
       <h1 className="cart-title">
-        Panier ({cart.length} article{cart.length > 1 ? "s" : ""})
+        Panier ({totalItems} article{totalItems > 1 ? "s" : ""})
       </h1>
 
       <div className="cart-layout">
-        {/* LISTE PRODUITS */}
+        {/* LISTE DES PRODUITS */}
         <div className="cart-items">
           {cart.map((item) => (
             <div key={item.id} className="cart-card">
               <img
-                src={item.cover || "https://via.placeholder.com/100x150"}
+                src={
+                  item.cover ||
+                  "https://via.placeholder.com/100x150"
+                }
                 alt={item.title}
                 className="cart-image"
               />
@@ -46,13 +67,18 @@ export default function Cart() {
               <div className="cart-info">
                 <h3>{item.title}</h3>
                 <p className="author">{item.author}</p>
-                <p className="price">{item.price.toFixed(2)}€</p>
+                <p className="price">
+                  {Number(item.price).toFixed(2)}€
+                </p>
               </div>
 
               <div className="cart-quantity">
                 <button
                   onClick={() =>
-                    updateCartQuantity(item.id, item.quantity - 1)
+                    updateCartQuantity(
+                      item.id,
+                      item.quantity - 1
+                    )
                   }
                 >
                   −
@@ -60,8 +86,8 @@ export default function Cart() {
 
                 <input
                   type="number"
-                  value={item.quantity}
                   min="1"
+                  value={item.quantity}
                   onChange={(e) =>
                     updateCartQuantity(
                       item.id,
@@ -72,7 +98,10 @@ export default function Cart() {
 
                 <button
                   onClick={() =>
-                    updateCartQuantity(item.id, item.quantity + 1)
+                    updateCartQuantity(
+                      item.id,
+                      item.quantity + 1
+                    )
                   }
                 >
                   +
