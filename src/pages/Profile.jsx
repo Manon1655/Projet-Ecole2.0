@@ -1,167 +1,241 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useState, useEffect } from "react";
 import "../styles/profile.css";
 
-const API_BASE = "http://localhost:8080";
+const API = "http://localhost:8080";
 
 export default function Profile() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const [profileData, setProfileData] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-
-  const [formData, setFormData] = useState({
-    prenom: "",
-    nom: "",
-    email: ""
-  });
-
-  /* ===============================
-     CHARGEMENT PROFIL
-  ================================= */
+  const [profile, setProfile] = useState(null);
+  const [bio, setBio] = useState("");
+  const [books, setBooks] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [subscription, setSubscription] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
-    if (user?.id) {
-      fetchProfile(user.id);
-    }
+    if (!user?.id) return;
+
+    const fetchData = async () => {
+      try {
+        const [
+          profileRes,
+          booksRes,
+          ordersRes,
+          favoritesRes,
+          cartRes,
+          subscriptionRes
+        ] = await Promise.all([
+          fetch(`${API}/auth/user/${user.id}`),
+          fetch(`${API}/auth/user/${user.id}/books`),
+          fetch(`${API}/auth/user/${user.id}/orders`),
+          fetch(`${API}/auth/user/${user.id}/favorites`),
+          fetch(`${API}/auth/user/${user.id}/cart`),
+          fetch(`${API}/auth/user/${user.id}/subscription`)
+        ]);
+
+        const profileData = await profileRes.json();
+        setProfile(profileData);
+        setBio(profileData.bio || "");
+
+        setBooks(await booksRes.json());
+        setOrders(await ordersRes.json());
+        setFavorites(await favoritesRes.json());
+        setCart(await cartRes.json());
+        setSubscription(await subscriptionRes.json());
+
+      } catch (err) {
+        console.error("Erreur chargement profil:", err);
+      }
+    };
+
+    fetchData();
   }, [user]);
 
-  const fetchProfile = async (userId) => {
+  const saveBio = async () => {
     try {
-      const response = await fetch(`${API_BASE}/auth/user/${userId}`);
-      if (response.ok) {
-        const data = await response.json();
-
-        setProfileData(data);
-
-        setFormData({
-          prenom: data.prenom || "",
-          nom: data.nom || "",
-          email: data.email || ""
-        });
-      }
-    } catch (error) {
-      console.error("Erreur chargement profil :", error);
+      await fetch(`${API}/auth/user/${user.id}/bio`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bio })
+      });
+      alert("Bio enregistrée !");
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  if (!user) {
-    return (
-      <div className="profile-container">
-        <h1>Vous devez être connecté</h1>
-        <button onClick={() => navigate("/login")} className="btn-primary">
-          Aller à la connexion
-        </button>
-      </div>
-    );
-  }
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  /* ===============================
-     LOGOUT
-  ================================= */
+    const formData = new FormData();
+    formData.append("photo", file);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+    try {
+      const res = await fetch(`${API}/auth/user/${user.id}/photo`, {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      setProfile(prev => ({
+        ...prev,
+        profile_picture: data.photo
+      }));
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  /* ===============================
-     HANDLE CHANGE
-  ================================= */
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  if (!profile) return <div className="profile-loading">Chargement...</div>;
 
   return (
-    <div className="profile-container">
-      <div className="profile-wrapper">
+    <div className="profile-dashboard">
 
-        <div className="profile-header">
-          <div className="profile-main-info">
-            {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  name="prenom"
-                  value={formData.prenom}
-                  onChange={handleInputChange}
-                  placeholder="Prénom"
-                  className="input-field"
-                />
-                <input
-                  type="text"
-                  name="nom"
-                  value={formData.nom}
-                  onChange={handleInputChange}
-                  placeholder="Nom"
-                  className="input-field"
-                />
-              </>
-            ) : (
-              <h1>
-                {profileData?.prenom} {profileData?.nom}
-              </h1>
-            )}
-            <p className="username">@{profileData?.email}</p>
-          </div>
-        </div>
+      {/* HERO */}
+      <div className="profile-hero">
 
-        <div className="profile-details">
-          <div className="detail-group">
-            <h3>Informations</h3>
-
-            {isEditing ? (
-              <>
-                <label>Email :</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  disabled
-                  className="input-field"
-                />
-              </>
-            ) : (
-              <p>
-                <strong>Email :</strong> {profileData?.email}
-              </p>
-            )}
-          </div>
-        </div>
-
-        <div className="profile-actions">
-          {!isEditing ? (
-            <>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="btn-primary"
-              >
-                Modifier
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="btn-logout"
-              >
-                Déconnexion
-              </button>
-            </>
+        <div className="avatar-wrapper">
+          {profile.profile_picture ? (
+            <img
+              src={`${API}${profile.profile_picture}`}
+              alt="Profil"
+              className="profile-image"
+            />
           ) : (
-            <button
-              onClick={() => setIsEditing(false)}
-              className="btn-cancel"
-            >
-              Annuler
-            </button>
+            <div className="avatar">
+              {profile.first_name?.[0] || profile.username?.[0]}
+            </div>
+          )}
+
+          <label className="edit-avatar">
+            ✏️
+            <input type="file" onChange={handlePhotoChange} hidden />
+          </label>
+        </div>
+
+        <div className="hero-info">
+          <h1>{profile.first_name || profile.username}</h1>
+          <p>@{profile.username}</p>
+          <span>{profile.email}</span>
+
+          {subscription && (
+            <div className="subscription-badge">
+              {subscription.name}
+            </div>
           )}
         </div>
 
+        <div className="profile-stats">
+          <div>
+            <strong>{books.length}</strong>
+            <span>Livres</span>
+          </div>
+          <div>
+            <strong>{favorites.length}</strong>
+            <span>Favoris</span>
+          </div>
+          <div>
+            <strong>{orders.length}</strong>
+            <span>Commandes</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="profile-body">
+
+        {/* SIDEBAR */}
+        <div className="profile-sidebar">
+          <button onClick={() => setActiveTab("overview")}>Vue générale</button>
+          <button onClick={() => setActiveTab("favorites")}>Favoris</button>
+          <button onClick={() => setActiveTab("cart")}>Panier</button>
+          <button onClick={() => setActiveTab("orders")}>Commandes</button>
+        </div>
+
+        {/* CONTENT */}
+        <div className="profile-content">
+
+          {activeTab === "overview" && (
+            <>
+              <div className="profile-card">
+                <h2>Ma bio</h2>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Parle un peu de toi..."
+                />
+                <button onClick={saveBio}>Enregistrer</button>
+              </div>
+
+              <div className="profile-card">
+                <h2>Livres en cours</h2>
+                {books.length === 0 ? (
+                  <p>Aucun livre en cours.</p>
+                ) : (
+                  books.map(book => (
+                    <div key={book.id} className="book-progress">
+                      <span>{book.title}</span>
+                      <div className="progress-bar">
+                        <div
+                          className="progress-fill"
+                          style={{ width: `${book.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </>
+          )}
+
+          {activeTab === "favorites" && (
+            <div className="profile-card">
+              <h2>Mes favoris</h2>
+              {favorites.length === 0
+                ? <p>Aucun favori.</p>
+                : favorites.map(fav => (
+                    <div key={fav.id}>{fav.title}</div>
+                  ))
+              }
+            </div>
+          )}
+
+          {activeTab === "cart" && (
+            <div className="profile-card">
+              <h2>Mon panier</h2>
+              {cart.length === 0
+                ? <p>Panier vide.</p>
+                : cart.map(item => (
+                    <div key={item.id}>
+                      {item.title} - {item.price}€
+                    </div>
+                  ))
+              }
+            </div>
+          )}
+
+          {activeTab === "orders" && (
+            <div className="profile-card">
+              <h2>Mes commandes</h2>
+              {orders.length === 0
+                ? <p>Aucune commande.</p>
+                : orders.map(order => (
+                    <div key={order.id} className="order-card">
+                      <span>Commande #{order.id}</span>
+                      <span>{order.total} €</span>
+                    </div>
+                  ))
+              }
+            </div>
+          )}
+
+        </div>
       </div>
     </div>
   );
