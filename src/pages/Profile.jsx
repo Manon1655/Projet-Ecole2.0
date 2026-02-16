@@ -3,45 +3,47 @@ import { useAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import "../styles/profile.css";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "http://localhost:8080";
 
 export default function Profile() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [profileData, setProfileData] = useState(user || {});
+
+  const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
-    phoneNumber: user?.phoneNumber || "",
-    bio: user?.bio || "",
-    profilePicture: user?.profilePicture || "",
+    prenom: "",
+    nom: "",
+    email: ""
   });
+
+  /* ===============================
+     CHARGEMENT PROFIL
+  ================================= */
 
   useEffect(() => {
     if (user?.id) {
       fetchProfile(user.id);
     }
-  }, [user?.id]);
+  }, [user]);
 
   const fetchProfile = async (userId) => {
     try {
       const response = await fetch(`${API_BASE}/auth/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
+
         setProfileData(data);
+
         setFormData({
-          firstName: data.firstName || "",
-          lastName: data.lastName || "",
-          email: data.email || "",
-          phoneNumber: data.phoneNumber || "",
-          bio: data.bio || "",
-          profilePicture: data.profilePicture || "",
+          prenom: data.prenom || "",
+          nom: data.nom || "",
+          email: data.email || ""
         });
       }
     } catch (error) {
-      console.error("Erreur lors du chargement du profil:", error);
+      console.error("Erreur chargement profil :", error);
     }
   };
 
@@ -56,221 +58,83 @@ export default function Profile() {
     );
   }
 
+  /* ===============================
+     LOGOUT
+  ================================= */
+
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
+  /* ===============================
+     HANDLE CHANGE
+  ================================= */
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
-  };
-
-  const handleProfilePictureChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          profilePicture: reader.result,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSaveProfile = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/auth/user/${user.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const updated = await response.json();
-        setProfileData(updated);
-        setIsEditing(false);
-        alert("Profil mise à jour avec succès!");
-      } else {
-        alert("Erreur lors de la mise à jour du profil");
-      }
-    } catch (error) {
-      console.error("Erreur:", error);
-      alert("Erreur lors de la mise à jour");
-    }
   };
 
   return (
     <div className="profile-container">
       <div className="profile-wrapper">
-        {/* Section Photo et Infos Principales */}
-        <div className="profile-header">
-          <div className="profile-picture-wrapper">
-            {formData.profilePicture ? (
-              <img
-                src={formData.profilePicture}
-                alt="Photo de profil"
-                className="profile-picture"
-              />
-            ) : (
-              <div className="profile-picture-placeholder">
-                <span>📸</span>
-              </div>
-            )}
-            {isEditing && (
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfilePictureChange}
-                className="profile-picture-input"
-              />
-            )}
-          </div>
 
+        <div className="profile-header">
           <div className="profile-main-info">
-            <div className="profile-names">
-              {isEditing ? (
-                <>
-                  <input
-                    type="text"
-                    name="firstName"
-                    placeholder="Prénom"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="input-field"
-                  />
-                  <input
-                    type="text"
-                    name="lastName"
-                    placeholder="Nom"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="input-field"
-                  />
-                </>
-              ) : (
-                <h1>
-                  {profileData.firstName || "Prénom"}{" "}
-                  {profileData.lastName || "Nom"}
-                </h1>
-              )}
-            </div>
-            <p className="username">@{profileData.username}</p>
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  name="prenom"
+                  value={formData.prenom}
+                  onChange={handleInputChange}
+                  placeholder="Prénom"
+                  className="input-field"
+                />
+                <input
+                  type="text"
+                  name="nom"
+                  value={formData.nom}
+                  onChange={handleInputChange}
+                  placeholder="Nom"
+                  className="input-field"
+                />
+              </>
+            ) : (
+              <h1>
+                {profileData?.prenom} {profileData?.nom}
+              </h1>
+            )}
+            <p className="username">@{profileData?.email}</p>
           </div>
         </div>
 
-        {/* Section Informations */}
         <div className="profile-details">
           <div className="detail-group">
-            <h3>Informations Personnelles</h3>
+            <h3>Informations</h3>
+
             {isEditing ? (
-              <div className="form-group">
-                <label>Email:</label>
+              <>
+                <label>Email :</label>
                 <input
                   type="email"
-                  name="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  className="input-field"
                   disabled
-                />
-
-                <label>Téléphone:</label>
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  placeholder="Numéro de téléphone"
-                  value={formData.phoneNumber}
-                  onChange={handleInputChange}
                   className="input-field"
                 />
-
-                <label>Bio:</label>
-                <textarea
-                  name="bio"
-                  placeholder="À propos de vous..."
-                  value={formData.bio}
-                  onChange={handleInputChange}
-                  className="textarea-field"
-                  rows="4"
-                ></textarea>
-              </div>
+              </>
             ) : (
-              <div className="info-display">
-                <p>
-                  <strong>Email:</strong> {profileData.email}
-                </p>
-                <p>
-                  <strong>Téléphone:</strong>{" "}
-                  {profileData.phoneNumber || "Non renseigné"}
-                </p>
-                <p>
-                  <strong>Bio:</strong> {profileData.bio || "Aucune bio"}
-                </p>
-              </div>
+              <p>
+                <strong>Email :</strong> {profileData?.email}
+              </p>
             )}
-          </div>
-
-          {/* Section Abonnement */}
-          <div className="detail-group subscription-group">
-            <h3>Abonnement</h3>
-            <div className="subscription-info">
-              <div className="subscription-badge">
-                {profileData.subscriptionName ? (
-                  <>
-                    <span className="badge-name">
-                      {profileData.subscriptionName}
-                    </span>
-                    <button
-                      onClick={() => navigate("/subscription")}
-                      className="btn-change-subscription"
-                    >
-                      Changer d'abonnement
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <span className="badge-free">Gratuit</span>
-                    <button
-                      onClick={() => navigate("/subscription")}
-                      className="btn-upgrade"
-                    >
-                      S'abonner
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Section Statistiques */}
-          <div className="detail-group stats-group">
-            <h3>Statistiques</h3>
-            <div className="stats-grid">
-              <div className="stat-card">
-                <span className="stat-number">0</span>
-                <span className="stat-label">Livres favorisés</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-number">0</span>
-                <span className="stat-label">Avis postés</span>
-              </div>
-              <div className="stat-card">
-                <span className="stat-number">0</span>
-                <span className="stat-label">Essais gratuits</span>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Boutons d'Actions */}
         <div className="profile-actions">
           {!isEditing ? (
             <>
@@ -278,26 +142,26 @@ export default function Profile() {
                 onClick={() => setIsEditing(true)}
                 className="btn-primary"
               >
-                Modifier le profil
+                Modifier
               </button>
-              <button onClick={handleLogout} className="btn-logout">
+
+              <button
+                onClick={handleLogout}
+                className="btn-logout"
+              >
                 Déconnexion
               </button>
             </>
           ) : (
-            <>
-              <button onClick={handleSaveProfile} className="btn-save">
-                Enregistrer les changements
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="btn-cancel"
-              >
-                Annuler
-              </button>
-            </>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="btn-cancel"
+            >
+              Annuler
+            </button>
           )}
         </div>
+
       </div>
     </div>
   );
