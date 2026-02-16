@@ -9,44 +9,49 @@
 /* ================= HERO ================= */
 
 .profile-hero {
-  background: linear-gradient(135deg, #5f8575, #3e6b5b);
-  padding: 60px;
-  border-radius: 28px;
-  color: white;
+  background: linear-gradient(
+    135deg,
+    #8FA884 0%,
+    #A7B89E 40%,
+    #BFCDB7 100%
+  );
+
+  padding: 70px 60px;
+  border-radius: 32px;
+  color: #ffffff;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 30px 70px rgba(0,0,0,0.15);
+
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
   position: relative;
   overflow: hidden;
+
+  backdrop-filter: blur(6px);
 }
 
-.profile-hero::after {
-  content: "";
-  position: absolute;
-  right: -100px;
-  top: -100px;
-  width: 300px;
-  height: 300px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 50%;
-}
+/* ===== HERO TEXT ===== */
 
 .hero-info h1 {
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: #ffffff;
 }
 
 .hero-info p {
-  opacity: 0.9;
-  margin: 5px 0;
+  margin: 6px 0;
   font-size: 15px;
+  color: #e4f0eb; /* plus contrasté */
 }
 
 .hero-info span {
-  font-size: 13px;
-  opacity: 0.75;
+  font-size: 14px;
+  color: #cfe4dc; /* plus lisible que opacity */
 }
 
 /* ================= AVATAR ================= */
@@ -63,27 +68,28 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  background: white;
-  color: #3e6b5b;
-  font-size: 46px;
+  background: #ffffff;
+  color: #3f5f4c;
+  font-size: 48px;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-  border: 4px solid rgba(255,255,255,0.4);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+  border: 4px solid rgba(255,255,255,0.6);
 }
 
 .edit-avatar {
   position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background: white;
+  bottom: 6px;
+  right: 6px;
+  background: #ffffff;
   border-radius: 50%;
-  padding: 7px 9px;
+  padding: 8px 10px;
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .edit-avatar:hover {
@@ -94,7 +100,7 @@
 
 .profile-stats {
   display: flex;
-  gap: 60px;
+  gap: 50px;
 }
 
 .profile-stats div {
@@ -103,13 +109,14 @@
 
 .profile-stats strong {
   display: block;
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
+  color: #ffffff;
 }
 
 .profile-stats span {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 13px;
+  color: #d7ece4;
   letter-spacing: 0.5px;
 }
 
@@ -134,16 +141,17 @@
   padding: 14px;
   border-radius: 14px;
   border: none;
-  background: #f5f7f6;
+  background: #f3f7f5;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
   text-align: left;
+  color: #2f5648;
 }
 
 .profile-sidebar button:hover {
-  background: #3e6b5b;
-  color: white;
+  background: #2f5648;
+  color: #ffffff;
   transform: translateX(6px);
 }
 
@@ -156,21 +164,21 @@
 /* ================= CARD ================= */
 
 .profile-card {
-  background: white;
+  background: #ffffff;
   padding: 35px;
   border-radius: 22px;
   margin-bottom: 35px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.07);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
   transition: 0.3s;
 }
 
 .profile-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
 
 .profile-card h2 {
   margin-bottom: 25px;
-  color: #3e6b5b;
+  color: #2f5648;
   font-weight: 600;
 }
 
@@ -181,17 +189,18 @@ textarea {
   min-height: 110px;
   border-radius: 14px;
   padding: 16px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #e0e0e0;
   font-family: inherit;
   resize: none;
   transition: 0.3s;
-  background: #fafafa;
+  background: #f8fbfa;
+  color: #2f5648;
 }
 
 textarea:focus {
   outline: none;
-  border-color: #3e6b5b;
-  box-shadow: 0 0 0 4px rgba(62,107,91,0.15);
+  border-color: #2f5648;
+  box-shadow: 0 0 0 4px rgba(47,86,72,0.15);
 }
 
 /* ================= BUTTON ================= */
@@ -201,7 +210,7 @@ textarea:focus {
   padding: 12px 22px;
   border-radius: 12px;
   border: none;
-  background: #3e6b5b;
+  background: #2f5648;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -209,7 +218,7 @@ textarea:focus {
 }
 
 .profile-card button:hover {
-  background: #2f5648;
+  background: #1f3f35;
   transform: translateY(-3px);
 }
 
@@ -217,7 +226,7 @@ textarea:focus {
 
 .progress-bar {
   height: 10px;
-  background: #edf1ef;
+  background: #e5efeb;
   border-radius: 30px;
   margin-top: 10px;
   overflow: hidden;
@@ -225,76 +234,42 @@ textarea:focus {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #5f8575, #3e6b5b);
+  background: linear-gradient(90deg, #4f7a69, #2f5648);
   border-radius: 30px;
   transition: width 0.5s ease;
 }
 
 /* ================= SUBSCRIPTION ================= */
 
-.subscription-badge {
-  margin-top: 15px;
-  display: inline-block;
-}
-
 .badge-active {
-  background: white;
-  color: #3e6b5b;
+  background: #ffffff;
+  color: #2f5648;
   padding: 8px 20px;
   border-radius: 30px;
   font-weight: 600;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
 }
 
 .badge-free {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.3);
   padding: 8px 20px;
   border-radius: 30px;
+  color: #ffffff;
 }
 
 /* ================= ORDER CARD ================= */
 
 .order-card {
-  background: #f7faf9;
+  background: #f4f9f7;
   padding: 18px 22px;
   border-radius: 14px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 14px;
-  border-left: 5px solid #3e6b5b;
+  border-left: 5px solid #A7B89E;
   transition: 0.3s;
 }
 
 .order-card:hover {
-  background: #eef3f1;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media (max-width: 900px) {
-
-  .profile-body {
-    flex-direction: column;
-  }
-
-  .profile-sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .profile-sidebar button {
-    flex: 1;
-    text-align: center;
-  }
-
-  .profile-hero {
-    flex-direction: column;
-    gap: 25px;
-    text-align: center;
-  }
-
-  .profile-stats {
-    gap: 30px;
-  }
+  background: #e9f3ef;
 }

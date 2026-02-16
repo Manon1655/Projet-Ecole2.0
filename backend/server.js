@@ -1,8 +1,9 @@
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
 
 const app = express();
 const PORT = 8080;
@@ -18,6 +19,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 /* ===============================
    CONNEXION MYSQL
@@ -40,39 +42,27 @@ app.post("/auth/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const sql = `
+    const [result] = await db.query(`
       INSERT INTO users 
       (email, password, first_name, last_name, username, created_at)
       VALUES (?, ?, ?, ?, ?, NOW())
-    `;
+    `, [email, hashedPassword, firstName, lastName, username]);
 
-    db.query(
-      sql,
-      [email, hashedPassword, firstName, lastName, username],
-      (err, result) => {
-        if (err) {
-          console.log("ERREUR SQL :", err);
-          return res.status(500).json({ error: err.message });
-        }
-
-        const token = jwt.sign(
-          {
-            id: result.insertId,
-            email,
-            firstName,
-            lastName,
-            username
-          },
-          "SECRET_KEY",
-          { expiresIn: "2h" }
-        );
-
-        res.json({ token });
-      }
+    const token = jwt.sign(
+      {
+        id: result.insertId,
+        email,
+        firstName,
+        lastName,
+        username
+      },
+      SECRET,
+      { expiresIn: "2h" }
     );
 
+    res.json({ token });
+
   } catch (error) {
-    console.log("ERREUR SERVEUR :", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -81,179 +71,206 @@ app.post("/auth/register", async (req, res) => {
    LOGIN
 ================================= */
 
-app.post("/auth/login", (req, res) => {
+app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
-  const sql = "SELECT * FROM users WHERE email = ?";
+  try {
+    const [results] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
-  db.query(sql, [email], async (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    if (result.length === 0) return res.status(401).json({ error: "Utilisateur non trouvé" });
+    if (results.length === 0) {
+      return res.status(401).json({ error: "Utilisateur non trouvé" });
+    }
 
-    const user = result[0];
+    const user = results[0];
 
-    const valid = await bcrypt.compare(password, user.mot_de_passe);
-    if (!valid) return res.status(401).json({ error: "Mot de passe incorrect" });
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) {
+      return res.status(401).json({ error: "Mot de passe incorrect" });
+    }
 
     const token = jwt.sign(
       {
         id: user.id,
         email: user.email,
-        nom: user.last_name,
-        prenom: user.first_name
+        firstName: user.first_name,
+        lastName: user.last_name,
+        username: user.username
       },
       SECRET,
       { expiresIn: "2h" }
     );
 
     res.json({ token });
-  });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /* ===============================
    GET PROFIL
 ================================= */
 
-app.get("/auth/user/:id", (req, res) => {
-  const userId = req.params.id;
+app.get("/auth/user/:id", async (req, res) => {
+  try {
+    const [results] = await db.query(`
+      SELECT 
+        id,
+        username,
+        email,
+        first_name,
+        last_name,
+        bio,
+        phone_number,
+        profile_picture,
+        subscription_id
+      FROM users
+      WHERE id = ?
+    `, [req.params.id]);
 
-  console.log("ID reçu :", userId);
-
-  const sql = `
-    SELECT 
-      id,
-      username,
-      email,
-      first_name,
-      last_name,
-      bio,
-      phone_number,
-      profile_picture
-    FROM users
-    WHERE id = ?
-  `;
-
-  db.query(sql, [userId], (err, results) => {
-    if (err) {
-      console.error("Erreur SQL complète :", err);
-      return res.status(500).json({ error: err.message });
-    }
-
-    if (!results || results.length === 0) {
+    if (results.length === 0) {
       return res.status(404).json({ error: "Utilisateur non trouvé" });
     }
 
-    console.log("Utilisateur trouvé :", results[0]);
     res.json(results[0]);
-  });
-});
 
-/* ===============================
-    UPDATE BIO  
-================================= */
-
-app.put("/auth/user/:id/bio", (req, res) => {
-  const { bio } = req.body;
-
-  db.query(
-    "UPDATE users SET bio = ? WHERE id = ?",
-    [bio, req.params.id],
-    (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ success: true });
-    }
-  );
-});
-
-/* ===============================
-    GET BOOKS
-================================= */
-
-app.get("/auth/user/:id/books", (req, res) => {
-  const sql = `
-    SELECT Livre.titre, user_books.progress
-    FROM user_books
-    JOIN Livre ON user_books.book_id = Livre.id_livre
-    WHERE user_books.user_id = ?
-  `;
-
-  db.query(sql, [req.params.id], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(results);
-  });
-});
-
-
-/* ===============================
-    GET ORDERS
-================================= */
-
-app.get("/auth/user/:id/orders", (req, res) => {
-  db.query(
-    "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
-    [req.params.id],
-    (err, results) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(results);
-    }
-  );
-});
-
-
-/* ===============================
-    GET if SUBSCRIPTION
-================================= */
-
-app.get("/auth/user/:id/subscription", async (req, res) => {
-  const userId = req.params.id;
-
-  try {
-    const [rows] = await db.query(`
-      SELECT s.*
-      FROM users u
-      LEFT JOIN subscriptions s 
-        ON u.subscription_id = s.id
-      WHERE u.id = ?
-    `, [userId]);
-
-    if (!rows.length || !rows[0]) {
-      return res.json(null);
-    }
-
-    res.json(rows[0]);
   } catch (error) {
-    console.error("Erreur subscription :", error);
     res.status(500).json({ error: error.message });
   }
 });
 
 /* ===============================
-    UPDATE SUBSCRIPTION
+   UPDATE BIO
 ================================= */
 
-app.put("/auth/user/:id/subscription", async (req, res) => {
-  const userId = req.params.id;
-  const { subscription_id } = req.body;
-
+app.put("/auth/user/:id/bio", async (req, res) => {
   try {
     await db.query(
-      "UPDATE users SET subscription_id = ? WHERE id = ?",
-      [subscription_id, userId]
+      "UPDATE users SET bio = ? WHERE id = ?",
+      [req.body.bio, req.params.id]
     );
 
-    res.json({ message: "Abonnement mis à jour" });
+    res.json({ success: true });
+
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
 
-
 /* ===============================
-    UPLOAD PHOTO
+   GET BOOKS (ALL)
 ================================= */
 
-const multer = require("multer");
+app.get("/books", async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM books");
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* ===============================
+   GET USER BOOKS
+================================= */
+
+app.get("/auth/user/:id/books", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT b.*, ub.progress
+      FROM user_books ub
+      JOIN books b ON ub.book_id = b.id
+      WHERE ub.user_id = ?
+    `, [req.params.id]);
+
+    res.json(rows);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* ===============================
+   GET ORDERS
+================================= */
+
+app.get("/auth/user/:id/orders", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
+      [req.params.id]
+    );
+
+    res.json(rows);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* ===============================
+   GET FAVORITES
+================================= */
+
+app.get("/auth/user/:id/favorites", async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT b.*
+      FROM favorites f
+      JOIN books b ON f.book_id = b.id
+      WHERE f.user_id = ?
+    `, [req.params.id]);
+
+    res.json(rows);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* ===============================
+   ADD FAVORITE
+================================= */
+
+app.post("/auth/user/:id/favorites", async (req, res) => {
+  try {
+    await db.query(
+      "INSERT INTO favorites (user_id, book_id) VALUES (?, ?)",
+      [req.params.id, req.body.bookId]
+    );
+
+    res.json({ success: true });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* ===============================
+   DELETE FAVORITE
+================================= */
+
+app.delete("/auth/user/:id/favorites/:bookId", async (req, res) => {
+  try {
+    await db.query(
+      "DELETE FROM favorites WHERE user_id = ? AND book_id = ?",
+      [req.params.id, req.params.bookId]
+    );
+
+    res.json({ success: true });
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/* ===============================
+   UPLOAD PHOTO
+================================= */
 
 const storage = multer.diskStorage({
   destination: "./uploads/",
@@ -264,24 +281,39 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.use("/uploads", express.static("uploads"));
+app.post("/auth/user/:id/photo", upload.single("photo"), async (req, res) => {
+  try {
+    const photoPath = `/uploads/${req.file.filename}`;
 
-app.post("/auth/user/:id/photo", upload.single("photo"), (req, res) => {
-  const userId = req.params.id;
-  const photoPath = `/uploads/${req.file.filename}`;
+    await db.query(
+      "UPDATE users SET profile_picture = ? WHERE id = ?",
+      [photoPath, req.params.id]
+    );
 
-  db.query(
-    "UPDATE users SET profile_picture = ? WHERE id = ?",
-    [photoPath, userId],
-    (err) => {
-      if (err) return res.status(500).json({ error: err.message });
+    res.json({ photo: photoPath });
 
-      res.json({ photo: photoPath });
-    }
-  );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 
+app.get("/auth/user/:id/cart", async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      "SELECT * FROM cart WHERE user_id = ?",
+      [req.params.id]
+    );
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+/* ===============================
+   START SERVER
+================================= */
 
 app.listen(PORT, () => {
   console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
