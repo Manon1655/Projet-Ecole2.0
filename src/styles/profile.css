@@ -1,60 +1,77 @@
+/* ================= DASHBOARD ================= */
+
 .profile-dashboard {
   max-width: 1200px;
-  margin: 60px auto;
+  margin: 70px auto;
   padding: 0 20px;
 }
 
 /* ================= HERO ================= */
 
 .profile-hero {
-  background: linear-gradient(135deg, #8fae98, #7fa86c);
-  padding: 50px;
-  border-radius: 24px;
+  background: linear-gradient(135deg, #5f8575, #3e6b5b);
+  padding: 60px;
+  border-radius: 28px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 20px 50px rgba(127,168,108,0.25);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-hero::after {
+  content: "";
+  position: absolute;
+  right: -100px;
+  top: -100px;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
 }
 
 .hero-info h1 {
-  font-size: 34px;
-  margin-bottom: 8px;
+  font-size: 36px;
   font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .hero-info p {
   opacity: 0.9;
-  margin: 4px 0;
+  margin: 5px 0;
+  font-size: 15px;
 }
 
 .hero-info span {
-  font-size: 14px;
-  opacity: 0.85;
+  font-size: 13px;
+  opacity: 0.75;
 }
 
 /* ================= AVATAR ================= */
 
 .avatar-wrapper {
   position: relative;
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
 }
 
 .profile-image,
 .avatar {
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
   background: white;
-  color: #7fa86c;
-  font-size: 44px;
+  color: #3e6b5b;
+  font-size: 46px;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  border: 4px solid rgba(255,255,255,0.4);
 }
 
 .edit-avatar {
@@ -63,21 +80,21 @@
   right: 5px;
   background: white;
   border-radius: 50%;
-  padding: 6px 8px;
+  padding: 7px 9px;
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
 }
 
 .edit-avatar:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 /* ================= STATS ================= */
 
 .profile-stats {
   display: flex;
-  gap: 50px;
+  gap: 60px;
 }
 
 .profile-stats div {
@@ -86,20 +103,21 @@
 
 .profile-stats strong {
   display: block;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
 }
 
 .profile-stats span {
-  font-size: 13px;
-  opacity: 0.9;
+  font-size: 12px;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
 }
 
 /* ================= BODY ================= */
 
 .profile-body {
   display: flex;
-  margin-top: 50px;
+  margin-top: 60px;
   gap: 40px;
 }
 
@@ -116,16 +134,17 @@
   padding: 14px;
   border-radius: 14px;
   border: none;
-  background: #f4f6f2;
+  background: #f5f7f6;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
+  text-align: left;
 }
 
 .profile-sidebar button:hover {
-  background: #7fa86c;
+  background: #3e6b5b;
   color: white;
-  transform: translateX(5px);
+  transform: translateX(6px);
 }
 
 /* ================= CONTENT ================= */
@@ -138,49 +157,51 @@
 
 .profile-card {
   background: white;
-  padding: 30px;
-  border-radius: 20px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  padding: 35px;
+  border-radius: 22px;
+  margin-bottom: 35px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.07);
   transition: 0.3s;
 }
 
 .profile-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
 }
 
 .profile-card h2 {
-  margin-bottom: 20px;
-  color: #6f8f7c;
+  margin-bottom: 25px;
+  color: #3e6b5b;
+  font-weight: 600;
 }
 
 /* ================= TEXTAREA ================= */
 
 textarea {
   width: 100%;
-  min-height: 100px;
-  border-radius: 12px;
-  padding: 15px;
-  border: 1px solid #e0e0e0;
+  min-height: 110px;
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
   font-family: inherit;
   resize: none;
   transition: 0.3s;
+  background: #fafafa;
 }
 
 textarea:focus {
   outline: none;
-  border-color: #7fa86c;
-  box-shadow: 0 0 0 3px rgba(127,168,108,0.2);
+  border-color: #3e6b5b;
+  box-shadow: 0 0 0 4px rgba(62,107,91,0.15);
 }
 
 /* ================= BUTTON ================= */
 
 .profile-card button {
-  margin-top: 15px;
-  padding: 10px 18px;
-  border-radius: 10px;
+  margin-top: 18px;
+  padding: 12px 22px;
+  border-radius: 12px;
   border: none;
-  background: #7fa86c;
+  background: #3e6b5b;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -188,53 +209,70 @@ textarea:focus {
 }
 
 .profile-card button:hover {
-  background: #6c9460;
-  transform: translateY(-2px);
+  background: #2f5648;
+  transform: translateY(-3px);
 }
 
 /* ================= PROGRESS ================= */
 
 .progress-bar {
-  height: 8px;
-  background: #e8ebe6;
-  border-radius: 20px;
-  margin-top: 8px;
+  height: 10px;
+  background: #edf1ef;
+  border-radius: 30px;
+  margin-top: 10px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #8fae98, #7fa86c);
-  border-radius: 20px;
-  transition: width 0.4s ease;
+  background: linear-gradient(90deg, #5f8575, #3e6b5b);
+  border-radius: 30px;
+  transition: width 0.5s ease;
 }
 
 /* ================= SUBSCRIPTION ================= */
 
 .subscription-badge {
-  margin-top: 12px;
+  margin-top: 15px;
   display: inline-block;
-  padding: 6px 14px;
-  border-radius: 20px;
+}
+
+.badge-active {
+  background: white;
+  color: #3e6b5b;
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.badge-free {
   background: rgba(255,255,255,0.25);
-  font-size: 13px;
+  padding: 8px 20px;
+  border-radius: 30px;
 }
 
 /* ================= ORDER CARD ================= */
 
 .order-card {
-  background: #f8faf6;
-  padding: 15px 20px;
-  border-radius: 12px;
+  background: #f7faf9;
+  padding: 18px 22px;
+  border-radius: 14px;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  border-left: 4px solid #7fa86c;
+  margin-bottom: 14px;
+  border-left: 5px solid #3e6b5b;
+  transition: 0.3s;
+}
+
+.order-card:hover {
+  background: #eef3f1;
 }
 
 /* ================= RESPONSIVE ================= */
 
 @media (max-width: 900px) {
+
   .profile-body {
     flex-direction: column;
   }
@@ -247,30 +285,16 @@ textarea:focus {
 
   .profile-sidebar button {
     flex: 1;
+    text-align: center;
   }
 
   .profile-hero {
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
     text-align: center;
   }
 
   .profile-stats {
-    gap: 25px;
+    gap: 30px;
   }
 }
-
-.badge-active {
-  background: #ffffff;
-  color: #7fa86c;
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-weight: 600;
-}
-
-.badge-free {
-  background: rgba(255,255,255,0.2);
-  padding: 8px 18px;
-  border-radius: 30px;
-}
-
