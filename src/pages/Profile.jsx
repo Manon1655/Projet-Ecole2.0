@@ -57,7 +57,7 @@ export default function Profile() {
   
 
   /* =========================
-     SAVE BIO
+     SAVE BIO     
   ========================= */
 
   const saveBio = async () => {

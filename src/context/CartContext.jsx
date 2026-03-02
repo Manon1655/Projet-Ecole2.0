@@ -7,7 +7,12 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState(() => {
     try {
       const stored = localStorage.getItem('cart')
-      return stored ? JSON.parse(stored) : []
+      // if data includes quantity from previous versions, drop it
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        return parsed.map(({ quantity, ...rest }) => rest)
+      }
+      return []
     } catch {
       return []
     }
@@ -23,15 +28,9 @@ export function CartProvider({ children }) {
   })
 
   const addToCart = (book) => {
-    const newCart = [...cart]
-    const existingIndex = newCart.findIndex(item => item.id === book.id)
-    
-    if (existingIndex > -1) {
-      newCart[existingIndex].quantity += 1
-    } else {
-      newCart.push({ ...book, quantity: 1 })
-    }
-    
+    // only add once, no quantities
+    if (cart.some(item => item.id === book.id)) return
+    const newCart = [...cart, book]
     setCart(newCart)
     localStorage.setItem('cart', JSON.stringify(newCart))
   }
@@ -42,18 +41,6 @@ export function CartProvider({ children }) {
     localStorage.setItem('cart', JSON.stringify(newCart))
   }
 
-  const updateCartQuantity = (bookId, quantity) => {
-    if (quantity <= 0) {
-      removeFromCart(bookId)
-      return
-    }
-    
-    const newCart = cart.map(item => 
-      item.id === bookId ? { ...item, quantity } : item
-    )
-    setCart(newCart)
-    localStorage.setItem('cart', JSON.stringify(newCart))
-  }
 
   const clearCart = () => {
     setCart([])
@@ -89,7 +76,6 @@ export function CartProvider({ children }) {
         favorites, 
         addToCart, 
         removeFromCart, 
-        updateCartQuantity, 
         clearCart,
         addToFavorites,
         removeFromFavorites,

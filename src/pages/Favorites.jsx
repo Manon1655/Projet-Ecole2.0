@@ -9,7 +9,19 @@ export default function Favorites() {
 
   if (favorites.length === 0) {
     return (
-      <div className="library-container">
+      <div className="library-container empty-state">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 64 64"
+          className="empty-icon"
+        >
+          <path
+            fill="#A8DDB5"
+            d="M16 18h32l-4 24H20z"
+          />
+          <circle cx="23" cy="50" r="4" fill="#1F4037" />
+          <circle cx="41" cy="50" r="4" fill="#1F4037" />
+        </svg>
         <h1>Mes Favoris</h1>
         <p>Vous n'avez aucun livre en favoris</p>
         <button onClick={() => navigate("/library")} className="btn-primary">

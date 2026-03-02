@@ -3,23 +3,20 @@ import { useNavigate } from "react-router-dom";
 import "../styles/books.css";
 
 export default function Cart() {
-  const { cart, removeFromCart, updateCartQuantity } = useCart();
+  const { cart, removeFromCart } = useCart();
   const navigate = useNavigate();
 
   /* ===============================
      CALCUL TOTAL
   ================================= */
 
+  // without quantity support just sum prices and count items
   const total = cart.reduce(
-    (sum, item) =>
-      sum + Number(item.price) * Number(item.quantity),
+    (sum, item) => sum + Number(item.price),
     0
   );
 
-  const totalItems = cart.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
+  const totalItems = cart.length;
 
   /* ===============================
      PANIER VIDE
@@ -27,7 +24,20 @@ export default function Cart() {
 
   if (cart.length === 0) {
     return (
-      <div className="cart-empty">
+      <div className="empty-state">
+        {/* simple svg icon for empty cart */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 64 64"
+          className="empty-icon"
+        >
+          <path
+            fill="#A8DDB5"
+            d="M16 18h32l-4 24H20z"
+          />
+          <circle cx="23" cy="50" r="4" fill="#1F4037" />
+          <circle cx="41" cy="50" r="4" fill="#1F4037" />
+        </svg>
         <h1>Votre panier est vide</h1>
         <p>Ajoutez des livres pour commencer 📚</p>
         <button
@@ -72,40 +82,9 @@ export default function Cart() {
                 </p>
               </div>
 
+              {/* quantity controls removed, always one copy per book */}
               <div className="cart-quantity">
-                <button
-                  onClick={() =>
-                    updateCartQuantity(
-                      item.id,
-                      item.quantity - 1
-                    )
-                  }
-                >
-                  −
-                </button>
-
-                <input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    updateCartQuantity(
-                      item.id,
-                      parseInt(e.target.value) || 1
-                    )
-                  }
-                />
-
-                <button
-                  onClick={() =>
-                    updateCartQuantity(
-                      item.id,
-                      item.quantity + 1
-                    )
-                  }
-                >
-                  +
-                </button>
+                <span>1</span>
               </div>
 
               <div className="cart-total">
