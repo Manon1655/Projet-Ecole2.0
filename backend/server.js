@@ -72,12 +72,12 @@ app.post("/auth/register", async (req, res) => {
 ================================= */
 
 app.post("/auth/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     const [results] = await db.query(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
+      "SELECT * FROM users WHERE email = ? OR username = ?",
+      [email || username, username || email]
     );
 
     if (results.length === 0) {

@@ -56,57 +56,82 @@ export default function Register() {
   return (
     <div className="auth-container">
       <div className="auth-form">
-        <h1>S'inscrire</h1>
+        <div className="auth-header">
+          <h1>S'inscrire</h1>
+          <p>Créez votre compte pour accéder à la bibliothèque</p>
+        </div>
 
-        {error && <div className="error">{error}</div>}
-
-          <input
-            type="text"
-            placeholder="Nom d'utilisateur *"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+        {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email *"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="username">Nom d'utilisateur *</label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Choisissez un nom d'utilisateur"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Mot de passe *"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="form-group">
+            <label htmlFor="email">Email *</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="votre.email@exemple.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="Prénom (optionnel)"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
+          <div className="form-group">
+            <label htmlFor="password">Mot de passe *</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Au moins 6 caractères"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="Nom (optionnel)"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="firstName">Prénom</label>
+              <input
+                id="firstName"
+                type="text"
+                placeholder="Votre prénom"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+            <div className="form-group">
+              <label htmlFor="lastName">Nom</label>
+              <input
+                id="lastName"
+                type="text"
+                placeholder="Votre nom"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <button type="submit" className="btn-auth" disabled={loading}>
             {loading ? "Inscription en cours..." : "S'inscrire"}
           </button>
         </form>
 
-        <p>
-          Vous avez un compte ? <Link to="/login">Se connecter</Link>
-        </p>
+        <div className="auth-footer">
+          <p>Vous avez déjà un compte ? <Link to="/login">Se connecter</Link></p>
+        </div>
       </div>
     </div>
   );
