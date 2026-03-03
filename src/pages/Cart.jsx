@@ -120,10 +120,12 @@ export default function Cart() {
             <span>{total.toFixed(2)}€</span>
           </div>
 
-          <button className="btn-checkout">
-            Procéder au paiement
-          </button>
-
+         <button
+  className="btn-checkout"
+  onClick={() => navigate("/checkout")}
+>
+  Procéder au paiement
+</button>
           <button
             className="btn-secondary"
             onClick={() => navigate("/library")}

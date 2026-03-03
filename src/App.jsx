@@ -9,6 +9,9 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Favorites from "./pages/Favorites";
 import Subscription from "./pages/Subscription";
+import Checkout from "./pages/Checkout";
+import OrderTracking from "./pages/OrderTracking";
+import OrderConfirmation from "./pages/order-confirmation";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -36,6 +39,10 @@ export default function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/subscription" element={<Subscription />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-tracking" element={<OrderTracking />} />
+              <Route path="/order-confirmation" element={<OrderConfirmation />} />
+              <Route path="/order-tracking" element={<OrderTracking />} />
             </Routes>
             <Footer />
           </CommentsProvider>
