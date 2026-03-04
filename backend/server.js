@@ -22,7 +22,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 /* ===============================
-   CONNEXION MYSQL
+   MYSQL CONNECTION
 ================================= */
 
 const db = mysql.createPool({
@@ -37,13 +37,15 @@ const db = mysql.createPool({
 ================================= */
 
 app.post("/auth/register", async (req, res) => {
+
   const { email, password, firstName, lastName, username } = req.body;
 
   try {
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [result] = await db.query(`
-      INSERT INTO users 
+      INSERT INTO users
       (email, password, first_name, last_name, username, created_at)
       VALUES (?, ?, ?, ?, ?, NOW())
     `, [email, hashedPassword, firstName, lastName, username]);
@@ -52,9 +54,7 @@ app.post("/auth/register", async (req, res) => {
       {
         id: result.insertId,
         email,
-        firstName,
-        lastName,
-        username
+        role: "USER"
       },
       SECRET,
       { expiresIn: "2h" }
@@ -63,8 +63,11 @@ app.post("/auth/register", async (req, res) => {
     res.json({ token });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 /* ===============================
@@ -72,12 +75,14 @@ app.post("/auth/register", async (req, res) => {
 ================================= */
 
 app.post("/auth/login", async (req, res) => {
-  const { username, email, password } = req.body;
+
+  const { username, password } = req.body;
 
   try {
+
     const [results] = await db.query(
-      "SELECT * FROM users WHERE email = ? OR username = ?",
-      [email || username, username || email]
+      "SELECT * FROM users WHERE email = ?",
+      [username]
     );
 
     if (results.length === 0) {
@@ -96,29 +101,35 @@ app.post("/auth/login", async (req, res) => {
       {
         id: user.id,
         email: user.email,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        username: user.username
+        role: user.role
       },
       SECRET,
       { expiresIn: "2h" }
     );
 
-    res.json({ token });
+    res.json({
+      token: token,
+      role: user.role
+    });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 /* ===============================
-   GET PROFIL
+   USER PROFILE
 ================================= */
 
 app.get("/auth/user/:id", async (req, res) => {
+
   try {
+
     const [results] = await db.query(`
-      SELECT 
+      SELECT
         id,
         username,
         email,
@@ -126,8 +137,7 @@ app.get("/auth/user/:id", async (req, res) => {
         last_name,
         bio,
         phone_number,
-        profile_picture,
-        subscription_id
+        profile_picture
       FROM users
       WHERE id = ?
     `, [req.params.id]);
@@ -139,8 +149,11 @@ app.get("/auth/user/:id", async (req, res) => {
     res.json(results[0]);
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 /* ===============================
@@ -148,7 +161,9 @@ app.get("/auth/user/:id", async (req, res) => {
 ================================= */
 
 app.put("/auth/user/:id/bio", async (req, res) => {
+
   try {
+
     await db.query(
       "UPDATE users SET bio = ? WHERE id = ?",
       [req.body.bio, req.params.id]
@@ -157,29 +172,41 @@ app.put("/auth/user/:id/bio", async (req, res) => {
     res.json({ success: true });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 /* ===============================
-   GET BOOKS (ALL)
+   GET BOOKS
 ================================= */
 
 app.get("/books", async (req, res) => {
+
   try {
+
     const [rows] = await db.query("SELECT * FROM books");
+
     res.json(rows);
+
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 /* ===============================
-   GET USER BOOKS
+   USER BOOKS
 ================================= */
 
 app.get("/auth/user/:id/books", async (req, res) => {
+
   try {
+
     const [rows] = await db.query(`
       SELECT b.*, ub.progress
       FROM user_books ub
@@ -190,34 +217,21 @@ app.get("/auth/user/:id/books", async (req, res) => {
     res.json(rows);
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 /* ===============================
-   GET ORDERS
-================================= */
-
-app.get("/auth/user/:id/orders", async (req, res) => {
-  try {
-    const [rows] = await db.query(
-      "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
-      [req.params.id]
-    );
-
-    res.json(rows);
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/* ===============================
-   GET FAVORITES
+   FAVORITES
 ================================= */
 
 app.get("/auth/user/:id/favorites", async (req, res) => {
+
   try {
+
     const [rows] = await db.query(`
       SELECT b.*
       FROM favorites f
@@ -228,16 +242,17 @@ app.get("/auth/user/:id/favorites", async (req, res) => {
     res.json(rows);
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
-/* ===============================
-   ADD FAVORITE
-================================= */
-
 app.post("/auth/user/:id/favorites", async (req, res) => {
+
   try {
+
     await db.query(
       "INSERT INTO favorites (user_id, book_id) VALUES (?, ?)",
       [req.params.id, req.body.bookId]
@@ -246,16 +261,17 @@ app.post("/auth/user/:id/favorites", async (req, res) => {
     res.json({ success: true });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
-/* ===============================
-   DELETE FAVORITE
-================================= */
-
 app.delete("/auth/user/:id/favorites/:bookId", async (req, res) => {
+
   try {
+
     await db.query(
       "DELETE FROM favorites WHERE user_id = ? AND book_id = ?",
       [req.params.id, req.params.bookId]
@@ -264,8 +280,112 @@ app.delete("/auth/user/:id/favorites/:bookId", async (req, res) => {
     res.json({ success: true });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
+});
+
+/* ===============================
+   CART
+================================= */
+
+app.get("/auth/user/:id/cart", async (req, res) => {
+
+  try {
+
+    const [rows] = await db.query(`
+      SELECT
+        b.id,
+        b.title,
+        b.price
+      FROM cart c
+      JOIN books b ON c.book_id = b.id
+      WHERE c.user_id = ?
+    `, [req.params.id]);
+
+    res.json(rows);
+
+  } catch (error) {
+
+    res.status(500).json({ error: error.message });
+
+  }
+
+});
+
+/* ===============================
+   GET ORDERS
+================================= */
+
+app.get("/auth/user/:id/orders", async (req, res) => {
+
+  try {
+
+    const [orders] = await db.query(`
+      SELECT *
+      FROM orders
+      WHERE user_id = ?
+      ORDER BY created_at DESC
+    `, [req.params.id]);
+
+    for (let order of orders) {
+
+      const [items] = await db.query(`
+        SELECT b.title, b.price
+        FROM order_items oi
+        JOIN books b ON oi.book_id = b.id
+        WHERE oi.order_id = ?
+      `, [order.id]);
+
+      order.items = items;
+
+    }
+
+    res.json(orders);
+
+  } catch (error) {
+
+    res.status(500).json({ error: error.message });
+
+  }
+
+});
+
+/* ===============================
+   CREATE ORDER
+================================= */
+
+app.post("/orders", async (req, res) => {
+
+  const { userId, total } = req.body;
+
+  try {
+
+    const [result] = await db.query(`
+      INSERT INTO orders (user_id, total, created_at)
+      VALUES (?, ?, NOW())
+    `, [userId, total]);
+
+    // vider le panier après commande
+    await db.query(
+      "DELETE FROM cart WHERE user_id = ?",
+      [userId]
+    );
+
+    res.json({
+      success: true,
+      orderId: result.insertId
+    });
+
+  } catch (error) {
+
+    console.error("Erreur création commande:", error);
+    res.status(500).json({ error: error.message });
+
+  }
+
 });
 
 /* ===============================
@@ -273,16 +393,21 @@ app.delete("/auth/user/:id/favorites/:bookId", async (req, res) => {
 ================================= */
 
 const storage = multer.diskStorage({
+
   destination: "./uploads/",
+
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
   }
+
 });
 
 const upload = multer({ storage });
 
 app.post("/auth/user/:id/photo", upload.single("photo"), async (req, res) => {
+
   try {
+
     const photoPath = `/uploads/${req.file.filename}`;
 
     await db.query(
@@ -293,23 +418,38 @@ app.post("/auth/user/:id/photo", upload.single("photo"), async (req, res) => {
     res.json({ photo: photoPath });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 
-app.get("/auth/user/:id/cart", async (req, res) => {
+/* ===============================
+   ADD TO CART
+================================= */
+
+app.post("/cart", async (req, res) => {
+
+  const { userId, bookId } = req.body;
+
   try {
-    const [rows] = await db.query(
-      "SELECT * FROM cart WHERE user_id = ?",
-      [req.params.id]
-    );
-    res.json(rows);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
+    await db.query(
+      "INSERT INTO cart (user_id, book_id) VALUES (?, ?)",
+      [userId, bookId]
+    );
+
+    res.json({ success: true });
+
+  } catch (error) {
+
+    res.status(500).json({ error: error.message });
+
+  }
+
+});
 
 /* ===============================
    START SERVER

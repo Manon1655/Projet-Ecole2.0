@@ -12,17 +12,13 @@ export function CartProvider({ children }) {
     try {
       const stored = localStorage.getItem("cart");
       if (!stored) return [];
-
       const parsed = JSON.parse(stored);
-
-      // Supprime anciennes quantités si existantes
       return parsed.map(({ quantity, ...rest }) => rest);
     } catch {
       return [];
     }
   });
 
-  // Synchronisation auto avec localStorage
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
@@ -46,6 +42,23 @@ export function CartProvider({ children }) {
 
 
   // -----------------------------
+  // ✅ ORDERS STATE
+  // -----------------------------
+  const [orders, setOrders] = useState(() => {
+    try {
+      const stored = localStorage.getItem("orders");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("orders", JSON.stringify(orders));
+  }, [orders]);
+
+
+  // -----------------------------
   // CART FUNCTIONS
   // -----------------------------
   const addToCart = (book) => {
@@ -64,11 +77,7 @@ export function CartProvider({ children }) {
   };
 
   const cartCount = cart.length;
-
-  const cartTotal = cart.reduce(
-    (sum, item) => sum + Number(item.price),
-    0
-  );
+  const cartTotal = cart.reduce((sum, item) => sum + Number(item.price), 0);
 
 
   // -----------------------------
@@ -76,22 +85,14 @@ export function CartProvider({ children }) {
   // -----------------------------
   const addToFavorites = (book) => {
     setFavorites((prev) => {
-      const isAlreadyFavorite = prev.some(
-        (item) => item.id === book.id
-      );
-
-      if (isAlreadyFavorite) {
-        return prev.filter((item) => item.id !== book.id);
-      }
-
+      const isAlreadyFavorite = prev.some((item) => item.id === book.id);
+      if (isAlreadyFavorite) return prev.filter((item) => item.id !== book.id);
       return [...prev, book];
     });
   };
 
   const removeFromFavorites = (bookId) => {
-    setFavorites((prev) =>
-      prev.filter((item) => item.id !== bookId)
-    );
+    setFavorites((prev) => prev.filter((item) => item.id !== bookId));
   };
 
   const isFavorite = (bookId) => {
@@ -100,21 +101,55 @@ export function CartProvider({ children }) {
 
 
   // -----------------------------
+  // ✅ ORDERS FUNCTIONS
+  // -----------------------------
+
+  // Appelée depuis Checkout.jsx au moment du paiement
+  const addOrder = (cartItems, total) => {
+    const newOrder = {
+      id: `OMB-${Date.now()}`,           // ID unique basé sur le timestamp
+      created_at: new Date().toISOString(),
+      status: "pending",                  // pending → delivered (à faire évoluer)
+      total: total,
+      items: cartItems.map((item) => ({
+        id: item.id,
+        title: item.title,
+        author: item.author,
+        price: item.price,
+        cover_image: item.cover || item.cover_image || null,
+        quantity: 1,
+      })),
+    };
+
+    setOrders((prev) => [newOrder, ...prev]); // plus récente en premier
+    return newOrder;
+  };
+
+  const clearOrders = () => setOrders([]);
+
+
+  // -----------------------------
   // PROVIDER
   // -----------------------------
   return (
     <CartContext.Provider
       value={{
+        // Cart
         cart,
         cartCount,
         cartTotal,
-        favorites,
         addToCart,
         removeFromCart,
         clearCart,
+        // Favorites
+        favorites,
         addToFavorites,
         removeFromFavorites,
         isFavorite,
+        // ✅ Orders
+        orders,
+        addOrder,
+        clearOrders,
       }}
     >
       {children}
