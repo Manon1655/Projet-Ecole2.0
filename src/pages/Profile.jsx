@@ -1,17 +1,21 @@
 import { useEffect, useState, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import { useSubscription } from "../context/SubscriptionContext";
 import "../styles/profile.css";
+
+const PLAN_ICONS  = { decouverte: "🌱", premium: "⭐", illimite: "♾️" };
+const PLAN_COLORS = { decouverte: "#6b8f6b", premium: "#c4882a", illimite: "#3d5c3d" };
 
 const API = "http://localhost:8080";
 
 export default function Profile() {
   const { user } = useAuth();
   const location = useLocation();
-
-  // ✅ Favoris ET commandes depuis le CartContext (localStorage)
+  const navigate = useNavigate();
   const { favorites, removeFromFavorites, orders } = useCart();
+  const { subscription, unsubscribe } = useSubscription();
 
   const [profile, setProfile]     = useState(null);
   const [bio, setBio]             = useState("");
@@ -110,9 +114,10 @@ export default function Profile() {
   );
 
   const tabs = [
-    { id: "overview",  icon: "⌂",  label: "Vue générale" },
-    { id: "favorites", icon: "♥",  label: "Favoris",   count: favorites.length },
-    { id: "orders",    icon: "📦", label: "Commandes", count: orders.length    },
+    { id: "overview",      icon: "⌂",  label: "Vue générale" },
+    { id: "favorites",     icon: "♥",  label: "Favoris",      count: favorites.length },
+    { id: "orders",        icon: "📦", label: "Commandes",    count: orders.length    },
+    { id: "subscription",  icon: "⭐", label: "Abonnement"                            },
   ];
 
   return (
@@ -427,6 +432,91 @@ export default function Profile() {
                           </div>
                         );
                       })}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── ABONNEMENT ── */}
+          {activeTab === "subscription" && (
+            <div className="tab-panel" key="subscription">
+              <div className="profile-card">
+                <div className="card-header">
+                  <h2>Mon abonnement</h2>
+                </div>
+                <div className="card-body">
+                  {!subscription ? (
+                    <div className="empty-state">
+                      <div className="empty-icon">⭐</div>
+                      <p>Vous n'avez pas d'abonnement actif.</p>
+                      <p className="empty-sub">Choisissez un plan pour accéder à toute notre bibliothèque.</p>
+                      <button
+                        className="profile-sub-cta"
+                        onClick={() => navigate("/subscription")}
+                      >
+                        Voir les abonnements →
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="profile-sub-panel">
+                      {/* Badge plan */}
+                      <div className="profile-sub-card" style={{"--plan-color": PLAN_COLORS[subscription.id] || "#3d5c3d"}}>
+                        <div className="profile-sub-card__left">
+                          <span className="profile-sub-card__icon">
+                            {PLAN_ICONS[subscription.id] || "📖"}
+                          </span>
+                          <div>
+                            <p className="profile-sub-card__label">Plan actuel</p>
+                            <h3 className="profile-sub-card__name">{subscription.name}</h3>
+                            <p className="profile-sub-card__date">
+                              Abonné depuis le {new Date(subscription.subscribedAt).toLocaleDateString("fr-FR", {
+                                day: "numeric", month: "long", year: "numeric"
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="profile-sub-card__right">
+                          <span className="profile-sub-card__price">
+                            {subscription.price?.toFixed(2)}€
+                          </span>
+                          <span className="profile-sub-card__per">{subscription.duration}</span>
+                        </div>
+                      </div>
+
+                      {/* Fonctionnalités */}
+                      {subscription.features?.length > 0 && (
+                        <div className="profile-sub-features">
+                          <h4>Inclus dans votre plan</h4>
+                          <ul>
+                            {subscription.features.map((f, i) => (
+                              <li key={i}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                                  <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div className="profile-sub-actions">
+                        <button
+                          className="profile-sub-upgrade"
+                          onClick={() => navigate("/subscription")}
+                        >
+                          Changer de plan
+                        </button>
+                        <button
+                          className="profile-sub-cancel"
+                          onClick={unsubscribe}
+                        >
+                          Résilier l'abonnement
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
