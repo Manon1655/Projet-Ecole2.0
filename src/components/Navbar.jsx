@@ -684,16 +684,6 @@ export default function Navbar() {
 
       <nav className={`p-nav${scrolled ? " p-nav--scrolled" : ""}`} ref={navRef}>
 
-        {/* ── BANDE ANNONCE ── */}
-        <div className="p-band">
-          <span className="p-band__orn">✦</span>
-          <span>1 mois offert sur le plan Premium avec le code</span>
-          <span className="p-band__code">LUNE</span>
-          <span className="p-band__sep">—</span>
-          <span className="p-band__cta" onClick={() => navigate("/subscription")}>En profiter →</span>
-          <span className="p-band__orn">✦</span>
-        </div>
-
         {/* ── BARRE TITRE ── */}
         <div className="p-head">
           <div className="p-prog" style={{ width: `${scrollPct}%` }} />
@@ -978,10 +968,6 @@ export default function Navbar() {
             {!subscription && <span className="p-nl__dot"/>}
             <span className="p-nl__chev"><Ic.Chev /></span>
           </button>
-
-          <Link to="/nouveautes" className={`p-nl${isActive("/nouveautes") ? " p-nl--on" : ""}`}>Nouveautés</Link>
-          <Link to="/selections"  className={`p-nl${isActive("/selections")  ? " p-nl--on" : ""}`}>Sélections</Link>
-          <Link to="/auteurs"     className={`p-nl${isActive("/auteurs")     ? " p-nl--on" : ""}`}>Auteurs</Link>
         </div>
 
         {/* ── MEGA MENUS ── */}
