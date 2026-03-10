@@ -1,30 +1,46 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ImageCaptcha from "./ImageCaptcha";
 import "../styles/auth.css";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPwd, setShowPwd]   = useState(false);
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [username,      setUsername]      = useState("");
+  const [password,      setPassword]      = useState("");
+  const [showPwd,       setShowPwd]       = useState(false);
+  const [error,         setError]         = useState("");
+  const [loading,       setLoading]       = useState(false);
+  const [captchaOk,     setCaptchaOk]     = useState(false);
+  const [showCaptcha,   setShowCaptcha]   = useState(false);
 
   const { login } = useAuth();
   const navigate  = useNavigate();
 
-  const handleSubmit = async (e) => {
+  /* Clic sur "Se connecter" → ouvre le CAPTCHA si pas encore validé */
+  const handleConnectClick = (e) => {
     e.preventDefault();
     setError("");
     if (!username || !password) { setError("Tous les champs sont requis"); return; }
+    if (!captchaOk) { setShowCaptcha(true); return; }
+    submitLogin();
+  };
+
+  /* Appelé après validation du CAPTCHA */
+  const handleCaptchaVerified = () => {
+    setCaptchaOk(true);
+    setShowCaptcha(false);
+    submitLogin();
+  };
+
+  const submitLogin = async () => {
     setLoading(true);
     try {
       const result = await login({ username, password });
-      if (!result)        { setError("Erreur serveur"); return; }
-      if (result.error)   { setError(result.error); return; }
-      if (result.token)   { navigate("/home"); }
-      else                { setError("Email ou mot de passe incorrect"); }
-    } catch (err) {
+      if (!result)      { setError("Erreur serveur"); return; }
+      if (result.error) { setError(result.error); return; }
+      if (result.token) { navigate("/home"); }
+      else              { setError("Email ou mot de passe incorrect"); }
+    } catch {
       setError("Impossible de se connecter au serveur");
     } finally {
       setLoading(false);
@@ -34,18 +50,22 @@ export default function Login() {
   return (
     <div className="auth-shell">
 
-      {/* ── Left panel — branding ── */}
+      {/* ── Modale CAPTCHA ── */}
+      <ImageCaptcha
+        open={showCaptcha}
+        onVerified={handleCaptchaVerified}
+        onClose={() => setShowCaptcha(false)}
+      />
+
+      {/* ── Panneau gauche — branding ── */}
       <div className="auth-brand">
         <div className="auth-brand__inner">
-          <div className="auth-brand__logo">
-            <span>O</span>
-          </div>
+          <div className="auth-brand__logo"><span>O</span></div>
           <h2 className="auth-brand__name">Ombrelune</h2>
           <p className="auth-brand__tagline">
             Une bibliothèque vivante,<br/>
             <em>nichée entre nature et poésie.</em>
           </p>
-
           <div className="auth-brand__quotes">
             {[
               { text: "Un livre est un rêve que vous tenez dans vos mains.", author: "Neil Gaiman" },
@@ -61,7 +81,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* ── Right panel — form ── */}
+      {/* ── Panneau droit — formulaire ── */}
       <div className="auth-panel">
         <div className="auth-form">
 
@@ -80,8 +100,9 @@ export default function Login() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="auth-form__fields">
+          <form className="auth-form__fields">
 
+            {/* Email */}
             <div className="auth-field">
               <label htmlFor="username">Adresse email</label>
               <div className="auth-input-wrap">
@@ -99,6 +120,7 @@ export default function Login() {
               </div>
             </div>
 
+            {/* Mot de passe */}
             <div className="auth-field">
               <div className="auth-field__labelrow">
                 <label htmlFor="password">Mot de passe</label>
@@ -133,7 +155,23 @@ export default function Login() {
               </div>
             </div>
 
-            <button type="submit" className="auth-submit" disabled={loading}>
+            {/* Indicateur captcha validé */}
+            {captchaOk && (
+              <div className="auth-captcha-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Vérification humaine réussie
+              </div>
+            )}
+
+            {/* Bouton principal */}
+            <button
+              type="button"
+              className="auth-submit"
+              disabled={loading}
+              onClick={handleConnectClick}
+            >
               {loading ? (
                 <><span className="auth-spinner"/> Connexion…</>
               ) : (
@@ -154,7 +192,6 @@ export default function Login() {
 
         </div>
       </div>
-
     </div>
   );
 }
