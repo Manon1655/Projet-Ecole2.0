@@ -4,11 +4,10 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useSubscription } from "../context/SubscriptionContext";
 
-/* ─── DATA ────────────────────────────────────────────── */
 const PLAN_BADGE = {
-  decouverte: { label: "Découverte", color: "#5c8c50" },
-  premium:    { label: "Premium",    color: "#b8962e" },
-  illimite:   { label: "Illimité",   color: "#9070c8" },
+  decouverte: { label: "Découverte", color: "#5a8f52", bg: "rgba(90,143,82,.12)" },
+  premium:    { label: "Premium",    color: "#9a7a32", bg: "rgba(154,122,50,.12)" },
+  illimite:   { label: "Illimité",   color: "#7c5cbf", bg: "rgba(124,92,191,.12)" },
 };
 
 const MEGA = {
@@ -31,7 +30,13 @@ const MEGA = {
         { label: "Prix littéraires", path: "/library?filter=awards", hint: "Goncourt, Renaudot…"  },
       ]},
     ],
-    featured: { title: "Sélection de mars", sub: "10 romans curatés par nos éditeurs", path: "/selections/mars" },
+    card: {
+      title: "Sélection de mars",
+      sub: "10 romans incontournables sélectionnés par nos éditeurs",
+      path: "/selections/mars",
+      bg: "linear-gradient(145deg,#1e3a1e 0%,#2d5c2a 60%,#3d7535 100%)",
+      label: "Découvrir",
+    },
   },
   "Abonnements": {
     cols: [
@@ -40,34 +45,36 @@ const MEGA = {
         { label: "Premium — 9,99 €/mois",   path: "/subscription#premium",    hint: "30 livres / mois" },
         { label: "Illimité — 14,99 €/mois", path: "/subscription#illimite",   hint: "Accès total"      },
       ]},
-      { head: "Inclus dans chaque formule", items: [
+      { head: "Avantages", items: [
         { label: "Lecture hors-ligne",  path: "/subscription", hint: "Partout, tout le temps" },
         { label: "Recommandations IA",  path: "/subscription", hint: "Sur-mesure pour vous"   },
         { label: "Accès anticipé",      path: "/subscription", hint: "Avant tout le monde"    },
         { label: "Sans publicité",      path: "/subscription", hint: "100% immersif"           },
-        { label: "Ebook + Audio",       path: "/subscription", hint: "2 formats"               },
+        { label: "Ebook + Audio",       path: "/subscription", hint: "2 formats au choix"      },
       ]},
     ],
-    featured: { title: "1 mois offert", sub: "Code LUNE — offre limitée", path: "/subscription" },
+    card: {
+      title: "1 mois offert",
+      sub: "Sur le plan Premium avec le code LUNE — offre limitée",
+      path: "/subscription",
+      bg: "linear-gradient(145deg,#2a1a08 0%,#5c3810 60%,#8a5028 100%)",
+      label: "En profiter",
+    },
   },
 };
 
 const GENRES = ["Roman", "Fantasy", "Policier", "SF", "Biographie", "Jeunesse", "Manga", "Poésie"];
 
-/* ─── ICÔNES SVG ──────────────────────────────────────── */
-const Ic = {
-  Search:  () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>,
-  Bell:    () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>,
-  Heart:   ({ on }) => <svg width="17" height="17" viewBox="0 0 24 24" fill={on?"currentColor":"none"} stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-  Bag:     () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>,
-  User:    () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-  Chev:    () => <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="m6 9 6 6 6-6"/></svg>,
-  Arrow:   () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m5 12h14M12 5l7 7-7 7"/></svg>,
-  Logout:  () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
-  Login:   () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>,
-  Clock:   () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>,
-  X:       () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>,
-};
+/* ── SVG icons ── */
+const IcSearch  = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>;
+const IcBell    = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>;
+const IcHeart   = ({ filled }) => <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>;
+const IcCart    = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
+const IcChev    = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="m6 9 6 6 6-6"/></svg>;
+const IcLogout  = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>;
+const IcLogin   = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>;
+const IcArrow   = () => <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>;
+const IcClock   = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>;
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -80,20 +87,22 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [notifOpen,  setNotifOpen]  = useState(false);
-  const [bagOpen,    setBagOpen]    = useState(false);
+  const [cartOpen,   setCartOpen]   = useState(false);
   const [userOpen,   setUserOpen]   = useState(false);
   const [scrolled,   setScrolled]   = useState(false);
   const [scrollPct,  setScrollPct]  = useState(0);
   const [recent,     setRecent]     = useState(["Amélie Nothomb", "Dune", "Molière"]);
 
   const navRef    = useRef(null);
+  const searchRef = useRef(null);
   const megaTimer = useRef(null);
-  const isActive  = p => location.pathname === p;
-  const plan      = subscription ? PLAN_BADGE[subscription.id] : null;
+
+  const isActive = p => location.pathname === p;
+  const plan = subscription ? PLAN_BADGE[subscription.id] : null;
 
   useEffect(() => {
     const fn = () => {
-      setScrolled(window.scrollY > 8);
+      setScrolled(window.scrollY > 20);
       const el = document.documentElement;
       setScrollPct((window.scrollY / (el.scrollHeight - el.clientHeight)) * 100 || 0);
     };
@@ -104,7 +113,7 @@ export default function Navbar() {
   useEffect(() => {
     const fn = e => {
       if (navRef.current && !navRef.current.contains(e.target)) {
-        setMega(null); setSearchOpen(false); setNotifOpen(false); setBagOpen(false); setUserOpen(false);
+        setMega(null); setSearchOpen(false); setNotifOpen(false); setCartOpen(false); setUserOpen(false);
       }
     };
     document.addEventListener("mousedown", fn);
@@ -114,15 +123,14 @@ export default function Navbar() {
   useEffect(() => {
     const fn = e => {
       if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); setSearchOpen(true); }
-      if (e.key === "Escape") { setMega(null); setSearchOpen(false); setNotifOpen(false); setBagOpen(false); setUserOpen(false); }
+      if (e.key === "Escape") { setSearchOpen(false); setMega(null); setNotifOpen(false); setCartOpen(false); setUserOpen(false); }
     };
     document.addEventListener("keydown", fn);
     return () => document.removeEventListener("keydown", fn);
   }, []);
 
   const openMega  = k => { clearTimeout(megaTimer.current); if (MEGA[k]) setMega(k); };
-  const closeMega = ()  => { megaTimer.current = setTimeout(() => setMega(null), 150); };
-  const closeAll  = ()  => { setNotifOpen(false); setBagOpen(false); setUserOpen(false); setSearchOpen(false); };
+  const closeMega = ()  => { megaTimer.current = setTimeout(() => setMega(null), 140); };
 
   const handleSearch = useCallback(e => {
     e.preventDefault();
@@ -137,614 +145,652 @@ export default function Navbar() {
     .toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 
   const notifs = [
-    { id:1, icon:"🌕", text:"Sélection de mars disponible",  sub:"10 nouvelles pépites",             time:"1h",  u:true,  link:"/selections"   },
-    { id:2, icon:"💎", text:"Offre spéciale abonné",          sub:"-20% ce weekend uniquement",       time:"3h",  u:true,  link:"/subscription" },
-    { id:3, icon:"📖", text:"Reprenez votre lecture",         sub:"Dune — Chapitre 12",               time:"2j",  u:false, link:"/library"      },
-    { id:4, icon:"⭐", text:"Nouveau titre ajouté",           sub:"Les Âmes Errantes est disponible", time:"3j",  u:false, link:"/library"      },
+    { id:1, icon:"🌕", text:"Sélection de mars disponible",  sub:"10 nouvelles pépites vous attendent", time:"1h",  unread:true,  link:"/selections" },
+    { id:2, icon:"💎", text:"Offre spéciale abonné",          sub:"-20% ce weekend uniquement",          time:"3h",  unread:true,  link:"/subscription" },
+    { id:3, icon:"📖", text:"Reprenez votre lecture",         sub:"Dune — Chapitre 12",                  time:"2j",  unread:false, link:"/library" },
+    { id:4, icon:"⭐", text:"Nouveau titre ajouté",           sub:"Les Âmes Errantes est disponible",    time:"3j",  unread:false, link:"/library" },
   ];
-  const unread = notifs.filter(n => n.u).length;
-
-  // Hauteur totale : bande annonce 30px + barre titre 64px + barre nav 44px = 138px
-  // scrolled : bande disparaît, barre titre réduite 52px + barre nav 40px = 92px
-  const megaTop = scrolled ? "92px" : "138px";
+  const unread = notifs.filter(n => n.unread).length;
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Libre+Franklin:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap');
 
-        /* ══ TOKENS ══════════════════════════════════════ */
         :root {
-          --p-ivory:   #f7f3ea;
-          --p-ivory2:  #efe9da;
-          --p-ivory3:  #e6dece;
-          --p-white:   #fdfbf7;
-          --p-ink:     #1c1a14;
-          --p-ink2:    #3e3a2e;
-          --p-ink3:    #7a7462;
-          --p-ink4:    #b0aa98;
-          --p-forest:  #2e5c30;
-          --p-forest2: #4a8050;
-          --p-forest3: #6aa870;
-          --p-gold:    #9a7e2c;
-          --p-gold2:   #c8a848;
-          --p-rose:    #b84848;
-          --p-bdr:     rgba(60,56,40,.12);
-          --p-bdr2:    rgba(60,56,40,.22);
-          --p-bdr3:    rgba(60,56,40,.08);
-          --ease:      cubic-bezier(.4,0,.2,1);
-          --spring:    cubic-bezier(.34,1.56,.64,1);
+          --nv-bg:      #f5f1e8;
+          --nv-white:   #ffffff;
+          --nv-soft:    #f9f7f2;
+          --nv-beige:   #ede8dc;
+          --nv-beige2:  #e2dcd0;
+          --nv-ink:     #1a2218;
+          --nv-ink2:    #3a4a36;
+          --nv-ink3:    #7a8a76;
+          --nv-ink4:    #a8b8a4;
+          --nv-green:   #2d5a28;
+          --nv-green2:  #4a7a44;
+          --nv-green3:  #6a9e64;
+          --nv-green-a: rgba(45,90,40,.09);
+          --nv-green-b: rgba(45,90,40,.2);
+          --nv-gold:    #9a7a32;
+          --nv-gold-l:  #c9a84c;
+          --nv-rose:    #b05050;
+          --nv-bdr:     rgba(45,90,40,.13);
+          --nv-bdr2:    rgba(45,90,40,.24);
+          --nv-sh0:     0 1px 6px rgba(26,34,24,.06);
+          --nv-sh1:     0 4px 20px rgba(26,34,24,.10);
+          --nv-sh2:     0 12px 48px rgba(26,34,24,.14);
+          --nv-sh3:     0 24px 80px rgba(26,34,24,.18);
+          --ease:       cubic-bezier(.4,0,.2,1);
+          --spring:     cubic-bezier(.34,1.56,.64,1);
+          --r:          12px;
+          --r-sm:       8px;
         }
 
-        /* ══ WRAPPER ════════════════════════════════════ */
-        .p-nav {
-          position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-          font-family: 'Libre Franklin', sans-serif;
-        }
+        /* ── WRAPPER ── */
+        .nv { position:fixed; top:0; left:0; right:0; z-index:1000; font-family:'Jost',sans-serif; }
 
-        /* ══ BANDE ANNONCE ══════════════════════════════ */
-        .p-band {
-          height: 30px; overflow: hidden;
-          background: var(--p-forest);
-          display: flex; align-items: center; justify-content: center; gap: 16px;
-          font-size: 11px; font-weight: 400; letter-spacing: .08em;
-          color: rgba(255,255,255,.85);
-          transition: height .38s var(--ease), opacity .38s var(--ease);
-        }
-        .p-nav--scrolled .p-band { height: 0; opacity: 0; pointer-events: none; }
-        .p-band__orn  { color: var(--p-gold2); font-size: 10px; opacity: .7; }
-        .p-band__code { color: #fff; font-weight: 600; letter-spacing: .12em; }
-        .p-band__sep  { color: rgba(255,255,255,.3); }
-        .p-band__cta  { color: rgba(255,255,255,.9); cursor: pointer; letter-spacing: .06em; border-bottom: 1px solid rgba(255,255,255,.35); transition: border-color .2s; }
-        .p-band__cta:hover { border-color: rgba(255,255,255,.8); }
-
-        /* ══ BARRE TITRE ════════════════════════════════ */
-        .p-head {
-          height: 64px; overflow: hidden;
-          background: var(--p-white);
-          border-bottom: 1px solid var(--p-bdr2);
-          display: grid; grid-template-columns: 1fr auto 1fr;
-          align-items: center; padding: 0 36px;
-          transition: height .35s var(--ease);
-          position: relative;
-        }
-        .p-nav--scrolled .p-head { height: 52px; }
-
-        /* Barre de progression dans p-head */
-        .p-prog {
-          position: absolute; bottom: 0; left: 0;
-          height: 1.5px;
-          background: linear-gradient(90deg, var(--p-forest), var(--p-forest3), var(--p-gold2));
-          pointer-events: none; transition: width .1s linear;
-        }
-
-        /* Logo central */
-        .p-logo {
-          grid-column: 2; text-decoration: none;
-          display: flex; flex-direction: column; align-items: center; gap: 0;
-          transition: opacity .2s;
-        }
-        .p-logo:hover { opacity: .75; }
-        .p-logo__name {
-          font-family: 'Playfair Display', serif;
-          font-size: 28px; font-weight: 400; font-style: italic;
-          color: var(--p-ink); letter-spacing: .01em; line-height: 1;
-          transition: font-size .35s var(--ease);
-        }
-        .p-nav--scrolled .p-logo__name { font-size: 23px; }
-        .p-logo__rule {
-          width: 40px; height: 1px;
-          background: linear-gradient(90deg, transparent, var(--p-forest), transparent);
-          margin: 3px 0 2px;
-          transition: width .3s var(--ease);
-        }
-        .p-logo:hover .p-logo__rule { width: 60px; }
-        .p-logo__tag {
-          font-size: 8px; font-weight: 500;
-          color: var(--p-forest); letter-spacing: .32em;
-          text-transform: uppercase;
-        }
-
-        /* Zone gauche : date/édition */
-        .p-head-left {
-          grid-column: 1; display: flex; align-items: center; gap: 0;
-        }
-        .p-edition {
-          font-size: 10px; font-weight: 400; color: var(--p-ink3);
-          letter-spacing: .06em; line-height: 1.5;
-        }
-        .p-edition strong { color: var(--p-ink2); font-weight: 600; }
-
-        /* Zone droite : actions */
-        .p-head-right {
-          grid-column: 3; display: flex; align-items: center; justify-content: flex-end; gap: 4px;
-        }
-
-        /* ── Bouton icône minimaliste ── */
-        .p-ico-btn {
-          position: relative;
-          width: 36px; height: 36px;
-          display: flex; align-items: center; justify-content: center;
-          border: none; background: none; cursor: pointer;
-          color: var(--p-ink3); border-radius: 8px;
-          transition: all .18s var(--ease);
-        }
-        .p-ico-btn:hover { color: var(--p-ink); background: var(--p-ivory2); }
-        .p-ico-btn--on   { color: var(--p-forest); background: rgba(46,92,48,.08); }
-
-        /* Badge */
-        .p-bdg {
-          position: absolute; top: 3px; right: 3px;
-          min-width: 15px; height: 15px; padding: 0 3px;
-          border-radius: 20px; font-size: 8.5px; font-weight: 700;
-          display: flex; align-items: center; justify-content: center;
-          color: #fff; line-height: 1;
-          font-family: 'Libre Franklin', sans-serif;
-        }
-        .p-bdg--g { background: var(--p-forest2); }
-        .p-bdg--r { background: var(--p-rose); }
-        .p-bdg--o { background: var(--p-gold); }
-
-        /* ── Séparateur vertical ── */
-        .p-vbar { width: 1px; height: 20px; background: var(--p-bdr2); margin: 0 6px; }
-
-        /* ── Bouton Panier ── */
-        .p-bag-btn {
-          display: flex; align-items: center; gap: 7px;
-          padding: 7px 13px; border-radius: 8px;
-          border: 1px solid var(--p-bdr2);
-          background: var(--p-ivory2); cursor: pointer;
-          font-family: 'Libre Franklin', sans-serif;
-          color: var(--p-ink2); transition: all .18s var(--ease);
-          position: relative;
-        }
-        .p-bag-btn:hover { background: var(--p-ivory3); border-color: var(--p-bdr); color: var(--p-ink); }
-        .p-bag-num   { font-size: 11.5px; font-weight: 600; color: var(--p-forest); }
-        .p-bag-total { font-size: 12px; font-weight: 500; color: var(--p-ink2); }
-        .p-bag-empty { font-size: 11px; color: var(--p-ink4); }
-
-        /* ── Bouton login ── */
-        .p-login-btn {
-          display: flex; align-items: center; gap: 7px;
-          padding: 8px 16px; border-radius: 8px;
-          border: 1.5px solid var(--p-forest);
-          background: transparent; color: var(--p-forest);
-          font-family: 'Libre Franklin', sans-serif;
-          font-size: 12px; font-weight: 600; letter-spacing: .04em;
-          cursor: pointer; text-decoration: none;
-          transition: all .2s var(--ease);
-        }
-        .p-login-btn:hover { background: var(--p-forest); color: #fff; }
-
-        /* ── Avatar ── */
-        .p-ava-wrap { position: relative; }
-        .p-ava {
-          width: 34px; height: 34px; border-radius: 50%;
-          background: var(--p-forest);
-          border: 2px solid var(--p-forest2);
-          display: flex; align-items: center; justify-content: center;
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: 16px; color: #fff; cursor: pointer;
-          transition: all .2s var(--spring);
-        }
-        .p-ava:hover, .p-ava--on {
-          box-shadow: 0 0 0 3px rgba(46,92,48,.18);
-          transform: scale(1.05);
-        }
-
-        /* ══ BARRE NAV ══════════════════════════════════ */
-        .p-nav-bar {
-          height: 44px; overflow: visible;
-          background: var(--p-ivory);
-          border-bottom: 1px solid var(--p-bdr2);
-          display: flex; align-items: center; justify-content: center;
-          gap: 0; position: relative;
-          transition: height .35s var(--ease);
-        }
-        .p-nav--scrolled .p-nav-bar { height: 40px; }
-
-        /* Filet décoratif tout en bas */
-        .p-nav-bar::after {
-          content: '';
-          position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-          width: 80px; height: 2px;
-          background: var(--p-forest2);
-          border-radius: 2px 2px 0 0;
-          opacity: 0; transition: opacity .3s;
-          pointer-events: none;
-        }
-
-        .p-nl {
-          display: inline-flex; align-items: center; gap: 4px;
-          padding: 0 18px; height: 100%;
+        /* ── ANNOUNCE BAND ── */
+        .nv-band {
+          height: 36px;
+          background: var(--nv-green);
+          color: rgba(255,255,255,.92);
+          display: flex; align-items: center; justify-content: center; gap: 10px;
           font-size: 12.5px; font-weight: 400; letter-spacing: .04em;
-          color: var(--p-ink2); white-space: nowrap;
-          text-decoration: none; background: none; border: none; cursor: pointer;
-          font-family: 'Libre Franklin', sans-serif;
-          position: relative; transition: color .18s;
+          overflow: hidden;
+          transition: height .4s var(--ease), opacity .4s var(--ease);
         }
-        /* Séparateur entre liens façon presse */
-        .p-nl + .p-nl::before {
-          content: '·';
-          position: absolute; left: 0;
-          color: var(--p-ink4); font-size: 14px;
+        .nv--scrolled .nv-band { height: 0; opacity: 0; pointer-events: none; }
+        .nv-band__spark { font-size: 14px; animation: spark 3s ease-in-out infinite; }
+        @keyframes spark { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.3) rotate(15deg)} }
+        .nv-band__code {
+          font-weight: 800; letter-spacing: .14em; color: #fff;
+          background: rgba(255,255,255,.16); padding: 2px 10px; border-radius: 6px;
+        }
+        .nv-band__cta {
+          color: #fff; font-weight: 700; text-decoration: none; cursor: pointer;
+          border-bottom: 1.5px solid rgba(255,255,255,.5);
+          transition: border-color .2s;
+        }
+        .nv-band__cta:hover { border-color: #fff; }
+
+        /* ── MAIN BAR ── */
+        .nv-bar {
+          height: 70px;
+          background: var(--nv-bg);
+          border-bottom: 1.5px solid var(--nv-bdr);
+          display: flex; align-items: center;
+          padding: 0 32px; gap: 0;
+          position: relative;
+          transition: height .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease);
+        }
+        .nv--scrolled .nv-bar {
+          height: 62px;
+          background: rgba(245,241,232,.96);
+          backdrop-filter: blur(20px) saturate(1.6);
+          box-shadow: var(--nv-sh2);
+          border-bottom-color: var(--nv-bdr2);
+        }
+
+        /* Progress bar */
+        .nv-prog {
+          position: absolute; bottom: 0; left: 0;
+          height: 2px; border-radius: 0 2px 2px 0;
+          background: linear-gradient(90deg, var(--nv-green), var(--nv-green3), var(--nv-gold-l));
+          transition: width .1s linear;
           pointer-events: none;
         }
-        .p-nl:hover { color: var(--p-forest); }
-        /* Soulignement actif */
-        .p-nl::after {
-          content: '';
-          position: absolute; bottom: 0; left: 14px; right: 14px;
-          height: 2px; background: var(--p-forest);
-          transform: scaleX(0); transform-origin: center;
-          transition: transform .24s var(--ease);
-          border-radius: 2px 2px 0 0;
-        }
-        .p-nl:hover::after, .p-nl--on::after { transform: scaleX(1); }
-        .p-nl--on { color: var(--p-forest); font-weight: 500; }
 
-        /* Dot "nouveauté" */
-        .p-nl__dot {
-          width: 4px; height: 4px; border-radius: 50%;
-          background: var(--p-gold2); box-shadow: 0 0 4px var(--p-gold2);
-          animation: pdot 2.5s ease-in-out infinite;
-          flex-shrink: 0;
-        }
-        @keyframes pdot { 0%,100%{opacity:1} 50%{opacity:.2} }
-        .p-nl__chev {
-          opacity: .4; transition: transform .2s var(--ease), opacity .2s; color: currentColor;
-        }
-        .p-nl--open .p-nl__chev, .p-nl:hover .p-nl__chev { transform: rotate(180deg); opacity: .9; }
-
-        /* ══ PANELS DROP ════════════════════════════════ */
-        .p-panel {
-          position: absolute; top: calc(100% + 10px); right: 0;
-          background: var(--p-white);
-          border: 1px solid var(--p-bdr2);
-          border-radius: 12px;
-          box-shadow: 0 2px 4px rgba(28,26,20,.04), 0 16px 56px rgba(28,26,20,.14);
-          overflow: hidden;
-          animation: pdrop .18s var(--ease) both;
-          z-index: 999;
-        }
-        @keyframes pdrop {
-          from { opacity:0; transform: translateY(-6px) scale(.98); }
-          to   { opacity:1; transform: none; }
-        }
-
-        .p-phead {
-          padding: 13px 18px;
-          background: var(--p-ivory);
-          border-bottom: 1px solid var(--p-bdr2);
-          display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
-        }
-        .p-phead__title {
-          font-family: 'Playfair Display', serif;
-          font-size: 15px; font-weight: 400; font-style: italic; color: var(--p-ink);
-        }
-        .p-phead__chip {
-          font-size: 10px; font-weight: 600; color: var(--p-forest);
-          background: rgba(46,92,48,.08);
-          padding: 2px 9px; border-radius: 20px;
-          letter-spacing: .04em;
-        }
-        .p-pfooter {
-          padding: 10px 18px; text-align: center;
-          background: var(--p-ivory); border-top: 1px solid var(--p-bdr);
-        }
-        .p-pfooter-btn {
-          font-size: 11.5px; color: var(--p-forest); background: none; border: none; cursor: pointer;
-          font-family: 'Libre Franklin', sans-serif; font-weight: 500;
-          letter-spacing: .04em; transition: color .15s;
-        }
-        .p-pfooter-btn:hover { color: var(--p-ink); }
-
-        /* ── Search ── */
-        .p-search-panel { width: 420px; }
-        .p-search-row {
-          display: flex; align-items: center; gap: 10px;
-          padding: 13px 16px; border-bottom: 1px solid var(--p-bdr2);
-          background: var(--p-ivory);
-        }
-        .p-search-row svg { color: var(--p-ink3); flex-shrink: 0; }
-        .p-search-inp {
-          flex: 1; border: none; background: transparent;
-          font-family: 'Libre Franklin', sans-serif; font-size: 14px; color: var(--p-ink);
-          outline: none;
-        }
-        .p-search-inp::placeholder { color: var(--p-ink4); }
-        .p-search-kbd { font-size: 9.5px; color: var(--p-ink4); border: 1px solid var(--p-bdr2); border-radius: 4px; padding: 2px 6px; }
-        .p-search-go {
-          background: var(--p-forest); color: #fff; border: none; cursor: pointer;
-          border-radius: 7px; padding: 7px 14px;
-          font-family: 'Libre Franklin', sans-serif; font-size: 12px; font-weight: 600;
-          transition: background .2s;
-        }
-        .p-search-go:hover { background: var(--p-forest2); }
-        .p-search-sec { padding: 12px 16px; }
-        .p-search-sec + .p-search-sec { border-top: 1px solid var(--p-bdr); }
-        .p-search-lbl {
-          font-size: 9px; font-weight: 600; color: var(--p-forest);
-          letter-spacing: .24em; text-transform: uppercase; margin-bottom: 8px;
-        }
-        .p-search-item {
-          display: flex; align-items: center; gap: 9px;
-          padding: 7px 8px; border-radius: 7px;
-          background: none; border: none; cursor: pointer; width: 100%; text-align: left;
-          font-family: 'Libre Franklin', sans-serif; font-size: 13px; color: var(--p-ink2);
-          transition: all .14s;
-        }
-        .p-search-item svg { color: var(--p-ink4); flex-shrink: 0; }
-        .p-search-item:hover { background: var(--p-ivory2); color: var(--p-forest); }
-        .p-genres { display: flex; flex-wrap: wrap; gap: 5px; }
-        .p-genre {
-          padding: 4px 12px; border-radius: 20px;
-          background: var(--p-ivory2); border: 1px solid var(--p-bdr2);
-          font-size: 11.5px; color: var(--p-ink2); cursor: pointer;
-          font-family: 'Libre Franklin', sans-serif; transition: all .15s;
-        }
-        .p-genre:hover { border-color: var(--p-forest); color: var(--p-forest); background: rgba(46,92,48,.06); }
-
-        /* ── Notifs ── */
-        .p-notif-panel { width: 340px; }
-        .p-nitem {
-          display: flex; align-items: flex-start; gap: 12px;
-          padding: 12px 18px; border: none; border-bottom: 1px solid var(--p-bdr);
-          width: 100%; cursor: pointer; text-align: left;
-          font-family: 'Libre Franklin', sans-serif; background: none; transition: background .14s;
-        }
-        .p-nitem:hover { background: var(--p-ivory); }
-        .p-nitem--u    { background: rgba(46,92,48,.03); }
-        .p-nitem__ico  {
-          width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-          background: var(--p-ivory2); border: 1px solid var(--p-bdr);
-          display: flex; align-items: center; justify-content: center;
-          font-size: 16px; line-height: 1;
-        }
-        .p-nitem__t    { font-size: 12.5px; font-weight: 600; color: var(--p-ink); margin: 0 0 2px; }
-        .p-nitem__s    { font-size: 11px; color: var(--p-ink3); }
-        .p-nitem__time { font-size: 10px; color: var(--p-ink4); margin-left: auto; flex-shrink: 0; padding-top: 1px; }
-        .p-nitem__dot  { width: 6px; height: 6px; border-radius: 50%; background: var(--p-forest2); margin-top: 9px; flex-shrink: 0; }
-
-        /* ── Panier panel ── */
-        .p-bag-panel { width: 360px; }
-        .p-bitem {
+        /* ── LOGO ── */
+        .nv-logo {
           display: flex; align-items: center; gap: 12px;
-          padding: 12px 18px; border-bottom: 1px solid var(--p-bdr);
+          text-decoration: none; flex-shrink: 0; margin-right: 36px;
         }
-        .p-bcover {
-          width: 38px; height: 52px; border-radius: 3px 8px 8px 3px; flex-shrink: 0;
-          background: linear-gradient(160deg, var(--p-forest), #1a3c1c);
-          display: flex; align-items: center; justify-content: center; font-size: 18px;
-          box-shadow: 2px 3px 10px rgba(0,0,0,.18);
-        }
-        .p-bt  { font-size: 12.5px; font-weight: 600; color: var(--p-ink); }
-        .p-ba  { font-size: 11px; color: var(--p-ink3); margin-top: 1px; }
-        .p-bp  { font-size: 13px; font-weight: 700; color: var(--p-forest); margin-top: 3px; }
-        .p-bempty { padding: 30px 18px; text-align: center; color: var(--p-ink3); font-size: 12.5px; }
-        .p-bfoot   { padding: 14px 18px; background: var(--p-ivory); border-top: 1px solid var(--p-bdr2); }
-        .p-brow    { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-        .p-brow span { font-size: 11.5px; color: var(--p-ink3); }
-        .p-brow strong { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 400; color: var(--p-ink); }
-        .p-bcta {
-          width: 100%; padding: 11px; border-radius: 8px;
-          background: var(--p-forest); color: #fff; border: none;
-          font-family: 'Libre Franklin', sans-serif; font-size: 13px; font-weight: 600;
-          cursor: pointer; letter-spacing: .03em;
-          transition: background .2s, transform .2s;
-        }
-        .p-bcta:hover { background: var(--p-forest2); transform: translateY(-1px); }
-
-        /* ── User dropdown ── */
-        .p-udrop { width: 280px; }
-        .p-udrop-head {
-          padding: 18px 18px 14px;
-          background: linear-gradient(160deg, #1a3c1c 0%, var(--p-forest) 100%);
-          display: flex; align-items: center; gap: 13px;
-        }
-        .p-udrop-ava {
-          width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
-          background: rgba(255,255,255,.14); border: 1.5px solid rgba(255,255,255,.24);
+        .nv-logo__mark {
+          width: 42px; height: 42px; border-radius: 50%;
+          border: 2px solid var(--nv-green);
           display: flex; align-items: center; justify-content: center;
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: 21px; color: #fff;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 21px; font-weight: 600; color: var(--nv-green);
+          transition: all .3s var(--spring); position: relative;
+          background: transparent;
         }
-        .p-udrop-name  { font-size: 13.5px; font-weight: 600; color: #fff; }
-        .p-udrop-email { font-size: 10.5px; color: rgba(255,255,255,.6); margin-top: 2px; }
-        .p-udrop-plan  {
+        .nv-logo__mark::before {
+          content: '';
+          position: absolute; inset: 4px; border-radius: 50%;
+          border: 1px solid rgba(45,90,40,.18);
+          transition: opacity .3s;
+        }
+        .nv-logo:hover .nv-logo__mark {
+          background: var(--nv-green); color: #fff;
+          transform: rotate(-5deg) scale(1.05);
+          box-shadow: 0 0 0 5px rgba(45,90,40,.1);
+        }
+        .nv-logo:hover .nv-logo__mark::before { opacity: 0; }
+        .nv-logo__name {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 23px; font-weight: 500; color: var(--nv-ink);
+          letter-spacing: .01em; line-height: 1;
+        }
+        .nv-logo__tag {
+          font-size: 9px; font-weight: 500; color: var(--nv-green2);
+          letter-spacing: .22em; text-transform: uppercase; margin-top: 3px;
+        }
+
+        /* ── NAV LINKS ── */
+        .nv-nav { display: flex; align-items: center; gap: 2px; flex: 1; }
+
+        .nv-link {
+          display: inline-flex; align-items: center; gap: 5px;
+          padding: 9px 14px; border-radius: 30px;
+          font-size: 13.5px; font-weight: 400; color: var(--nv-ink2);
+          text-decoration: none; background: none; border: none; cursor: pointer;
+          font-family: 'Jost', sans-serif; letter-spacing: .01em;
+          transition: all .2s var(--ease); white-space: nowrap;
+          position: relative;
+        }
+        .nv-link:hover { color: var(--nv-green); background: var(--nv-green-a); }
+        .nv-link--active {
+          background: var(--nv-green) !important; color: #fff !important; font-weight: 600;
+        }
+        .nv-link--active:hover { background: var(--nv-green2) !important; }
+        .nv-link__dot {
+          width: 5px; height: 5px; border-radius: 50%;
+          background: var(--nv-gold-l);
+          box-shadow: 0 0 6px var(--nv-gold-l);
+          animation: dot-pulse 2.4s ease-in-out infinite;
+        }
+        @keyframes dot-pulse {
+          0%,100% { opacity:1; transform:scale(1); }
+          50%      { opacity:.35; transform:scale(.6); }
+        }
+        .nv-link__chev {
+          opacity: .45; transition: transform .22s var(--ease), opacity .22s;
+          color: currentColor;
+        }
+        .nv-link--open .nv-link__chev,
+        .nv-link:hover  .nv-link__chev { transform: rotate(180deg); opacity: .9; }
+
+        /* ── RIGHT ZONE ── */
+        .nv-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .nv-sep   { width: 1px; height: 28px; background: var(--nv-bdr2); margin: 0 4px; }
+
+        /* ── ICON BUTTON ── */
+        .nv-icon-btn {
+          position: relative;
+          width: 42px; height: 42px; border-radius: 50%;
+          border: 1.5px solid var(--nv-bdr2);
+          background: var(--nv-white);
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; color: var(--nv-ink2);
+          box-shadow: var(--nv-sh0);
+          transition: all .22s var(--ease);
+        }
+        .nv-icon-btn:hover {
+          background: var(--nv-green); color: #fff;
+          border-color: var(--nv-green);
+          box-shadow: 0 4px 18px rgba(45,90,40,.28);
+          transform: translateY(-1px);
+        }
+        .nv-icon-btn--active {
+          background: var(--nv-green); color: #fff; border-color: var(--nv-green);
+        }
+
+        /* ── BADGE ── */
+        .nv-badge {
+          position: absolute; top: -3px; right: -3px;
+          min-width: 18px; height: 18px; padding: 0 4px;
+          border-radius: 20px; font-size: 10px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center;
+          border: 2px solid var(--nv-bg); color: #fff;
+          box-shadow: 0 2px 6px rgba(0,0,0,.2);
+          font-family: 'Jost', sans-serif;
+        }
+        .nv-badge--green { background: var(--nv-green); }
+        .nv-badge--rose  { background: var(--nv-rose); }
+        .nv-badge--gold  { background: var(--nv-gold); }
+
+        /* ── CART BUTTON ── */
+        .nv-cart-btn {
           display: flex; align-items: center; gap: 8px;
-          padding: 9px 18px; border-bottom: 1px solid var(--p-bdr);
-          background: var(--p-ivory);
+          padding: 10px 16px; border-radius: 30px;
+          border: 1.5px solid var(--nv-bdr2);
+          background: var(--nv-white); cursor: pointer;
+          box-shadow: var(--nv-sh0);
+          transition: all .22s var(--ease);
+          font-family: 'Jost', sans-serif;
+          color: var(--nv-ink2);
+          position: relative;
         }
-        .p-udrop-pdot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-        .p-udrop-ptxt { font-size: 11.5px; font-weight: 600; color: var(--p-ink2); }
-        .p-udrop-pst  { margin-left: auto; font-size: 10px; color: var(--p-ink4); }
+        .nv-cart-btn:hover {
+          background: var(--nv-green); color: #fff;
+          border-color: var(--nv-green);
+          box-shadow: 0 4px 18px rgba(45,90,40,.28);
+          transform: translateY(-1px);
+        }
+        .nv-cart-btn:hover .nv-cart-pill { background: rgba(255,255,255,.2); color: #fff; }
+        .nv-cart-btn:hover .nv-cart-total { color: #fff; }
+        .nv-cart-pill {
+          font-size: 11.5px; font-weight: 700; color: var(--nv-green);
+          background: var(--nv-green-a); padding: 2px 8px; border-radius: 20px;
+          transition: all .22s;
+        }
+        .nv-cart-total {
+          font-size: 13.5px; font-weight: 600; color: var(--nv-ink);
+          transition: color .22s;
+        }
+        .nv-cart-empty { font-size: 12.5px; color: var(--nv-ink3); }
 
-        .p-ustats {
-          display: grid; grid-template-columns: repeat(3,1fr);
-          border-bottom: 1px solid var(--p-bdr);
+        /* ── LOGIN BUTTON ── */
+        .nv-login {
+          display: flex; align-items: center; gap: 8px;
+          padding: 10px 22px; border-radius: 30px;
+          background: var(--nv-green); color: #fff;
+          text-decoration: none; font-weight: 600; font-size: 13.5px;
+          border: 2px solid var(--nv-green);
+          box-shadow: 0 4px 16px rgba(45,90,40,.28);
+          transition: all .22s var(--ease); white-space: nowrap;
         }
-        .p-ustat {
-          display: flex; flex-direction: column; align-items: center;
-          padding: 11px 4px; cursor: pointer; background: none; border: none;
-          font-family: 'Libre Franklin', sans-serif; transition: background .14s;
+        .nv-login:hover {
+          background: transparent; color: var(--nv-green);
+          box-shadow: 0 4px 18px rgba(45,90,40,.12); transform: translateY(-1px);
         }
-        .p-ustat:hover { background: var(--p-ivory2); }
-        .p-ustat + .p-ustat { border-left: 1px solid var(--p-bdr); }
-        .p-ustat__ico { font-size: 15px; line-height: 1; margin-bottom: 3px; }
-        .p-ustat__n   { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--p-forest); line-height: 1; }
-        .p-ustat__l   { font-size: 9px; color: var(--p-ink4); margin-top: 2px; letter-spacing: .04em; }
 
-        .p-ulinks { padding: 4px 0; }
-        .p-ulink {
-          display: flex; align-items: center; gap: 10px;
-          padding: 9px 18px; background: none; border: none; width: 100%;
-          cursor: pointer; text-align: left;
-          font-family: 'Libre Franklin', sans-serif; font-size: 12.5px; color: var(--p-ink2);
-          transition: all .13s;
+        /* ── AVATAR ── */
+        .nv-ava-wrap { position: relative; }
+        .nv-ava {
+          width: 42px; height: 42px; border-radius: 50%;
+          background: linear-gradient(135deg, var(--nv-green) 0%, var(--nv-green2) 100%);
+          border: 2.5px solid var(--nv-green);
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 19px; font-weight: 600; color: #fff;
+          cursor: pointer; box-shadow: var(--nv-sh0);
+          transition: all .25s var(--spring);
         }
-        .p-ulink:hover { background: var(--p-ivory2); color: var(--p-ink); padding-left: 22px; }
-        .p-ulink__ico { font-size: 13px; width: 18px; text-align: center; flex-shrink: 0; line-height: 1; }
-        .p-ulink__cnt {
-          margin-left: auto; background: var(--p-forest); color: #fff;
-          font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+        .nv-ava:hover, .nv-ava--open {
+          box-shadow: 0 0 0 4px rgba(45,90,40,.18), var(--nv-sh0);
+          transform: scale(1.06);
         }
-        .p-udiv   { height: 1px; background: var(--p-bdr); margin: 2px 0; }
-        .p-ulogout {
-          display: flex; align-items: center; gap: 9px; width: 100%;
-          padding: 10px 18px; background: none; border: none; cursor: pointer;
-          font-family: 'Libre Franklin', sans-serif; font-size: 12px; color: var(--p-rose);
-          transition: background .13s;
+        .nv-ava-ring {
+          position: absolute; inset: -5px; border-radius: 50%;
+          border: 1.5px dashed rgba(45,90,40,.35);
+          animation: ring-spin 10s linear infinite;
+          pointer-events: none;
         }
-        .p-ulogout:hover { background: rgba(184,72,72,.07); }
+        @keyframes ring-spin { to { transform: rotate(360deg); } }
 
-        /* ══ MEGA MENU ══════════════════════════════════ */
-        .p-mega {
-          position: fixed; left: 0; right: 0;
-          background: var(--p-white);
-          border-bottom: 1px solid var(--p-bdr2);
-          box-shadow: 0 20px 60px rgba(28,26,20,.12);
-          display: flex; justify-content: center;
-          animation: pmega .2s var(--ease) both;
-          z-index: 998;
+        /* ══ PANELS ══ */
+        .nv-panel {
+          position: absolute; top: calc(100% + 12px); right: 0;
+          background: var(--nv-white);
+          border: 1.5px solid var(--nv-bdr2);
+          border-radius: var(--r);
+          box-shadow: var(--nv-sh3);
+          overflow: hidden;
+          animation: panel-in .2s var(--ease) both;
+          z-index: 999; min-width: 240px;
         }
-        @keyframes pmega {
-          from { opacity:0; transform:translateY(-10px); }
+        @keyframes panel-in {
+          from { opacity:0; transform:translateY(-8px) scale(.97); }
           to   { opacity:1; transform:none; }
         }
-        .p-mega-inner {
-          display: flex; width: 100%; max-width: 1060px;
-          padding: 40px 52px; gap: 0; align-items: flex-start;
-        }
-        .p-mega-col {
-          flex: 1; padding: 0 32px;
-          border-right: 1px solid var(--p-bdr2);
-        }
-        .p-mega-col:first-child { padding-left: 0; }
-        .p-mega-col:last-of-type { border-right: none; }
-        .p-mega-head {
-          font-size: 9px; font-weight: 600; color: var(--p-forest);
-          letter-spacing: .28em; text-transform: uppercase;
-          margin-bottom: 18px; padding-bottom: 10px;
-          border-bottom: 1px solid var(--p-bdr);
-          display: flex; align-items: center; gap: 8px;
-        }
-        .p-mega-head::before {
-          content: ''; width: 12px; height: 1px; background: var(--p-forest2);
-        }
-        .p-mega-link {
-          display: flex; justify-content: space-between; align-items: baseline;
-          padding: 8px 8px; margin-bottom: 1px; border-radius: 6px;
-          background: none; border: none; cursor: pointer; width: 100%;
-          font-family: 'Libre Franklin', sans-serif; transition: all .15s;
-          text-decoration: none;
-        }
-        .p-mega-link:hover { background: rgba(46,92,48,.06); }
-        .p-mega-link__l    {
-          font-size: 13px; font-weight: 400; color: var(--p-ink);
-          transition: color .15s;
-        }
-        .p-mega-link:hover .p-mega-link__l { color: var(--p-forest); }
-        .p-mega-link__r    { font-size: 10.5px; color: var(--p-ink4); }
 
-        /* Carte featured — style encart presse */
-        .p-mega-feat {
-          width: 195px; flex-shrink: 0; margin-left: 32px;
-          border: 1px solid var(--p-bdr2); border-radius: 10px; overflow: hidden;
-          cursor: pointer; display: flex; flex-direction: column;
-          transition: transform .24s var(--spring), box-shadow .24s;
-          box-shadow: 0 4px 20px rgba(28,26,20,.1);
-          text-decoration: none;
+        /* Panel header */
+        .nv-ph {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 14px 18px;
+          background: var(--nv-soft);
+          border-bottom: 1.5px solid var(--nv-bdr);
         }
-        .p-mega-feat:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(28,26,20,.16); }
-        .p-mega-feat__img {
-          height: 80px; background: linear-gradient(145deg, #1a3c1c 0%, #2e5c30 60%, #3a7040 100%);
+        .nv-ph__title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 16px; font-weight: 700; color: var(--nv-ink);
+        }
+        .nv-ph__badge {
+          font-size: 11px; font-weight: 600; color: var(--nv-green);
+          background: var(--nv-green-a); border: 1px solid var(--nv-green-b);
+          padding: 3px 10px; border-radius: 20px;
+        }
+
+        /* ── SEARCH PANEL ── */
+        .nv-search-wrap { width: 440px; }
+        .nv-search-row {
+          display: flex; align-items: center; gap: 10px;
+          padding: 14px 16px;
+          border-bottom: 1.5px solid var(--nv-bdr);
+        }
+        .nv-search-row svg { color: var(--nv-green2); flex-shrink: 0; }
+        .nv-search-input {
+          flex: 1; border: none; background: transparent;
+          font-family: 'Jost', sans-serif; font-size: 14px; color: var(--nv-ink);
+          outline: none;
+        }
+        .nv-search-input::placeholder { color: var(--nv-ink4); }
+        .nv-search-kbd {
+          font-size: 10px; color: var(--nv-ink4);
+          border: 1px solid var(--nv-bdr2); border-radius: 5px;
+          padding: 2px 7px; flex-shrink: 0;
+        }
+        .nv-search-go {
+          background: var(--nv-green); color: #fff; border: none; cursor: pointer;
+          border-radius: var(--r-sm); padding: 8px 15px;
+          font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600;
+          transition: background .2s; flex-shrink: 0;
+        }
+        .nv-search-go:hover { background: var(--nv-green2); }
+        .nv-search-sec { padding: 13px 16px; }
+        .nv-search-sec + .nv-search-sec { border-top: 1px solid var(--nv-bdr); padding-top: 13px; }
+        .nv-search-lbl {
+          font-size: 9.5px; font-weight: 700; color: var(--nv-green2);
+          letter-spacing: .18em; text-transform: uppercase; margin-bottom: 9px;
+        }
+        .nv-search-item {
+          display: flex; align-items: center; gap: 9px;
+          padding: 8px 10px; border-radius: var(--r-sm);
+          background: none; border: none; cursor: pointer; text-align: left; width: 100%;
+          font-family: 'Jost', sans-serif; font-size: 13.5px; color: var(--nv-ink2);
+          transition: all .15s;
+        }
+        .nv-search-item svg { color: var(--nv-ink4); flex-shrink: 0; }
+        .nv-search-item:hover { background: var(--nv-beige); color: var(--nv-green); }
+        .nv-search-item:hover svg { color: var(--nv-green); }
+        .nv-search-genres { display: flex; flex-wrap: wrap; gap: 6px; }
+        .nv-search-genre {
+          padding: 5px 13px; border-radius: 20px;
+          background: var(--nv-beige); border: 1.5px solid var(--nv-bdr);
+          font-size: 12.5px; color: var(--nv-ink2);
+          cursor: pointer; font-family: 'Jost', sans-serif;
+          transition: all .18s;
+        }
+        .nv-search-genre:hover { border-color: var(--nv-green); color: var(--nv-green); background: var(--nv-green-a); }
+
+        /* ── NOTIF PANEL ── */
+        .nv-notif-wrap { width: 360px; }
+        .nv-notif-item {
+          display: flex; align-items: flex-start; gap: 12px;
+          padding: 13px 18px; border: none;
+          border-bottom: 1px solid var(--nv-bdr);
+          width: 100%; cursor: pointer; text-align: left;
+          font-family: 'Jost', sans-serif; transition: background .15s;
+          background: none;
+        }
+        .nv-notif-item:hover { background: var(--nv-beige); }
+        .nv-notif-item--u    { background: rgba(45,90,40,.04); }
+        .nv-notif-ico {
+          width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+          background: var(--nv-beige); border: 1.5px solid var(--nv-bdr);
           display: flex; align-items: center; justify-content: center;
-          position: relative; overflow: hidden;
+          font-size: 18px; line-height: 1;
         }
-        /* Motif typographique décoratif */
-        .p-mega-feat__img::before {
-          content: '❧';
-          font-size: 60px; color: rgba(255,255,255,.07);
-          position: absolute; right: -8px; bottom: -12px; line-height: 1;
+        .nv-notif-text  { font-size: 13px; font-weight: 600; color: var(--nv-ink); margin: 0 0 2px; }
+        .nv-notif-sub   { font-size: 11.5px; color: var(--nv-ink3); }
+        .nv-notif-time  { font-size: 10.5px; color: var(--nv-ink4); margin-left: auto; flex-shrink: 0; }
+        .nv-notif-dot   { width: 7px; height: 7px; border-radius: 50%; background: var(--nv-green); margin-top: 7px; flex-shrink: 0; box-shadow: 0 0 5px rgba(45,90,40,.4); }
+        .nv-panel-foot  { padding: 12px 18px; text-align: center; background: var(--nv-soft); border-top: 1px solid var(--nv-bdr); }
+        .nv-panel-foot-btn {
+          font-size: 12.5px; color: var(--nv-green); background: none; border: none; cursor: pointer;
+          font-family: 'Jost', sans-serif; font-weight: 600; transition: color .15s;
         }
-        .p-mega-feat__label {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: 22px; font-weight: 400; color: rgba(255,255,255,.92); position: relative; z-index: 1;
+        .nv-panel-foot-btn:hover { color: var(--nv-green2); text-decoration: underline; }
+
+        /* ── CART PANEL ── */
+        .nv-cart-wrap { width: 380px; }
+        .nv-cart-item {
+          display: flex; align-items: center; gap: 12px;
+          padding: 13px 18px; border-bottom: 1px solid var(--nv-bdr);
         }
-        .p-mega-feat__body { padding: 14px 16px 16px; background: var(--p-white); flex: 1; }
-        .p-mega-feat__t    { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 400; color: var(--p-ink); margin-bottom: 4px; }
-        .p-mega-feat__s    { font-size: 10.5px; color: var(--p-ink3); line-height: 1.5; margin-bottom: 10px; }
-        .p-mega-feat__cta  {
-          font-size: 10px; font-weight: 600; color: var(--p-forest);
-          letter-spacing: .12em; text-transform: uppercase;
-          display: flex; align-items: center; gap: 5px;
+        .nv-cart-cover {
+          width: 40px; height: 54px; border-radius: 4px 8px 8px 4px; flex-shrink: 0;
+          background: linear-gradient(135deg, var(--nv-green), var(--nv-green2));
+          display: flex; align-items: center; justify-content: center;
+          font-size: 20px;
+          box-shadow: 3px 3px 12px rgba(45,90,40,.25);
+        }
+        .nv-cart-t  { font-size: 13px; font-weight: 600; color: var(--nv-ink); }
+        .nv-cart-a  { font-size: 11.5px; color: var(--nv-ink3); margin-top: 1px; }
+        .nv-cart-p  { font-size: 14px; font-weight: 700; color: var(--nv-green); margin-top: 3px; }
+        .nv-cart-empty { padding: 36px 18px; text-align: center; color: var(--nv-ink3); font-size: 13.5px; }
+        .nv-cart-foot { padding: 16px 18px; background: var(--nv-soft); border-top: 1.5px solid var(--nv-bdr2); }
+        .nv-cart-foot-row {
+          display: flex; justify-content: space-between; align-items: baseline;
+          margin-bottom: 12px;
+        }
+        .nv-cart-foot-row span { font-size: 12.5px; color: var(--nv-ink3); }
+        .nv-cart-foot-row strong { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--nv-ink); }
+        .nv-cart-cta {
+          width: 100%; padding: 13px;
+          background: var(--nv-green); color: #fff; border: none; border-radius: var(--r-sm);
+          font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 700;
+          cursor: pointer; letter-spacing: .02em;
+          box-shadow: 0 4px 16px rgba(45,90,40,.3);
+          transition: all .22s;
+        }
+        .nv-cart-cta:hover { background: var(--nv-green2); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(45,90,40,.4); }
+
+        /* ── USER DROPDOWN ── */
+        .nv-udrop-wrap { width: 300px; }
+        .nv-udrop-head {
+          padding: 20px 20px 16px;
+          background: linear-gradient(135deg, #1a3a18 0%, #2d5c2a 100%);
+          display: flex; align-items: center; gap: 13px;
+        }
+        .nv-udrop-ava {
+          width: 48px; height: 48px; border-radius: 50%;
+          background: rgba(255,255,255,.18); border: 2px solid rgba(255,255,255,.3);
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 24px; font-weight: 700; color: #fff; flex-shrink: 0;
+        }
+        .nv-udrop-name  { font-size: 14px; font-weight: 700; color: #fff; }
+        .nv-udrop-email { font-size: 11px; color: rgba(255,255,255,.65); margin-top: 2px; }
+        .nv-udrop-plan-row {
+          display: flex; align-items: center; gap: 9px;
+          padding: 10px 18px; border-bottom: 1px solid var(--nv-bdr);
+        }
+        .nv-udrop-plan-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .nv-udrop-plan-txt { font-size: 12.5px; font-weight: 600; color: var(--nv-ink2); }
+        .nv-udrop-plan-act { margin-left: auto; font-size: 11px; color: var(--nv-ink3); }
+
+        .nv-udrop-stats {
+          display: grid; grid-template-columns: repeat(3, 1fr);
+          border-bottom: 1px solid var(--nv-bdr);
+        }
+        .nv-udrop-stat {
+          display: flex; flex-direction: column; align-items: center;
+          padding: 12px 6px; cursor: pointer; background: none; border: none;
+          font-family: 'Jost', sans-serif; transition: background .15s;
+        }
+        .nv-udrop-stat:hover { background: var(--nv-beige); }
+        .nv-udrop-stat + .nv-udrop-stat { border-left: 1px solid var(--nv-bdr); }
+        .nv-udrop-stat__ico { font-size: 17px; margin-bottom: 3px; line-height: 1; }
+        .nv-udrop-stat__n   { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--nv-green); line-height: 1; }
+        .nv-udrop-stat__l   { font-size: 10px; color: var(--nv-ink3); margin-top: 2px; }
+
+        .nv-udrop-links { padding: 5px 0; }
+        .nv-udrop-link {
+          display: flex; align-items: center; gap: 11px;
+          padding: 10px 18px; background: none; border: none; width: 100%;
+          cursor: pointer; text-align: left;
+          font-family: 'Jost', sans-serif; font-size: 13.5px; color: var(--nv-ink2);
+          transition: all .15s;
+        }
+        .nv-udrop-link:hover { background: var(--nv-beige); color: var(--nv-green); padding-left: 22px; }
+        .nv-udrop-link__ico { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; line-height: 1; }
+        .nv-udrop-link__cnt {
+          margin-left: auto; background: var(--nv-green); color: #fff;
+          font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+        }
+        .nv-udrop-div { height: 1px; background: var(--nv-bdr); margin: 2px 0; }
+        .nv-udrop-logout {
+          display: flex; align-items: center; gap: 10px; width: 100%;
+          padding: 11px 18px; background: none; border: none; cursor: pointer;
+          font-family: 'Jost', sans-serif; font-size: 13px; color: var(--nv-rose);
+          transition: background .15s;
+        }
+        .nv-udrop-logout:hover { background: rgba(176,80,80,.07); }
+
+        /* ══ MEGA MENU ══ */
+        .nv-mega {
+          position: fixed; left: 0; right: 0;
+          background: var(--nv-white);
+          border-bottom: 1.5px solid var(--nv-bdr2);
+          box-shadow: var(--nv-sh3);
+          display: flex; justify-content: center;
+          animation: mega-in .22s var(--ease) both;
+          z-index: 998;
+        }
+        @keyframes mega-in {
+          from { opacity:0; transform:translateY(-12px); }
+          to   { opacity:1; transform:none; }
+        }
+        .nv-mega-inner {
+          display: flex; width: 100%; max-width: 1100px;
+          padding: 36px 44px; gap: 0; align-items: flex-start;
+        }
+        .nv-mega-col {
+          flex: 1; padding: 0 28px;
+          border-right: 1.5px solid var(--nv-bdr);
+        }
+        .nv-mega-col:first-child { padding-left: 0; }
+        .nv-mega-col:last-of-type { border-right: none; }
+        .nv-mega-col-head {
+          font-size: 9.5px; font-weight: 700; color: var(--nv-green2);
+          letter-spacing: .2em; text-transform: uppercase; margin-bottom: 16px;
+        }
+        .nv-mega-link {
+          display: flex; flex-direction: column;
+          padding: 9px 10px; margin-bottom: 2px; border-radius: var(--r-sm);
+          text-decoration: none; background: none; border: none; cursor: pointer;
+          text-align: left; width: 100%; font-family: 'Jost', sans-serif;
+          transition: all .18s var(--ease);
+        }
+        .nv-mega-link:hover { background: var(--nv-green-a); transform: translateX(4px); }
+        .nv-mega-link__lbl  { font-size: 13.5px; font-weight: 500; color: var(--nv-ink); transition: color .18s; }
+        .nv-mega-link:hover .nv-mega-link__lbl { color: var(--nv-green); }
+        .nv-mega-link__hint { font-size: 11px; color: var(--nv-ink3); margin-top: 1px; }
+
+        .nv-mega-card {
+          width: 210px; flex-shrink: 0; border-radius: var(--r); overflow: hidden;
+          cursor: pointer; display: flex; flex-direction: column;
+          text-decoration: none; margin-left: 28px;
+          box-shadow: 0 8px 32px rgba(0,0,0,.25);
+          transition: transform .28s var(--spring), box-shadow .28s var(--ease);
+        }
+        .nv-mega-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 56px rgba(0,0,0,.32); }
+        .nv-mega-card__top  { height: 100px; display: flex; align-items: center; justify-content: center; }
+        .nv-mega-card__leaf {
+          width: 52px; height: 52px; border-radius: 50%;
+          background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.2);
+          display: flex; align-items: center; justify-content: center; font-size: 24px;
+        }
+        .nv-mega-card__body { padding: 16px 18px 20px; background: rgba(0,0,0,.28); flex: 1; }
+        .nv-mega-card__title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 17px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 6px;
+        }
+        .nv-mega-card__sub  { font-size: 11px; color: rgba(255,255,255,.68); line-height: 1.5; margin-bottom: 12px; }
+        .nv-mega-card__cta  {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-size: 11.5px; font-weight: 700; color: #fff;
+          letter-spacing: .08em; text-transform: uppercase;
+          font-family: 'Jost', sans-serif;
+          border-bottom: 1.5px solid rgba(255,255,255,.4);
+          padding-bottom: 1px;
         }
       `}</style>
 
-      <nav className={`p-nav${scrolled ? " p-nav--scrolled" : ""}`} ref={navRef}>
+      <nav className={`nv${scrolled ? " nv--scrolled" : ""}`} ref={navRef}>
+        {/* ── MAIN BAR ── */}
+        <div className="nv-bar">
+          <div className="nv-prog" style={{ width: `${scrollPct}%` }} />
 
-        {/* ── BARRE TITRE ── */}
-        <div className="p-head">
-          <div className="p-prog" style={{ width: `${scrollPct}%` }} />
-
-          {/* Gauche : édition */}
-          <div className="p-head-left">
-            <div className="p-edition">
-              <strong>Ombrelune</strong><br />
-              Librairie numérique
+          {/* LOGO */}
+          <Link to="/" className="nv-logo">
+            <div className="nv-logo__mark">O</div>
+            <div>
+              <div className="nv-logo__name">Ombrelune</div>
+              <div className="nv-logo__tag">Librairie numérique</div>
             </div>
-          </div>
-
-          {/* Centre : logo typographique */}
-          <Link to="/" className="p-logo">
-            <span className="p-logo__name">Ombrelune</span>
-            <div className="p-logo__rule" />
-            <span className="p-logo__tag">Librairie numérique</span>
           </Link>
 
-          {/* Droite : actions */}
-          <div className="p-head-right">
+          {/* NAV */}
+          <nav className="nv-nav">
+            <Link to="/home" className={`nv-link${isActive("/home") ? " nv-link--active" : ""}`}>Accueil</Link>
 
-            {/* Recherche */}
-            <div style={{ position:"relative" }}>
+            <button
+              className={`nv-link${mega === "Bibliothèque" ? " nv-link--open" : ""}${isActive("/library") ? " nv-link--active" : ""}`}
+              onMouseEnter={() => openMega("Bibliothèque")}
+              onMouseLeave={closeMega}
+              onClick={() => navigate("/library")}
+            >
+              Bibliothèque
+              <span className="nv-link__chev"><IcChev /></span>
+            </button>
+
+            <button
+              className={`nv-link${mega === "Abonnements" ? " nv-link--open" : ""}${isActive("/subscription") ? " nv-link--active" : ""}`}
+              onMouseEnter={() => openMega("Abonnements")}
+              onMouseLeave={closeMega}
+              onClick={() => navigate("/subscription")}
+            >
+              Abonnements
+              {!subscription && <span className="nv-link__dot" />}
+              <span className="nv-link__chev"><IcChev /></span>
+            </button>
+
+            <Link to="/nouveautes" className={`nv-link${isActive("/nouveautes") ? " nv-link--active" : ""}`}>Nouveautés</Link>
+            <Link to="/selections"  className={`nv-link${isActive("/selections")  ? " nv-link--active" : ""}`}>Sélections</Link>
+            <Link to="/auteurs"     className={`nv-link${isActive("/auteurs")     ? " nv-link--active" : ""}`}>Auteurs</Link>
+          </nav>
+
+          {/* RIGHT */}
+          <div className="nv-right">
+
+            {/* Search */}
+            <div style={{ position: "relative" }} ref={searchRef}>
               <button
-                className={`p-ico-btn${searchOpen ? " p-ico-btn--on" : ""}`}
-                onClick={() => { setSearchOpen(p=>!p); closeAll(); setSearchOpen(p=>p); }}
-                title="Rechercher"
+                className={`nv-icon-btn${searchOpen ? " nv-icon-btn--active" : ""}`}
+                onClick={() => setSearchOpen(p => !p)}
+                title="Rechercher (⌘K)"
               >
-                <Ic.Search />
+                <IcSearch />
               </button>
               {searchOpen && (
-                <div className="p-panel p-search-panel">
-                  <form onSubmit={handleSearch} className="p-search-row">
-                    <Ic.Search />
-                    <input autoFocus className="p-search-inp" value={searchTerm}
-                      onChange={e => setSearchTerm(e.target.value)} placeholder="Titre, auteur, genre…" />
-                    {!searchTerm && <span className="p-search-kbd">⌘K</span>}
+                <div className="nv-panel nv-search-wrap" style={{ right: 0 }}>
+                  <form onSubmit={handleSearch} className="nv-search-row">
+                    <IcSearch />
+                    <input
+                      autoFocus className="nv-search-input"
+                      value={searchTerm}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      placeholder="Titre, auteur, genre…"
+                    />
+                    {!searchTerm && <span className="nv-search-kbd">⌘K</span>}
                     {searchTerm && (
-                      <button type="button" onClick={() => setSearchTerm("")}
-                        style={{background:"none",border:"none",cursor:"pointer",color:"var(--p-ink4)"}}>
-                        <Ic.X />
+                      <button type="button"
+                        onClick={() => setSearchTerm("")}
+                        style={{ background:"none",border:"none",cursor:"pointer",color:"var(--nv-ink4)",fontSize:"16px",lineHeight:1 }}>
+                        ✕
                       </button>
                     )}
-                    <button type="submit" className="p-search-go">Chercher</button>
+                    <button type="submit" className="nv-search-go">Chercher</button>
                   </form>
                   {recent.length > 0 && (
-                    <div className="p-search-sec" style={{borderBottom:"1px solid var(--p-bdr)"}}>
-                      <div className="p-search-lbl">Récents</div>
+                    <div className="nv-search-sec" style={{ borderBottom:"1px solid var(--nv-bdr)" }}>
+                      <div className="nv-search-lbl">Récents</div>
                       {recent.map(s => (
-                        <button key={s} className="p-search-item" onClick={() => setSearchTerm(s)}>
-                          <Ic.Clock /> {s}
+                        <button key={s} className="nv-search-item" onClick={() => setSearchTerm(s)}>
+                          <IcClock /> {s}
                         </button>
                       ))}
                     </div>
                   )}
-                  <div className="p-search-sec">
-                    <div className="p-search-lbl">Genres</div>
-                    <div className="p-genres">
+                  <div className="nv-search-sec">
+                    <div className="nv-search-lbl">Genres</div>
+                    <div className="nv-search-genres">
                       {GENRES.map(g => (
-                        <button key={g} className="p-genre"
+                        <button key={g} className="nv-search-genre"
                           onClick={() => { navigate(`/library?genre=${encodeURIComponent(g)}`); setSearchOpen(false); }}>
                           {g}
                         </button>
@@ -755,38 +801,37 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Notifs */}
-            <div style={{ position:"relative" }}>
+            {/* Notifications */}
+            <div style={{ position: "relative" }}>
               <button
-                className={`p-ico-btn${notifOpen ? " p-ico-btn--on" : ""}`}
-                onClick={() => { setNotifOpen(p=>!p); setBagOpen(false); setUserOpen(false); setSearchOpen(false); }}
+                className={`nv-icon-btn${notifOpen ? " nv-icon-btn--active" : ""}`}
+                onClick={() => { setNotifOpen(p => !p); setCartOpen(false); setUserOpen(false); }}
                 title="Notifications"
               >
-                <Ic.Bell />
-                {unread > 0 && <span className="p-bdg p-bdg--o">{unread}</span>}
+                <IcBell />
+                {unread > 0 && <span className="nv-badge nv-badge--gold">{unread}</span>}
               </button>
               {notifOpen && (
-                <div className="p-panel p-notif-panel">
-                  <div className="p-phead">
-                    <span className="p-phead__title">Notifications</span>
-                    <span className="p-phead__chip">{unread} nouvelles</span>
+                <div className="nv-panel nv-notif-wrap">
+                  <div className="nv-ph">
+                    <span className="nv-ph__title">Notifications</span>
+                    <span className="nv-ph__badge">{unread} nouvelle{unread !== 1 ? "s" : ""}</span>
                   </div>
                   {notifs.map(n => (
                     <button key={n.id}
-                      className={`p-nitem${n.u ? " p-nitem--u" : ""}`}
+                      className={`nv-notif-item${n.unread ? " nv-notif-item--u" : ""}`}
                       onClick={() => { navigate(n.link); setNotifOpen(false); }}>
-                      <div className="p-nitem__ico">{n.icon}</div>
-                      <div style={{flex:1}}>
-                        <p className="p-nitem__t">{n.text}</p>
-                        <span className="p-nitem__s">{n.sub}</span>
+                      <div className="nv-notif-ico">{n.icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <p className="nv-notif-text">{n.text}</p>
+                        <span className="nv-notif-sub">{n.sub}</span>
                       </div>
-                      <span className="p-nitem__time">{n.time}</span>
-                      {n.u && <div className="p-nitem__dot"/>}
+                      <span className="nv-notif-time">{n.time}</span>
+                      {n.unread && <div className="nv-notif-dot" />}
                     </button>
                   ))}
-                  <div className="p-pfooter">
-                    <button className="p-pfooter-btn"
-                      onClick={() => { navigate("/notifications"); setNotifOpen(false); }}>
+                  <div className="nv-panel-foot">
+                    <button className="nv-panel-foot-btn" onClick={() => { navigate("/notifications"); setNotifOpen(false); }}>
                       Voir toutes les notifications
                     </button>
                   </div>
@@ -796,65 +841,63 @@ export default function Navbar() {
 
             {/* Favoris */}
             <button
-              className="p-ico-btn"
-              style={favorites.length > 0 ? { color:"var(--p-rose)" } : {}}
+              className="nv-icon-btn"
               onClick={() => navigate("/favorites")}
               title={`Favoris (${favorites.length})`}
+              style={favorites.length > 0 ? { color: "var(--nv-rose)" } : {}}
             >
-              <Ic.Heart on={favorites.length > 0} />
-              {favorites.length > 0 && <span className="p-bdg p-bdg--r">{favorites.length}</span>}
+              <IcHeart filled={favorites.length > 0} />
+              {favorites.length > 0 && <span className="nv-badge nv-badge--rose">{favorites.length}</span>}
             </button>
 
-            <div className="p-vbar" />
-
             {/* Panier */}
-            <div style={{ position:"relative" }}>
+            <div style={{ position: "relative" }}>
               <button
-                className="p-bag-btn"
-                onClick={() => { cart.length > 0 ? setBagOpen(p=>!p) : navigate("/cart"); setNotifOpen(false); setUserOpen(false); }}
+                className="nv-cart-btn"
+                onClick={() => { cart.length > 0 ? setCartOpen(p => !p) : navigate("/cart"); setNotifOpen(false); setUserOpen(false); }}
               >
-                <Ic.Bag />
+                <IcCart />
                 {cart.length > 0 ? (
                   <>
-                    <span className="p-bag-num">{cart.length}</span>
-                    <span className="p-bag-total">{cartTotal}</span>
+                    <span className="nv-cart-pill">{cart.length}</span>
+                    <span className="nv-cart-total">{cartTotal}</span>
                   </>
                 ) : (
-                  <span className="p-bag-empty">Panier</span>
+                  <span className="nv-cart-empty">Panier</span>
                 )}
               </button>
-              {bagOpen && (
-                <div className="p-panel p-bag-panel">
-                  <div className="p-phead">
-                    <span className="p-phead__title">Mon panier</span>
-                    <span className="p-phead__chip">{cart.length} article{cart.length!==1?"s":""}</span>
+              {cartOpen && (
+                <div className="nv-panel nv-cart-wrap">
+                  <div className="nv-ph">
+                    <span className="nv-ph__title">Mon panier</span>
+                    <span className="nv-ph__badge">{cart.length} article{cart.length !== 1 ? "s" : ""}</span>
                   </div>
                   {cart.length === 0 ? (
-                    <div className="p-bempty">Votre panier est vide</div>
+                    <div className="nv-cart-empty">Votre panier est vide</div>
                   ) : (
                     <>
-                      {cart.slice(0,4).map((item,i) => (
-                        <div key={i} className="p-bitem">
-                          <div className="p-bcover">📚</div>
-                          <div style={{flex:1}}>
-                            <div className="p-bt">{item.title||"Livre"}</div>
-                            <div className="p-ba">{item.author||""}</div>
-                            <div className="p-bp">{Number(item.price).toLocaleString("fr-FR",{style:"currency",currency:"EUR"})}</div>
+                      {cart.slice(0, 4).map((item, i) => (
+                        <div key={i} className="nv-cart-item">
+                          <div className="nv-cart-cover">📚</div>
+                          <div style={{ flex: 1 }}>
+                            <div className="nv-cart-t">{item.title || "Livre"}</div>
+                            <div className="nv-cart-a">{item.author || ""}</div>
+                            <div className="nv-cart-p">{Number(item.price).toLocaleString("fr-FR", { style:"currency", currency:"EUR" })}</div>
                           </div>
                         </div>
                       ))}
                       {cart.length > 4 && (
-                        <div style={{padding:"8px 18px",fontSize:"11.5px",color:"var(--p-ink4)",textAlign:"center"}}>
-                          +{cart.length-4} autre{cart.length-4>1?"s":""} article{cart.length-4>1?"s":""}
+                        <div style={{ padding:"9px 18px",fontSize:"12px",color:"var(--nv-ink3)",textAlign:"center" }}>
+                          +{cart.length - 4} autre{cart.length - 4 > 1 ? "s" : ""} article{cart.length - 4 > 1 ? "s" : ""}
                         </div>
                       )}
-                      <div className="p-bfoot">
-                        <div className="p-brow">
+                      <div className="nv-cart-foot">
+                        <div className="nv-cart-foot-row">
                           <span>Total estimé</span>
                           <strong>{cartTotal}</strong>
                         </div>
-                        <button className="p-bcta" onClick={()=>{navigate("/cart");setBagOpen(false);}}>
-                          Passer commande →
+                        <button className="nv-cart-cta" onClick={() => { navigate("/cart"); setCartOpen(false); }}>
+                          Commander →
                         </button>
                       </div>
                     </>
@@ -863,147 +906,129 @@ export default function Navbar() {
               )}
             </div>
 
-            <div className="p-vbar" />
+            <div className="nv-sep" />
 
             {/* Avatar / Login */}
             {user ? (
-              <div className="p-ava-wrap">
+              <div className="nv-ava-wrap">
                 <button
-                  className={`p-ava${userOpen ? " p-ava--on" : ""}`}
-                  onClick={() => { setUserOpen(p=>!p); setNotifOpen(false); setBagOpen(false); setSearchOpen(false); }}
+                  className={`nv-ava${userOpen ? " nv-ava--open" : ""}`}
+                  onClick={() => { setUserOpen(p => !p); setNotifOpen(false); setCartOpen(false); }}
                 >
                   {user.firstName ? user.firstName[0].toUpperCase() : user.email?.[0].toUpperCase()}
                 </button>
+                {plan && <div className="nv-ava-ring" />}
                 {userOpen && (
-                  <div className="p-panel p-udrop" style={{minWidth:"unset"}}>
-                    <div className="p-udrop-head">
-                      <div className="p-udrop-ava">
+                  <div className="nv-panel nv-udrop-wrap">
+                    <div className="nv-udrop-head">
+                      <div className="nv-udrop-ava">
                         {user.firstName ? user.firstName[0].toUpperCase() : user.email?.[0].toUpperCase()}
                       </div>
                       <div>
-                        <div className="p-udrop-name">
-                          {user.firstName ? `${user.firstName} ${user.lastName||""}`.trim() : user.email}
+                        <div className="nv-udrop-name">
+                          {user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email}
                         </div>
-                        <div className="p-udrop-email">{user.email}</div>
+                        <div className="nv-udrop-email">{user.email}</div>
                       </div>
                     </div>
+
                     {plan && (
-                      <div className="p-udrop-plan">
-                        <div className="p-udrop-pdot" style={{background:plan.color}}/>
-                        <span className="p-udrop-ptxt">{plan.label}</span>
-                        <span className="p-udrop-pst">actif</span>
+                      <div className="nv-udrop-plan-row">
+                        <div className="nv-udrop-plan-dot" style={{ background: plan.color }} />
+                        <span className="nv-udrop-plan-txt">{plan.label}</span>
+                        <span className="nv-udrop-plan-act">actif</span>
                       </div>
                     )}
-                    <div className="p-ustats">
+
+                    <div className="nv-udrop-stats">
                       {[
-                        {ico:"❤️", val:favorites.length, lbl:"Favoris",   path:"/favorites"},
-                        {ico:"🛍️", val:cart.length,      lbl:"Panier",    path:"/cart"},
-                        {ico:"📦", val:"—",              lbl:"Commandes", path:"/profile?tab=orders"},
+                        { ico:"❤️", val: favorites.length, lbl:"Favoris",   path:"/favorites" },
+                        { ico:"🛍️", val: cart.length,      lbl:"Panier",    path:"/cart"      },
+                        { ico:"📦", val: "—",              lbl:"Commandes", path:"/profile?tab=orders" },
                       ].map(s => (
-                        <button key={s.lbl} className="p-ustat"
+                        <button key={s.lbl} className="nv-udrop-stat"
                           onClick={() => { navigate(s.path); setUserOpen(false); }}>
-                          <span className="p-ustat__ico">{s.ico}</span>
-                          <span className="p-ustat__n">{s.val}</span>
-                          <span className="p-ustat__l">{s.lbl}</span>
+                          <span className="nv-udrop-stat__ico">{s.ico}</span>
+                          <span className="nv-udrop-stat__n">{s.val}</span>
+                          <span className="nv-udrop-stat__l">{s.lbl}</span>
                         </button>
                       ))}
                     </div>
-                    <div className="p-ulinks">
+
+                    <div className="nv-udrop-links">
                       {[
-                        {ico:"👤", lbl:"Mon profil",    path:"/profile"},
-                        {ico:"❤️", lbl:"Mes favoris",   path:"/favorites",  cnt:favorites.length||null},
-                        {ico:"🛍️", lbl:"Mon panier",    path:"/cart",       cnt:cart.length||null},
-                        {ico:"📦", lbl:"Mes commandes", path:"/profile?tab=orders"},
-                        {ico:"⭐", lbl:subscription?"Mon abonnement":"S'abonner", path:subscription?"/profile?tab=subscription":"/subscription"},
-                        {ico:"⚙️", lbl:"Paramètres",    path:"/settings"},
+                        { ico:"👤", lbl:"Mon profil",      path:"/profile"                   },
+                        { ico:"❤️", lbl:"Mes favoris",     path:"/favorites",   cnt:favorites.length || null },
+                        { ico:"🛍️", lbl:"Mon panier",      path:"/cart",        cnt:cart.length || null      },
+                        { ico:"📦", lbl:"Mes commandes",   path:"/profile?tab=orders"        },
+                        { ico:"⭐", lbl:subscription ? "Mon abonnement" : "S'abonner", path:subscription ? "/profile?tab=subscription" : "/subscription" },
+                        { ico:"⚙️", lbl:"Paramètres",      path:"/settings"                  },
                       ].map(item => (
-                        <button key={item.path} className="p-ulink"
+                        <button key={item.path} className="nv-udrop-link"
                           onClick={() => { navigate(item.path); setUserOpen(false); }}>
-                          <span className="p-ulink__ico">{item.ico}</span>
+                          <span className="nv-udrop-link__ico">{item.ico}</span>
                           {item.lbl}
                           {item.cnt
-                            ? <span className="p-ulink__cnt">{item.cnt}</span>
-                            : <span style={{marginLeft:"auto",opacity:.2,display:"flex"}}><Ic.Arrow /></span>
+                            ? <span className="nv-udrop-link__cnt">{item.cnt}</span>
+                            : <span style={{ marginLeft:"auto", opacity:.25 }}><IcArrow /></span>
                           }
                         </button>
                       ))}
                     </div>
-                    <div className="p-udiv"/>
-                    <button className="p-ulogout"
+
+                    <div className="nv-udrop-div" />
+                    <button className="nv-udrop-logout"
                       onClick={() => { logout(); setUserOpen(false); navigate("/login"); }}>
-                      <Ic.Logout /> Se déconnecter
+                      <IcLogout /> Se déconnecter
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <Link to="/login" className="p-login-btn">
-                <Ic.Login /> Connexion
+              <Link to="/login" className="nv-login">
+                <IcLogin /> Se connecter
               </Link>
             )}
           </div>
         </div>
 
-        {/* ── BARRE NAV ── */}
-        <div className="p-nav-bar">
-          <Link to="/home" className={`p-nl${isActive("/home") ? " p-nl--on" : ""}`}>Accueil</Link>
-
-          <button
-            className={`p-nl${mega==="Bibliothèque" ? " p-nl--open" : ""}${isActive("/library") ? " p-nl--on" : ""}`}
-            onMouseEnter={() => openMega("Bibliothèque")}
-            onMouseLeave={closeMega}
-            onClick={() => navigate("/library")}
-          >
-            Bibliothèque
-            <span className="p-nl__chev"><Ic.Chev /></span>
-          </button>
-
-          <button
-            className={`p-nl${mega==="Abonnements" ? " p-nl--open" : ""}${isActive("/subscription") ? " p-nl--on" : ""}`}
-            onMouseEnter={() => openMega("Abonnements")}
-            onMouseLeave={closeMega}
-            onClick={() => navigate("/subscription")}
-          >
-            Abonnements
-            {!subscription && <span className="p-nl__dot"/>}
-            <span className="p-nl__chev"><Ic.Chev /></span>
-          </button>
-        </div>
-
-        {/* ── MEGA MENUS ── */}
+        {/* ══ MEGA MENUS ══ */}
         {mega && MEGA[mega] && (
           <div
-            className="p-mega"
-            style={{ top: megaTop }}
+            className="nv-mega"
+            style={{ top: scrolled ? "62px" : "70px" }}
             onMouseEnter={() => clearTimeout(megaTimer.current)}
             onMouseLeave={closeMega}
           >
-            <div className="p-mega-inner">
+            <div className="nv-mega-inner">
               {MEGA[mega].cols.map(col => (
-                <div key={col.head} className="p-mega-col">
-                  <div className="p-mega-head">{col.head}</div>
+                <div key={col.head} className="nv-mega-col">
+                  <div className="nv-mega-col-head">{col.head}</div>
                   {col.items.map(item => (
-                    <button key={item.label} className="p-mega-link"
+                    <button key={item.label} className="nv-mega-link"
                       onClick={() => { navigate(item.path); setMega(null); }}>
-                      <span className="p-mega-link__l">{item.label}</span>
-                      <span className="p-mega-link__r">{item.hint}</span>
+                      <span className="nv-mega-link__lbl">{item.label}</span>
+                      <span className="nv-mega-link__hint">{item.hint}</span>
                     </button>
                   ))}
                 </div>
               ))}
 
-              {/* Encart featured */}
+              {/* Featured card */}
               {(() => {
-                const f = MEGA[mega].featured;
+                const c = MEGA[mega].card;
                 return (
-                  <div className="p-mega-feat" onClick={() => { navigate(f.path); setMega(null); }}>
-                    <div className="p-mega-feat__img">
-                      <span className="p-mega-feat__label">❧</span>
+                  <div className="nv-mega-card" style={{ background: c.bg }}
+                    onClick={() => { navigate(c.path); setMega(null); }}>
+                    <div className="nv-mega-card__top">
+                      <div className="nv-mega-card__leaf">🌿</div>
                     </div>
-                    <div className="p-mega-feat__body">
-                      <div className="p-mega-feat__t">{f.title}</div>
-                      <div className="p-mega-feat__s">{f.sub}</div>
-                      <div className="p-mega-feat__cta">Découvrir <Ic.Arrow /></div>
+                    <div className="nv-mega-card__body">
+                      <div className="nv-mega-card__title">{c.title}</div>
+                      <div className="nv-mega-card__sub">{c.sub}</div>
+                      <div className="nv-mega-card__cta">
+                        {c.label} <IcArrow />
+                      </div>
                     </div>
                   </div>
                 );
