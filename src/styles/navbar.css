@@ -1,8 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap');
-
 :root {
   --bg:#f7f4ed;
-  --bg-dark:#ede9df;
+  --bg-glass:rgba(247,244,237,.85);
 
   --ink:#1a2218;
   --ink-mid:#3d4a3a;
@@ -13,29 +11,19 @@
   --sage-lite:#8ab585;
 
   --gold:#9a7a32;
-  --gold-lite:#c9a84c;
 
-  --rose:#b85050;
+  --border:rgba(61,90,56,.12);
+  --border-strong:rgba(61,90,56,.25);
 
-  --border:rgba(61,90,56,.14);
-  --border-strong:rgba(61,90,56,.28);
-
-  --panel-bg:#faf8f3;
-
-  --shadow-sm:0 2px 16px rgba(26,34,24,.08);
-  --shadow-md:0 8px 40px rgba(26,34,24,.13);
-  --shadow-lg:0 24px 80px rgba(26,34,24,.18);
+  --shadow-sm:0 2px 10px rgba(0,0,0,.05);
+  --shadow-md:0 8px 30px rgba(0,0,0,.08);
+  --shadow-lg:0 20px 60px rgba(0,0,0,.12);
 
   --ease:cubic-bezier(.4,0,.2,1);
   --spring:cubic-bezier(.34,1.56,.64,1);
-
-  --r:12px;
-  --r-sm:8px;
-
-  --nav-h:72px;
 }
 
-/* WRAPPER */
+/* NAVBAR */
 
 .nv{
   position:fixed;
@@ -43,29 +31,24 @@
   left:0;
   right:0;
   z-index:1000;
-  font-family:'Jost',sans-serif;
-}
-
-/* MAIN BAR */
-
-.nv-bar{
-  height:var(--nav-h);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 36px;
+  padding:0 32px;
+  height:64px;
+
   background:var(--bg);
-  border-bottom:1.5px solid var(--border);
+  border-bottom:1px solid var(--border);
+
   transition:all .35s var(--ease);
-  position:relative;
 }
 
-.nv--scrolled .nv-bar{
-  height:62px;
+/* SCROLL EFFECT (glass + depth) */
+.nv--scrolled{
+  background:var(--bg-glass);
+  backdrop-filter:blur(14px) saturate(1.4);
   box-shadow:var(--shadow-md);
-  background:rgba(247,244,237,.97);
-  backdrop-filter:blur(20px) saturate(1.5);
-  border-bottom-color:var(--border-strong);
+  border-bottom:1px solid var(--border-strong);
 }
 
 /* LOGO */
@@ -73,87 +56,87 @@
 .nv-logo{
   display:flex;
   align-items:center;
-  gap:13px;
+  gap:12px;
   text-decoration:none;
-  flex-shrink:0;
-  margin-right:40px;
 }
 
 .nv-logo__mark{
-  width:44px;
-  height:44px;
+  width:38px;
+  height:38px;
   border-radius:50%;
   border:2px solid var(--sage);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:'Cormorant Garamond',serif;
-  font-size:22px;
+  font-family:serif;
+  font-size:18px;
   font-weight:600;
   color:var(--sage);
-  transition:all .3s var(--spring);
+
+  transition:all .35s var(--spring);
 }
 
+/* hover plus premium */
 .nv-logo:hover .nv-logo__mark{
   background:var(--sage);
   color:#fff;
-  transform:rotate(-6deg) scale(1.06);
+  transform:rotate(-6deg) scale(1.08);
+  box-shadow:0 0 0 6px rgba(45,90,40,.12);
 }
 
 .nv-logo__name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:24px;
+  font-family:serif;
+  font-size:21px;
   color:var(--ink);
+  letter-spacing:.01em;
 }
 
 .nv-logo__tag{
   font-size:9px;
   color:var(--sage-mid);
-  letter-spacing:.2em;
+  letter-spacing:.22em;
   text-transform:uppercase;
 }
 
-/* CENTER NAV */
+/* NAV LINKS */
 
 .nv-nav{
   display:flex;
   align-items:center;
   gap:6px;
-  flex:1;
-  min-width:max-content;
 }
 
 .nv-link{
   position:relative;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:8px 18px;
-  border-radius:30px;
-  font-size:14px;
+  padding:6px 14px;
+  border-radius:999px;
+
+  font-size:13.5px;
   font-weight:400;
   color:var(--ink-mid);
-  text-decoration:none;
-  border:none;
+
   background:none;
+  border:none;
   cursor:pointer;
-  white-space:nowrap;
-  transition:all .22s var(--ease);
+
+  transition:all .25s var(--ease);
 }
 
+/* hover plus subtil */
 .nv-link:hover{
   color:var(--sage);
-  background:rgba(45,90,40,.07);
+  background:rgba(45,90,40,.06);
 }
 
+/* état actif amélioré */
 .nv-link.active{
   background:var(--sage);
   color:#fff;
   font-weight:500;
+  box-shadow:0 4px 14px rgba(45,90,40,.25);
 }
 
-/* underline effect */
-
+/* underline animation clean */
 .nv-link::after{
   content:"";
   position:absolute;
@@ -162,182 +145,129 @@
   transform:translateX(-50%);
   width:0;
   height:2px;
+  border-radius:2px;
   background:var(--sage);
-  transition:.25s;
+  transition:width .25s var(--ease);
 }
 
-.nv-link:hover::after,
-.nv-link.active::after{
+.nv-link:hover::after{
   width:60%;
 }
 
-/* RIGHT AREA */
+/* RIGHT */
 
 .nv-right{
   display:flex;
   align-items:center;
-  gap:8px;
-  flex-shrink:0;
+  gap:10px;
 }
 
 /* ICON BUTTON */
 
 .nv-icon{
-  position:relative;
-  width:44px;
-  height:44px;
+  width:36px;
+  height:36px;
   border-radius:50%;
-  border:1.5px solid var(--border-strong);
-  background:#fff;
+  border:1px solid var(--border);
+
   display:flex;
   align-items:center;
   justify-content:center;
+
+  background:#fff;
   cursor:pointer;
-  transition:all .22s var(--ease);
+
   box-shadow:var(--shadow-sm);
+
+  transition:all .25s var(--ease);
 }
 
+/* hover plus smooth */
 .nv-icon:hover{
-  border-color:var(--sage);
   background:var(--sage);
-  transform:translateY(-1px);
+  border-color:var(--sage);
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(45,90,40,.25);
 }
 
 .nv-icon:hover svg{
   stroke:#fff;
 }
 
-/* BADGE */
+/* CTA LOGIN */
 
-.nv-bdg{
-  position:absolute;
-  top:-3px;
-  right:-3px;
-  min-width:19px;
-  height:19px;
-  padding:0 5px;
-  border-radius:20px;
-  font-size:10px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  border:2px solid var(--bg);
-}
+.nv-cta{
+  padding:8px 18px;
+  border-radius:999px;
+  border:2px solid var(--sage);
 
-.nv-bdg--g{background:var(--sage);}
-.nv-bdg--r{background:var(--rose);}
-.nv-bdg--a{background:var(--gold-lite);color:var(--ink);}
-
-/* CART */
-
-.nv-cart-btn{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:10px 18px;
-  border-radius:30px;
-  border:1.5px solid var(--border-strong);
-  background:#fff;
-  cursor:pointer;
-  transition:all .22s var(--ease);
-}
-
-.nv-cart-btn:hover{
-  border-color:var(--sage);
   background:var(--sage);
-  transform:translateY(-1px);
-}
+  color:#fff;
 
-.nv-cart-btn:hover svg{
-  stroke:#fff;
-}
-
-.nv-cart-btn__count{
-  font-size:12px;
+  font-size:13px;
   font-weight:600;
+  cursor:pointer;
+
+  box-shadow:0 6px 18px rgba(45,90,40,.25);
+
+  transition:all .25s var(--ease);
+}
+
+/* effet inversé au hover */
+.nv-cta:hover{
+  background:transparent;
   color:var(--sage);
-  background:rgba(45,90,40,.1);
-  padding:2px 8px;
-  border-radius:20px;
-}
-
-.nv-cart-btn__total{
-  font-size:14px;
-  font-weight:600;
-  color:var(--ink);
-}
-
-/* PANEL */
-
-.nv-panel{
-  position:absolute;
-  top:calc(100% + 14px);
-  right:0;
-  background:var(--panel-bg);
-  border:1.5px solid var(--border-strong);
-  border-radius:var(--r);
-  box-shadow:var(--shadow-lg);
-  overflow:hidden;
-  animation:drop-in .2s var(--ease);
-}
-
-@keyframes drop-in{
-  from{opacity:0;transform:translateY(-10px) scale(.97);}
-  to{opacity:1;transform:translateY(0) scale(1);}
+  transform:translateY(-1px);
 }
 
 /* MEGA MENU */
 
 .nv-mega{
   position:fixed;
-  top:var(--nav-h);
+  top:64px;
   left:0;
   right:0;
-  background:var(--panel-bg);
-  border-bottom:1.5px solid var(--border-strong);
+
+  background:#fff;
+  border-bottom:1px solid var(--border-strong);
+
   box-shadow:var(--shadow-lg);
-  display:flex;
-  justify-content:center;
-  animation:mega-in .22s var(--ease);
+
+  animation:megaFade .25s var(--ease);
 }
 
-@keyframes mega-in{
-  from{opacity:0;transform:translateY(-14px);}
-  to{opacity:1;transform:translateY(0);}
+@keyframes megaFade{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
 .nv-mega-inner{
+  max-width:1100px;
+  margin:auto;
   display:flex;
-  width:100%;
-  max-width:1160px;
-  padding:36px 44px;
+  gap:60px;
+  padding:30px 40px;
 }
 
-.nv-mega-col{
-  flex:1;
-  padding:0 30px;
-  border-right:1.5px solid var(--border);
-}
+/* MEGA LINKS */
 
-.nv-mega-col:last-child{
-  border-right:none;
-}
-
-.nv-mega-link{
-  display:flex;
-  flex-direction:column;
-  padding:9px 10px;
-  border-radius:var(--r-sm);
-  text-decoration:none;
-  border:none;
+.nv-mega-inner button{
+  font-size:14px;
+  color:var(--ink-mid);
   background:none;
+  border:none;
   cursor:pointer;
-  transition:all .18s var(--ease);
+
+  transition:.2s;
 }
 
-.nv-mega-link:hover{
-  background:rgba(45,90,40,.07);
+.nv-mega-inner button:hover{
+  color:var(--sage);
   transform:translateX(4px);
-} 
+}

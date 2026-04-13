@@ -43,7 +43,7 @@ export default function Register() {
         firstName: form.firstName, lastName: form.lastName,
       });
       if (result?.token) { navigate("/home"); }
-      else               { setError("Erreur lors de l'inscription"); }
+      else               { setError(result?.error || "Erreur lors de l'inscription"); }
     } catch {
       setError("Erreur lors de l'enregistrement");
     } finally {

@@ -2,135 +2,177 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/footer.css";
 
+/* ─── DATA ─── */
 const NAV_LINKS = [
-  { label: "Accueil",       to: "/home" },
-  { label: "Bibliothèque",  to: "/library" },
+  { label: "Accueil",       to: "/home"         },
+  { label: "Bibliothèque",  to: "/library"      },
+  { label: "Nouveautés",    to: "/nouveautes"   },
+  { label: "Sélections",    to: "/selections"   },
   { label: "Abonnements",   to: "/subscription" },
-  { label: "Mon profil",    to: "/profile" },
-  { label: "Mes favoris",   to: "/favorites" },
+  { label: "Mon profil",    to: "/profile"      },
+  { label: "Mes favoris",   to: "/favorites"    },
+];
+
+const GENRES = [
+  "Roman",          "Science-Fiction",
+  "Fantasy",        "Policier & Thriller",
+  "Romance",        "Histoire",
+  "Biographie",     "Philosophie",
+  "Jeunesse",       "Poésie & Essais",
 ];
 
 const LEGAL_LINKS = [
   "Mentions légales",
-  "Politique de confidentialité",
+  "Confidentialité",
   "Conditions d'utilisation",
   "Cookies",
 ];
 
-const GENRES = [
-  "Fiction", "Science-Fiction", "Fantasy", "Thriller",
-  "Romance", "Historique", "Biographie", "Philosophie",
+const SOCIALS = [
+  { label: "Instagram", char: "◎", href: "#" },
+  { label: "Twitter/X", char: "𝕏", href: "#" },
+  { label: "Facebook",  char: "f", href: "#" },
+  { label: "TikTok",    char: "♪", href: "#" },
 ];
 
+const CONTACT = [
+  { icon: "✉", label: "Email",     value: "contact@ombrelune.fr",  href: "mailto:contact@ombrelune.fr", link: true  },
+  { icon: "☎", label: "Téléphone", value: "+33 1 23 45 67 89",     href: "tel:+33123456789",            link: true  },
+  { icon: "◎", label: "Adresse",   value: "12 rue des Lilas, Paris 75011",                              link: false },
+  { icon: "◷", label: "Horaires",  value: "Lun – Ven, 9h – 18h",                                       link: false },
+];
+
+const TRUST = [
+  { icon: "🔒", text: "Paiement 100% sécurisé" },
+  { icon: "↩",  text: "Retour sous 30 jours"   },
+  { icon: "📦", text: "Livraison en 48h"        },
+];
+
+/* ─── COMPONENT ─── */
 export default function Footer() {
   const [email,      setEmail]      = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
   const handleNewsletter = (e) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email.trim()) return;
     setSubscribed(true);
     setEmail("");
   };
 
   return (
     <footer className="ft-shell">
-
-      {/* ══ NEWSLETTER CTA BAND ══ */}
-      <div className="ft-cta">
-        <div className="ft-cta__inner">
-          <div className="ft-cta__text">
-            <h3>Restez dans l'univers Ombrelune</h3>
-            <p>Nouvelles parutions, sélections de la semaine et offres exclusives — directement dans votre boîte mail.</p>
-          </div>
-          {subscribed ? (
-            <div className="ft-cta__success">
-              <span>✓</span> Merci ! Vous êtes bien inscrit·e.
-            </div>
-          ) : (
-            <form className="ft-cta__form" onSubmit={handleNewsletter}>
-              <input
-                type="email" required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="votre@email.fr"
-              />
-              <button type="submit">S'inscrire →</button>
-            </form>
-          )}
-        </div>
-      </div>
-
       {/* ══ MAIN COLUMNS ══ */}
       <div className="ft-main">
         <div className="ft-main__inner">
 
-          {/* ── Brand ── */}
+          {/* ── Col 1 : Brand ── */}
           <div className="ft-col ft-col--brand">
-            <div className="ft-logo">
-              <span className="ft-logo__icon">O</span>
-              <span className="ft-logo__name">Ombrelune</span>
-            </div>
-            <p className="ft-brand__tagline">
-              Une bibliothèque vivante, nichée entre nature et poésie.
-              Découvrez des histoires qui transforment.
+
+            <Link to="/home" className="ft-logo">
+              <div className="ft-logo__mark">
+                <span className="ft-logo__letter">O</span>
+              </div>
+              <div className="ft-logo__text">
+                <span className="ft-logo__name">Ombrelune</span>
+                <span className="ft-logo__sub">Librairie numérique</span>
+              </div>
+            </Link>
+
+            <p className="ft-tagline">
+              Une bibliothèque vivante, nichée entre<br />
+              nature et poésie. Des histoires qui transforment.
             </p>
+
             <div className="ft-socials">
-              {[
-                { label:"Facebook",  char:"f",  href:"#" },
-                { label:"Twitter/X", char:"𝕏",  href:"#" },
-                { label:"Instagram", char:"◎",  href:"#" },
-                { label:"TikTok",    char:"♪",  href:"#" },
-              ].map(s => (
+              {SOCIALS.map(s => (
                 <a key={s.label} href={s.href} className="ft-social" title={s.label}>
                   {s.char}
                 </a>
               ))}
             </div>
+
             <div className="ft-trust">
-              <span>🔒 Paiement sécurisé</span>
-              <span>↩ Retour 30j</span>
-              <span>📦 Livraison 48h</span>
+              {TRUST.map(t => (
+                <div key={t.text} className="ft-trust__item">
+                  <span className="ft-trust__icon">{t.icon}</span>
+                  {t.text}
+                </div>
+              ))}
             </div>
+
           </div>
 
-          {/* ── Navigation ── */}
+          {/* ── Col 2 : Navigation ── */}
           <div className="ft-col">
-            <h4 className="ft-col__title">Navigation</h4>
+            <div className="ft-col__head">
+              <span className="ft-col__eyebrow">Pages</span>
+              <h4 className="ft-col__title">Navigation</h4>
+            </div>
             <ul className="ft-links">
               {NAV_LINKS.map(l => (
-                <li key={l.to}><Link to={l.to}>{l.label}</Link></li>
+                <li key={l.to}>
+                  <Link to={l.to}>{l.label}</Link>
+                </li>
               ))}
             </ul>
           </div>
 
-          {/* ── Genres ── */}
+          {/* ── Col 3 : Genres ── */}
           <div className="ft-col">
-            <h4 className="ft-col__title">Genres</h4>
+            <div className="ft-col__head">
+              <span className="ft-col__eyebrow">Catalogue</span>
+              <h4 className="ft-col__title">Genres</h4>
+            </div>
             <ul className="ft-links">
               {GENRES.map(g => (
-                <li key={g}><Link to={`/library?category=${g}`}>{g}</Link></li>
+                <li key={g}>
+                  <Link to={`/library?category=${g}`}>{g}</Link>
+                </li>
               ))}
             </ul>
           </div>
 
-          {/* ── Contact ── */}
+          {/* ── Col 4 : Contact + App ── */}
           <div className="ft-col">
-            <h4 className="ft-col__title">Contact</h4>
+            <div className="ft-col__head">
+              <span className="ft-col__eyebrow">Nous trouver</span>
+              <h4 className="ft-col__title">Contact</h4>
+            </div>
+
             <ul className="ft-contact">
-              <li><span>✉️</span><a href="mailto:contact@ombrelune.fr">contact@ombrelune.fr</a></li>
-              <li><span>📞</span><a href="tel:+33123456789">+33 1 23 45 67 89</a></li>
-              <li><span>📍</span><span>12 rue des Lilas, Paris 75011</span></li>
-              <li><span>🕐</span><span>Lun–Ven, 9h – 18h</span></li>
+              {CONTACT.map(c => (
+                <li key={c.label}>
+                  <div className="ft-contact__icon">{c.icon}</div>
+                  <span>
+                    {c.link
+                      ? <a href={c.href}>{c.value}</a>
+                      : c.value
+                    }
+                  </span>
+                </li>
+              ))}
             </ul>
 
+            {/* App store links */}
             <div className="ft-app">
-              <p>Application mobile</p>
-              <div className="ft-app__btns">
-                <a href="#" className="ft-app__btn"><span>🍎</span> App Store</a>
-                <a href="#" className="ft-app__btn"><span>▶</span> Google Play</a>
-              </div>
+              <div className="ft-app__lbl">Application mobile</div>
+              <a href="#" className="ft-app__btn">
+                <div className="ft-app__icon">🍎</div>
+                <div className="ft-app__info">
+                  <span className="ft-app__store">Disponible sur</span>
+                  <span className="ft-app__name">App Store</span>
+                </div>
+              </a>
+              <a href="#" className="ft-app__btn">
+                <div className="ft-app__icon">▶</div>
+                <div className="ft-app__info">
+                  <span className="ft-app__store">Disponible sur</span>
+                  <span className="ft-app__name">Google Play</span>
+                </div>
+              </a>
             </div>
+
           </div>
 
         </div>
@@ -139,16 +181,24 @@ export default function Footer() {
       {/* ══ BOTTOM BAR ══ */}
       <div className="ft-bottom">
         <div className="ft-bottom__inner">
-          <p>© {new Date().getFullYear()} Ombrelune — Tous droits réservés.</p>
-          <div className="ft-legal">
-            {LEGAL_LINKS.map((l, i) => (
-              <span key={l}>
-                <a href="#">{l}</a>
-                {i < LEGAL_LINKS.length - 1 && <span className="ft-dot">·</span>}
-              </span>
-            ))}
+
+          <div className="ft-bottom__copy">
+            <span className="ft-bottom__logo">Ombrelune</span>
+            <span className="ft-bottom__year">
+              © {new Date().getFullYear()} — Tous droits réservés.
+            </span>
           </div>
-          <p className="ft-made">Fait avec ❤️ pour les lecteurs</p>
+
+          <nav className="ft-legal">
+            {LEGAL_LINKS.map(l => (
+              <a key={l} href="#">{l}</a>
+            ))}
+          </nav>
+
+          <p className="ft-made">
+            Fait avec <span>♥</span> pour les lecteurs
+          </p>
+
         </div>
       </div>
 

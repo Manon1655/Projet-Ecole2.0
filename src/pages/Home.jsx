@@ -5,135 +5,115 @@ import { useCart } from "../context/CartContext";
 import books from "../data/books";
 import "../styles/home.css";
 
-/* ─── helpers ─── */
-const renderStars = (r = 0) =>
-  "★".repeat(Math.floor(r)) + (r % 1 !== 0 ? "½" : "");
+/* ─── HELPERS ─── */
+const stars  = r => "★".repeat(Math.floor(r || 0)) + (r % 1 !== 0 ? "½" : "");
+const price  = n => Number(n).toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 
-const formatPrice = (n) =>
-  Number(n).toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
-
-/* ─── Mood filters ─── */
+/* ─── DATA ─── */
 const MOODS = [
-  { id: "all",       label: "Tout",         icon: "✦" },
-  { id: "aventure",  label: "Aventure",     icon: "🧭" },
-  { id: "emotion",   label: "Émotion",      icon: "🌧" },
-  { id: "evasion",   label: "Évasion",      icon: "🌿" },
-  { id: "reflexion", label: "Réflexion",    icon: "🦉" },
-  { id: "frisson",   label: "Frissons",     icon: "🌙" },
+  { id: "all",       label: "Tout voir",        icon: "✦"  },
+  { id: "aventure",  label: "Aventure",          icon: "🧭"  },
+  { id: "emotion",   label: "Émotion",           icon: "🌧"  },
+  { id: "evasion",   label: "Évasion",           icon: "🌿"  },
+  { id: "reflexion", label: "Réflexion",         icon: "🦉"  },
+  { id: "frisson",   label: "Frissons",          icon: "🌙"  },
 ];
-
-/* Map categories → moods (adapt to your real categories) */
 const MOOD_MAP = {
-  aventure:  ["Aventure", "Action", "Science-Fiction", "Fantasy"],
-  emotion:   ["Roman", "Romance", "Drame", "Jeunesse"],
-  evasion:   ["Voyage", "Nature", "BD", "Manga"],
-  reflexion: ["Philosophie", "Histoire", "Essai", "Biographie"],
-  frisson:   ["Policier", "Thriller", "Horreur", "Mystère"],
+  aventure:  ["Aventure","Action","Science-Fiction","Fantasy"],
+  emotion:   ["Roman","Romance","Drame","Jeunesse"],
+  evasion:   ["Voyage","Nature","BD","Manga"],
+  reflexion: ["Philosophie","Histoire","Essai","Biographie"],
+  frisson:   ["Policier","Thriller","Horreur","Mystère"],
+};
+const getMood = (m, list) => {
+  if (m === "all") return list;
+  const cats = MOOD_MAP[m] || [];
+  const f = list.filter(b => cats.includes(b.category));
+  return f.length ? f : list;
 };
 
-const getMoodBooks = (mood, bookList) => {
-  if (mood === "all") return bookList;
-  const cats = MOOD_MAP[mood] || [];
-  const filtered = bookList.filter(b => cats.includes(b.category));
-  return filtered.length > 0 ? filtered : bookList;
-};
-
-/* ─── Testimonials ─── */
-const TESTIMONIALS = [
-  { name: "Camille R.", text: "Une sélection vraiment soignée, je trouve toujours ma prochaine lecture ici.", stars: 5 },
-  { name: "Thomas M.", text: "Interface magnifique, livraison rapide. Ma librairie en ligne préférée.", stars: 5 },
-  { name: "Sophie L.", text: "Les coups de cœur sont toujours excellents. Je fais confiance aux recommandations.", stars: 5 },
+const TESTI = [
+  { name:"Camille R.", role:"Lectrice fidèle", text:"Une sélection vraiment soignée — je trouve toujours ma prochaine lecture ici. La qualité des coups de cœur est remarquable.", s:5 },
+  { name:"Thomas M.",  role:"Abonné Premium",  text:"Interface magnifique, livraison rapide. Ma librairie préférée depuis deux ans. L'expérience est tout simplement irremplaçable.", s:5 },
+  { name:"Sophie L.",  role:"Bibliophile",     text:"Les recommandations sont toujours excellentes. Je fais entièrement confiance au travail éditorial de cette maison.", s:5 },
 ];
+
+/* ─── SVG ICONS ─── */
+const IcSearch = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>;
+const IcCart   = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>;
+const IcCheck  = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>;
+const IcHeart  = ({ on }) => <svg viewBox="0 0 24 24" fill={on?"currentColor":"none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>;
+const IcBook   = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>;
+const IcArrow  = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="m5 12h14M12 5l7 7-7 7"/></svg>;
+const IcPlus   = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>;
 
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { addToCart, addToFavorites, removeFromFavorites, isFavorite } = useCart();
 
-  const [searchQuery, setSearchQuery]   = React.useState("");
-  const [activeMood, setActiveMood]     = React.useState("all");
-  const [carouselIdx, setCarouselIdx]   = React.useState(0);
-  const [addedCart, setAddedCart]       = React.useState({});
-  const [testimonialIdx, setTestimonialIdx] = React.useState(0);
+  const [search,  setSearch]  = React.useState("");
+  const [mood,    setMood]    = React.useState("all");
+  const [page,    setPage]    = React.useState(0);
+  const [added,   setAdded]   = React.useState({});
 
-  /* ─ derived data ─ */
-  const bestsellers  = books.filter(b => b.isBestseller).slice(0, 4);
-  const nouveautes   = [...books].reverse().slice(0, 6);          // last added = newest
-  const moodBooks    = getMoodBooks(activeMood, books).slice(0, 8);
-  const carouselAll  = books;
-  const VISIBLE      = 4;
-  const pages        = Math.ceil(carouselAll.length / VISIBLE);
-  const pageBooks    = carouselAll.slice(carouselIdx * VISIBLE, (carouselIdx + 1) * VISIBLE);
-  const categories   = [...new Set(books.map(b => b.category))].sort().slice(0, 8);
+  /* derived */
+  const featured   = books.filter(b => b.isBestseller).slice(0, 4);
+  const nouveautes = [...books].reverse().slice(0, 6);
+  const moodBooks  = getMood(mood, books).slice(0, 4);
+  const categories = [...new Set(books.map(b => b.category))].sort().slice(0, 7);
+  const PER_PAGE   = 4;
+  const pages      = Math.ceil(books.length / PER_PAGE);
+  const pageBooks  = books.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
 
-  /* ─ handlers ─ */
   const handleSearch = () => {
-    if (searchQuery.trim()) navigate(`/library?search=${encodeURIComponent(searchQuery.trim())}`);
+    if (search.trim()) navigate(`/library?search=${encodeURIComponent(search.trim())}`);
   };
-
   const toggleFav = (e, book) => {
     e.stopPropagation();
     isFavorite(book.id) ? removeFromFavorites(book.id) : addToFavorites(book);
   };
-
-  const handleCart = (e, book) => {
+  const handleAdd = (e, book) => {
     e.stopPropagation();
     addToCart(book);
-    setAddedCart(p => ({ ...p, [book.id]: true }));
-    setTimeout(() => setAddedCart(p => ({ ...p, [book.id]: false })), 1800);
+    setAdded(p => ({ ...p, [book.id]: true }));
+    setTimeout(() => setAdded(p => ({ ...p, [book.id]: false })), 1800);
   };
 
-  /* ─ auto-rotate testimonials ─ */
-  React.useEffect(() => {
-    const t = setInterval(() => setTestimonialIdx(i => (i + 1) % TESTIMONIALS.length), 4000);
-    return () => clearInterval(t);
-  }, []);
-
-  /* ─ Book card ─ */
-  const BookCard = ({ book, size = "normal" }) => (
+  /* ── Universal Book Card ── */
+  const BookCard = ({ book, delay = 0 }) => (
     <article
-      className={`bc ${size === "large" ? "bc--large" : ""}`}
+      className="bc"
+      style={{ animationDelay: `${delay}s` }}
       onClick={() => navigate(`/book/${book.id}`)}
     >
-      <div className="bc__img">
+      <div className="bc__cover">
         {book.isBestseller && <span className="bc__ribbon">Best-seller</span>}
-        <button
-          className={`bc__heart ${isFavorite(book.id) ? "bc__heart--on" : ""}`}
-          onClick={(e) => toggleFav(e, book)}
-          title={isFavorite(book.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
-        >
-          {isFavorite(book.id) ? "❤️" : "🤍"}
+        <button className={`bc__fav${isFavorite(book.id)?" bc__fav--on":""}`} onClick={e=>toggleFav(e,book)}>
+          <IcHeart on={isFavorite(book.id)} />
         </button>
         <img src={book.cover} alt={book.title} loading="lazy" />
-        <div className="bc__shine" />
+        <div className="bc__overlay">
+          <button className={`bc__add${added[book.id]?" bc__add--ok":""}`} onClick={e=>handleAdd(e,book)}>
+            {added[book.id] ? <IcCheck/> : <IcCart/>}
+          </button>
+        </div>
       </div>
-
       <div className="bc__body">
         <span className="bc__cat">{book.category}</span>
-        <h3 className="bc__title">{book.title}</h3>
-        <p  className="bc__author">{book.author}</p>
-
+        <h3  className="bc__title">{book.title}</h3>
+        <p   className="bc__author">{book.author}</p>
         {book.rating && (
           <div className="bc__rating">
-            <span className="bc__stars">{renderStars(book.rating)}</span>
-            <span className="bc__rev">({book.reviews?.toLocaleString()})</span>
+            <span className="bc__stars">{stars(book.rating)}</span>
+            <span className="bc__revs">({book.reviews?.toLocaleString("fr-FR")})</span>
           </div>
         )}
-
-        <div className="bc__footer">
-          <div className="bc__prices">
-            {book.originalPrice > book.price && (
-              <s className="bc__old">{formatPrice(book.originalPrice)}</s>
-            )}
-            <span className="bc__price">{formatPrice(book.price)}</span>
+        <div className="bc__foot">
+          <div>
+            {book.originalPrice > book.price && <s className="bc__old">{price(book.originalPrice)}</s>}
+            <span className="bc__price">{price(book.price)}</span>
           </div>
-          <button
-            className={`bc__cart ${addedCart[book.id] ? "bc__cart--ok" : ""}`}
-            onClick={(e) => handleCart(e, book)}
-            title="Ajouter au panier"
-          >
-            {addedCart[book.id] ? "✓" : "+"}
-          </button>
         </div>
       </div>
     </article>
@@ -142,39 +122,48 @@ export default function Home() {
   return (
     <div className="home">
 
-      {/* ══════════════════════════════════════
-          HERO — editorial split
-      ══════════════════════════════════════ */}
+      {/* ════════════════════════════════════════
+          HERO — split editorial
+      ════════════════════════════════════════ */}
       <section className="hero">
 
-        {/* left — text */}
+        {/* Left */}
         <div className="hero__left">
-          <div className="hero__tag">✦ Librairie Ombrelune</div>
+          <div className="hero__overline">
+            <div className="hero__overline-dash" />
+            <span className="hero__overline-text">Librairie Ombrelune</span>
+          </div>
+
+          <p className="hero__number">N° de mars 2025 — Nouvelle sélection</p>
+
           <h1 className="hero__title">
-            Des livres choisis<br/>
-            <em>avec soin,</em><br/>
-            pour vous.
+            Des livres<br/>
+            <em>choisis avec soin,</em>
+            <strong>pour vous.</strong>
           </h1>
+
+          <div className="hero__title-rule" />
+
           <p className="hero__sub">
-            Chaque titre de notre collection a été sélectionné par des passionnés.
-            Trouvez votre prochaine lecture préférée.
+            Chaque titre de notre collection a été sélectionné par des passionnés
+            de littérature. Trouvez votre prochaine lecture préférée.
           </p>
 
+          {/* Search */}
           <div className="hero__search">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
+            <IcSearch />
             <input
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleSearch()}
               placeholder="Titre, auteur, genre…"
             />
-            <button onClick={handleSearch}>Chercher</button>
+            <button className="hero__search-btn" onClick={handleSearch}>Chercher</button>
           </div>
 
+          {/* Chips */}
           <div className="hero__chips">
-            {categories.slice(0, 5).map(cat => (
+            {categories.map(cat => (
               <button key={cat} className="hero__chip" onClick={() => navigate(`/library?category=${cat}`)}>
                 {cat}
               </button>
@@ -182,21 +171,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* right — featured book stack */}
+        {/* Right — book stack */}
         <div className="hero__right">
           <div className="hero__stack">
-            {bestsellers.slice(0, 3).map((book, i) => (
-              <div
-                key={book.id}
-                className="hero__stack-book"
-                style={{"--i": i}}
-                onClick={() => navigate(`/book/${book.id}`)}
-              >
+            {featured.slice(0, 3).map((book, i) => (
+              <div key={book.id} className="h-stack-book" onClick={() => navigate(`/book/${book.id}`)}>
                 <img src={book.cover} alt={book.title} />
                 {i === 0 && (
-                  <div className="hero__stack-label">
-                    <span>Coup de cœur</span>
-                    <strong>{book.title}</strong>
+                  <div className="h-stack-label">
+                    <div className="h-stack-label__eyebrow">Coup de cœur</div>
+                    <div className="h-stack-label__title">{book.title}</div>
                   </div>
                 )}
               </div>
@@ -204,198 +188,267 @@ export default function Home() {
           </div>
 
           <div className="hero__stats">
-            <div className="hero__stat"><b>{books.length}</b><span>livres</span></div>
-            <div className="hero__stat-sep"/>
+            <div className="hero__stat"><b>{books.length}</b><span>titres</span></div>
+            <div className="hero__stat-sep" />
             <div className="hero__stat"><b>{categories.length}</b><span>genres</span></div>
-            <div className="hero__stat-sep"/>
-            <div className="hero__stat"><b>4.8★</b><span>moyenne</span></div>
+            <div className="hero__stat-sep" />
+            <div className="hero__stat"><b>4,8 ★</b><span>note moy.</span></div>
           </div>
         </div>
 
       </section>
 
-      {/* ══════════════════════════════════════
-          BANNIÈRE OFFRE ABONNÉ
-      ══════════════════════════════════════ */}
+      {/* ════════════════════════════════════════
+          PROMO
+      ════════════════════════════════════════ */}
       <div className="promo-banner" onClick={() => navigate("/subscription")}>
-        <span className="promo-banner__tag">Nouveau</span>
+        <span className="promo-banner__label">Nouveauté</span>
         <p>
-          <strong>Abonnement Ombrelune Premium</strong> — Accès illimité, livraison offerte, et -10% sur tous les achats.
+          <strong>Abonnement Ombrelune Premium</strong> — Accès illimité, livraison offerte, −10% sur tous les achats.
         </p>
-        <span className="promo-banner__cta">Découvrir →</span>
+        <span className="promo-banner__cta">En profiter →</span>
       </div>
 
-      {/* ══════════════════════════════════════
-          NOUVEAUTÉS
-      ══════════════════════════════════════ */}
-      <section className="section">
-        <div className="section__head">
-          <div>
-            <p className="section__eyebrow">Vient de paraître</p>
-            <h2 className="section__title">Nouveautés</h2>
-          </div>
-          <button className="section__more" onClick={() => navigate("/library")}>Tout voir →</button>
-        </div>
-
-        <div className="nouveautes-row">
-          {/* Featured — first book large */}
-          <div className="nouveaute-featured" onClick={() => navigate(`/book/${nouveautes[0]?.id}`)}>
-            <div className="nf__img">
-              <img src={nouveautes[0]?.cover} alt={nouveautes[0]?.title} />
-              <span className="nf__badge">Nouveau</span>
+      {/* ════════════════════════════════════════
+          MAGAZINE GRID — COUPS DE CŒUR
+          (asymmetric editorial layout)
+      ════════════════════════════════════════ */}
+      <section className="section section--ivory">
+        <div className="inner">
+          <div className="sec-head">
+            <div>
+              <p className="sec-eyebrow">Notre sélection</p>
+              <h2 className="sec-title">Coups de <em>cœur</em></h2>
             </div>
-            <div className="nf__body">
-              <span className="nf__cat">{nouveautes[0]?.category}</span>
-              <h3>{nouveautes[0]?.title}</h3>
-              <p>{nouveautes[0]?.author}</p>
-              <div className="nf__stars">{renderStars(nouveautes[0]?.rating)}</div>
-              <p className="nf__desc">{nouveautes[0]?.description?.slice(0, 140) || "Une nouvelle parution à ne pas manquer dans notre sélection du moment."}…</p>
-              <div className="nf__row">
-                <span className="nf__price">{formatPrice(nouveautes[0]?.price)}</span>
-                <button className="nf__btn" onClick={e => handleCart(e, nouveautes[0])}>
-                  Ajouter au panier
-                </button>
-              </div>
-            </div>
+            <button className="sec-more" onClick={() => navigate("/library")}>
+              Voir tout le catalogue <IcArrow />
+            </button>
           </div>
 
-          {/* Side list */}
-          <div className="nouveautes-list">
-            {nouveautes.slice(1, 5).map(book => (
-              <div key={book.id} className="nl-item" onClick={() => navigate(`/book/${book.id}`)}>
-                <img src={book.cover} alt={book.title} className="nl-item__img" />
-                <div className="nl-item__info">
-                  <span className="nl-item__cat">{book.category}</span>
-                  <h4>{book.title}</h4>
-                  <p>{book.author}</p>
-                  <span className="nl-item__price">{formatPrice(book.price)}</span>
+          <div className="mag-grid">
+            {/* Feature card — large left */}
+            {featured[0] && (
+              <div className="mag-card--feature" onClick={() => navigate(`/book/${featured[0].id}`)}>
+                <img src={featured[0].cover} alt={featured[0].title} />
+                <div className="mag-card__overlay">
+                  <div className="mag-card__tag">Coup de cœur de la rédaction</div>
+                  <div className="mag-card__title">{featured[0].title}</div>
+                  <div className="mag-card__author">{featured[0].author}</div>
+                  <div className="mag-card__actions">
+                    <button className="mag-card__read" onClick={e => { e.stopPropagation(); navigate(`/book/${featured[0].id}`); }}>
+                      <IcBook /> Lire l'extrait
+                    </button>
+                    <span className="mag-card__price-tag">{price(featured[0].price)}</span>
+                  </div>
                 </div>
-                <button
-                  className={`nl-item__heart ${isFavorite(book.id) ? "on" : ""}`}
-                  onClick={e => toggleFav(e, book)}
-                >
-                  {isFavorite(book.id) ? "❤️" : "🤍"}
-                </button>
+              </div>
+            )}
+
+            {/* Two small cards right */}
+            {featured.slice(1, 3).map(book => (
+              <div key={book.id} className="mag-card--small" onClick={() => navigate(`/book/${book.id}`)}>
+                <div className="mag-card--small__img">
+                  <img src={book.cover} alt={book.title} />
+                </div>
+                <div className="mag-card--small__body">
+                  <div className="mag-card--small__cat">{book.category}</div>
+                  <div className="mag-card--small__title">{book.title}</div>
+                  <div className="mag-card--small__author">{book.author}</div>
+                  <div className="mag-card--small__foot">
+                    <span className="mag-card--small__price">{price(book.price)}</span>
+                    <button className="mag-card--small__add" onClick={e => handleAdd(e, book)}>
+                      {added[book.id] ? <IcCheck/> : <IcPlus/>}
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          HUMEUR DU MOMENT
-      ══════════════════════════════════════ */}
-      <section className="section section--tinted">
-        <div className="section__head">
-          <div>
-            <p className="section__eyebrow">Sélection personnalisée</p>
-            <h2 className="section__title">Quelle est votre humeur ?</h2>
-          </div>
-        </div>
-
-        <div className="mood-filters">
-          {MOODS.map(m => (
-            <button
-              key={m.id}
-              className={`mood-btn ${activeMood === m.id ? "mood-btn--active" : ""}`}
-              onClick={() => setActiveMood(m.id)}
-            >
-              <span>{m.icon}</span>
-              {m.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="mood-grid">
-          {moodBooks.slice(0, 4).map(book => (
-            <BookCard key={book.id} book={book} />
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          COUPS DE CŒUR
-      ══════════════════════════════════════ */}
+      {/* ════════════════════════════════════════
+          NOUVEAUTÉS — featured + numbered list
+      ════════════════════════════════════════ */}
       <section className="section">
-        <div className="section__head">
-          <div>
-            <p className="section__eyebrow">Notre sélection</p>
-            <h2 className="section__title">Coups de cœur</h2>
-          </div>
-          <button className="section__more" onClick={() => navigate("/library")}>Tout voir →</button>
-        </div>
-        <div className="books-grid-4">
-          {bestsellers.map(book => <BookCard key={book.id} book={book} />)}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          TOUTE LA COLLECTION — carousel
-      ══════════════════════════════════════ */}
-      <section className="section section--tinted">
-        <div className="section__head">
-          <div>
-            <p className="section__eyebrow">{books.length} titres disponibles</p>
-            <h2 className="section__title">Notre collection</h2>
-          </div>
-          <div className="carousel-controls">
-            <button className="carousel-arrow" onClick={() => setCarouselIdx(i => Math.max(0, i - 1))} disabled={carouselIdx === 0}>‹</button>
-            <span className="carousel-page">{carouselIdx + 1} / {pages}</span>
-            <button className="carousel-arrow" onClick={() => setCarouselIdx(i => i + 1 >= pages ? 0 : i + 1)}>›</button>
-          </div>
-        </div>
-
-        <div className="books-grid-4">
-          {pageBooks.map(book => <BookCard key={book.id} book={book} />)}
-        </div>
-
-        <div className="carousel-dots">
-          {Array.from({ length: pages }).map((_, i) => (
-            <button key={i} className={`cdot ${i === carouselIdx ? "cdot--on" : ""}`} onClick={() => setCarouselIdx(i)} />
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════
-          TÉMOIGNAGES
-      ══════════════════════════════════════ */}
-      <section className="section testimonials-section">
-        <div className="section__head centered">
-          <p className="section__eyebrow">Ils nous font confiance</p>
-          <h2 className="section__title">Ce que disent nos lecteurs</h2>
-        </div>
-
-        <div className="testimonials-track">
-          {TESTIMONIALS.map((t, i) => (
-            <div
-              key={i}
-              className={`testimonial-card ${i === testimonialIdx ? "testimonial-card--active" : ""}`}
-            >
-              <div className="tc__stars">{"★".repeat(t.stars)}</div>
-              <p className="tc__text">"{t.text}"</p>
-              <span className="tc__name">— {t.name}</span>
+        <div className="inner">
+          <div className="sec-head">
+            <div>
+              <p className="sec-eyebrow">Vient de paraître</p>
+              <h2 className="sec-title">Les <em>nouveautés</em></h2>
             </div>
-          ))}
-        </div>
+            <button className="sec-more" onClick={() => navigate("/library")}>
+              Tout le catalogue <IcArrow />
+            </button>
+          </div>
 
-        <div className="testimonial-dots">
-          {TESTIMONIALS.map((_, i) => (
-            <button key={i} className={`cdot ${i === testimonialIdx ? "cdot--on" : ""}`} onClick={() => setTestimonialIdx(i)} />
-          ))}
+          <div className="nouv-grid">
+            {/* Featured left */}
+            <div className="nouv-feat" onClick={() => navigate(`/book/${nouveautes[0]?.id}`)}>
+              <div className="nouv-feat__img">
+                <img src={nouveautes[0]?.cover} alt={nouveautes[0]?.title} />
+                <span className="nouv-feat__badge">Nouveau</span>
+              </div>
+              <div className="nouv-feat__body">
+                <span className="nouv-feat__cat">{nouveautes[0]?.category}</span>
+                <h3>{nouveautes[0]?.title}</h3>
+                <p className="nouv-feat__author">{nouveautes[0]?.author}</p>
+                <div className="nouv-feat__stars">{stars(nouveautes[0]?.rating)}</div>
+                <p className="nouv-feat__desc">
+                  {nouveautes[0]?.description?.slice(0, 155) ||
+                   "Une nouvelle parution à ne pas manquer dans notre sélection du moment."}…
+                </p>
+                <div className="nouv-feat__foot">
+                  <span className="nouv-feat__price">{price(nouveautes[0]?.price)}</span>
+                  <button className="nouv-feat__btn" onClick={e => handleAdd(e, nouveautes[0])}>
+                    <IcCart /> Ajouter au panier
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Numbered list right */}
+            <div className="nouv-list">
+              {nouveautes.slice(1, 5).map((book, i) => (
+                <div key={book.id} className="nouv-item" onClick={() => navigate(`/book/${book.id}`)}>
+                  <span className="nouv-item__n">{String(i + 1).padStart(2, "0")}</span>
+                  <img src={book.cover} alt={book.title} className="nouv-item__cover" />
+                  <div className="nouv-item__body">
+                    <div className="nouv-item__cat">{book.category}</div>
+                    <div className="nouv-item__title">{book.title}</div>
+                    <div className="nouv-item__auth">{book.author}</div>
+                  </div>
+                  <div className="nouv-item__right">
+                    <div className="nouv-item__price">{price(book.price)}</div>
+                    <button
+                      className={`nouv-item__fav${isFavorite(book.id)?" nouv-item__fav--on":""}`}
+                      onClick={e => toggleFav(e, book)}
+                    >
+                      <IcHeart on={isFavorite(book.id)} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          CTA FINAL
-      ══════════════════════════════════════ */}
+      {/* ════════════════════════════════════════
+          HUMEUR — tabbed mood filter
+      ════════════════════════════════════════ */}
+      <section className="section section--ivory">
+        <div className="inner">
+          <div className="sec-head">
+            <div>
+              <p className="sec-eyebrow">Sélection personnalisée</p>
+              <h2 className="sec-title">Votre <em>humeur</em> du moment</h2>
+            </div>
+          </div>
+
+          <nav className="mood-nav">
+            {MOODS.map(m => (
+              <button
+                key={m.id}
+                className={`mood-tab${mood === m.id ? " mood-tab--on" : ""}`}
+                onClick={() => setMood(m.id)}
+              >
+                <span className="mood-tab__icon">{m.icon}</span>
+                {m.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="g4">
+            {moodBooks.map((book, i) => (
+              <BookCard key={book.id} book={book} delay={i * 0.06} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          TOUTE LA COLLECTION — carousel paginé
+      ════════════════════════════════════════ */}
+      <section className="section">
+        <div className="inner">
+          <div className="sec-head">
+            <div>
+              <p className="sec-eyebrow">{books.length} titres disponibles</p>
+              <h2 className="sec-title">Notre <em>collection</em></h2>
+            </div>
+            <div className="car-ctrl">
+              <button className="car-arrow" onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>‹</button>
+              <span  className="car-pg">{page + 1} / {pages}</span>
+              <button className="car-arrow" onClick={() => setPage(p => p + 1 >= pages ? 0 : p + 1)}>›</button>
+            </div>
+          </div>
+
+          <div className="g4">
+            {pageBooks.map((book, i) => (
+              <BookCard key={book.id} book={book} delay={i * 0.05} />
+            ))}
+          </div>
+
+          <div className="car-dots">
+            {Array.from({ length: pages }).map((_, i) => (
+              <button key={i} className={`car-dot${i === page ? " car-dot--on" : ""}`} onClick={() => setPage(i)} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          TÉMOIGNAGES — fond sombre
+      ════════════════════════════════════════ */}
+      <section className="section section--dark">
+        <div className="inner">
+          <div className="sec-head sec-head--center" style={{ marginBottom: 52 }}>
+            <p className="sec-eyebrow">Ils nous font confiance</p>
+            <h2 className="sec-title" style={{ marginTop: 0 }}>
+              Ce que disent<br /><em>nos lecteurs</em>
+            </h2>
+          </div>
+
+          <div className="testi-grid">
+            {TESTI.map((t, i) => (
+              <div key={i} className="testi-card">
+                <div className="testi-stars">{"★".repeat(t.s)}</div>
+                <p   className="testi-text">« {t.text} »</p>
+                <div className="testi-name">{t.name}</div>
+                <div className="testi-role">{t.role}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          CTA FINALE
+      ════════════════════════════════════════ */}
       <section className="cta-section">
-        <div className="cta-section__inner">
-          <p className="section__eyebrow" style={{color:"rgba(255,255,255,0.6)"}}>Rejoignez la communauté</p>
-          <h2>Votre prochaine lecture vous attend.</h2>
-          <p>Des milliers de titres soigneusement sélectionnés, livrés chez vous en 48h.</p>
+        <div className="inner">
+          <span className="cta-ornament">❧</span>
+
+          <h2 className="cta-title">
+            Votre prochaine lecture<br />
+            <em>vous attend.</em>
+          </h2>
+
+          <p className="cta-sub">
+            Des milliers de titres soigneusement sélectionnés par des passionnés de littérature.
+            <br />Livraison en 48h partout en France.
+          </p>
+
           <div className="cta-btns">
-            <button onClick={() => navigate("/library")}>Explorer la bibliothèque</button>
-            {!user && <button className="cta-outline" onClick={() => navigate("/register")}>Créer un compte gratuit</button>}
+            <button className="cta-btn cta-btn--fill" onClick={() => navigate("/library")}>
+              <IcBook /> Explorer la bibliothèque
+            </button>
+            {!user && (
+              <button className="cta-btn cta-btn--line" onClick={() => navigate("/register")}>
+                Créer un compte gratuit
+              </button>
+            )}
           </div>
         </div>
       </section>

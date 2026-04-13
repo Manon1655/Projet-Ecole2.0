@@ -738,10 +738,6 @@ export default function Navbar() {
               {!subscription && <span className="nv-link__dot" />}
               <span className="nv-link__chev"><IcChev /></span>
             </button>
-
-            <Link to="/nouveautes" className={`nv-link${isActive("/nouveautes") ? " nv-link--active" : ""}`}>Nouveautés</Link>
-            <Link to="/selections"  className={`nv-link${isActive("/selections")  ? " nv-link--active" : ""}`}>Sélections</Link>
-            <Link to="/auteurs"     className={`nv-link${isActive("/auteurs")     ? " nv-link--active" : ""}`}>Auteurs</Link>
           </nav>
 
           {/* RIGHT */}

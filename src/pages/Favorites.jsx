@@ -179,41 +179,7 @@ export default function Favorites() {
             );
           })}
         </div>
-
-        {/* ══ SIDEBAR INFO ══ */}
-        <aside className="fav-aside">
-          <div className="fav-aside__card">
-            <h3>Récapitulatif</h3>
-            <div className="fav-aside__rows">
-              {sorted.map(book => (
-                <div key={book.id} className="fav-aside__row">
-                  <span>{book.title}</span>
-                  <span>{formatPrice(book.price)}</span>
-                </div>
-              ))}
-            </div>
-            <div className="fav-aside__total">
-              <span>Total</span>
-              <strong>{formatPrice(totalVal)}</strong>
-            </div>
-            <button
-              className="fav-aside__buy"
-              onClick={() => { favorites.forEach(b => addToCart(b)); navigate("/cart"); }}
-            >
-              Tout ajouter au panier
-            </button>
-            <button className="fav-aside__more" onClick={() => navigate("/library")}>
-              Continuer à explorer →
-            </button>
-          </div>
-
-          <div className="fav-aside__tip">
-            <span>💡</span>
-            <p>Cliquez sur ❤️ pour retirer un livre de vos favoris.</p>
-          </div>
-        </aside>
       </div>
-
     </div>
   );
 }

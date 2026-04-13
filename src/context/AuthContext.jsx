@@ -28,13 +28,11 @@ export function AuthProvider({ children }) {
 
     const decoded = parseJwt(storedToken);
 
-    /* token invalide */
     if (!decoded) {
       localStorage.removeItem("token");
       return;
     }
 
-    /* token expiré */
     if (decoded.exp * 1000 < Date.now()) {
       localStorage.removeItem("token");
       return;
@@ -58,7 +56,6 @@ export function AuthProvider({ children }) {
 
     try {
 
-      /* nettoyage ancien login */
       localStorage.removeItem("token");
       setUser(null);
       setToken(null);
@@ -71,35 +68,32 @@ export function AuthProvider({ children }) {
         body: JSON.stringify(data)
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        result = await response.json();
+      } catch (err) {
+        const text = await response.text().catch(() => null);
+        console.error('Login: non-JSON response', text);
+        return { error: 'Réponse invalide du serveur' };
+      }
 
       if (!response.ok) {
-        return result;
+        console.warn('Login failed:', result);
+        return { error: result?.error || 'Erreur connexion' };
       }
 
       if (result.token) {
-
         const decoded = parseJwt(result.token);
-
         localStorage.setItem("token", result.token);
-
         setToken(result.token);
-
-        setUser({
-          id: decoded.id,
-          email: decoded.email,
-          role: decoded.role
-        });
-
+        setUser({ id: decoded.id, email: decoded.email, role: decoded.role });
       }
 
       return result;
 
     } catch (error) {
-
       console.error("Erreur login:", error);
       return { error: "Erreur serveur" };
-
     }
 
   };
@@ -120,35 +114,32 @@ export function AuthProvider({ children }) {
         body: JSON.stringify(data)
       });
 
-      const result = await response.json();
+      let result;
+      try {
+        result = await response.json();
+      } catch (err) {
+        const text = await response.text().catch(() => null);
+        console.error('Register: non-JSON response', text);
+        return { error: 'Réponse invalide du serveur' };
+      }
 
       if (!response.ok) {
-        return result;
+        console.warn('Register failed:', result);
+        return { error: result?.error || 'Erreur inscription' };
       }
 
       if (result.token) {
-
         const decoded = parseJwt(result.token);
-
         localStorage.setItem("token", result.token);
-
         setToken(result.token);
-
-        setUser({
-          id: decoded.id,
-          email: decoded.email,
-          role: decoded.role
-        });
-
+        setUser({ id: decoded.id, email: decoded.email, role: decoded.role });
       }
 
       return result;
 
     } catch (error) {
-
       console.error("Erreur register:", error);
       return { error: "Erreur serveur" };
-
     }
 
   };
@@ -158,16 +149,12 @@ export function AuthProvider({ children }) {
   ========================= */
 
   const logout = () => {
-
     localStorage.removeItem("token");
-
     setUser(null);
     setToken(null);
-
   };
 
   return (
-
     <AuthContext.Provider
       value={{
         user,
@@ -177,15 +164,21 @@ export function AuthProvider({ children }) {
         logout
       }}
     >
-
       {children}
-
     </AuthContext.Provider>
-
   );
-
 }
 
+/* =========================
+   HOOK (CORRIGÉ)
+========================= */
+
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+
+  if (!context) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
+
+  return context;
 }

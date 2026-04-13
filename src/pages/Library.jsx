@@ -8,9 +8,17 @@ import "../styles/library.css";
 const API_BASE = "http://localhost:8080";
 
 const GENRES = [
-  "Fiction","Science-Fiction","Fantasy","Thriller","Romance",
-  "Historique","Biographie","Développement personnel",
-  "Philosophie","Jeunesse","Manga","Poésie","Autre"
+  { id: "all",         label: "Tous les livres",    query: "popular books"           },
+  { id: "roman",       label: "Romans",              query: "subject:fiction novel"   },
+  { id: "scifi",       label: "Science-Fiction",     query: "subject:science fiction" },
+  { id: "fantasy",     label: "Fantasy",             query: "subject:fantasy"         },
+  { id: "thriller",    label: "Thriller & Polar",    query: "subject:thriller mystery"},
+  { id: "romance",     label: "Romance",             query: "subject:romance love"    },
+  { id: "histoire",    label: "Histoire",            query: "subject:history"         },
+  { id: "biographie",  label: "Biographie",          query: "subject:biography"       },
+  { id: "philosophie", label: "Philosophie",          query: "subject:philosophy"      },
+  { id: "jeunesse",    label: "Jeunesse",            query: "subject:children juvenile"},
+  { id: "classique",   label: "Classiques",          query: "subject:classics literature"},
 ];
 
 const SORTS = [
