@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../server"); // ← remonte d'un niveau depuis __tests__/
+const app = require("../server"); 
  
 /* ===============================
    MOCKS
