@@ -2,9 +2,9 @@ name: CI-CD
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, dev]
   pull_request:
-    branches: [main, develop]
+    branches: [main, dev]
 
 jobs:
 
@@ -63,7 +63,7 @@ jobs:
   # 4️⃣ DEPLOIEMENT STAGING
   deploy-staging:
     needs: docker
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
 
     steps:
