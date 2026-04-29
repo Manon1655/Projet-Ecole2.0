@@ -1,3 +1,5 @@
+![CI](https://github.com/Manon1655/Projet-Ecole2.0/actions/workflows/ci.yml/badge.svg)
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -16,76 +18,73 @@ This project now features a complete architecture with:
 - **Frontend:** React 18 + Vite (localhost:5173)
 - **Backend:** Spring Boot 3.3.0 (localhost:8080)
 - **Database:** MySQL (projetecolefinal)
+# Projet Ecole — React + Vite (mise à jour)
 
-### Key Features
+Résumé
+ - Frontend : React 18 + Vite (dev server : http://localhost:5173)
+ - Backend : Node.js + Express dans le dossier `backend` (API : http://localhost:8080)
+ - Base de données : MySQL (nom : `projet_ecole_final`)
 
-#### Library Management
-- **Add Books Modal:** Create individual books with title, author, genre, price, rating, etc.
-- **Import Books Feature:** Bulk import all books from `books.js` into the MySQL database
-  - Click the settings button in the Library header
-  - Select "Importer les livres du site"
-  - Confirms the number of books to import
-  - Books are synced with the database
+Architecture et points importants
+ - L'API se trouve dans le dossier `backend` et sert les uploads depuis `/uploads`.
+ - Le backend utilise les variables d'environnement : `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`, `PORT`, `SECRET`, `FRONTEND_URL`.
+ - `docker-compose.yml` construit le service API depuis `./backend` et démarre MySQL.
 
-#### User Authentication
-- Register and login with database persistence
-- User profiles with complete information
-- Photo upload capability
+Endpoints principaux (exemples)
+ - POST /auth/register
+ - POST /auth/login
+ - GET /books
+ - POST /cart
+ - GET /auth/user/:id/books
 
-#### API Endpoints
-All endpoints are available at `http://localhost:8080/api`
+Démarrage rapide (Docker)
+Depuis la racine du projet :
+```bash
+docker compose up -d --build
+```
+ - MySQL est mappé sur le port hôte `3307` → `3306` dans le conteneur (évite les conflits locaux).
+ - L'API est exposée sur le port `8080` du conteneur.
 
-**Books:**
-- POST /books - Create single book
-- POST /books/import - Import multiple books from array
-- GET /books - Get all books
-- GET /books/{id} - Get specific book
-- GET /books/search?title= - Search by title
-- GET /books/genre/{genre} - Filter by genre
+Vérifier les logs et l'état
+```bash
+docker compose ps
+docker compose logs -f api
+```
 
-**Users:**
-- POST /auth/register - Register new user
-- POST /auth/login - Login user
-- GET /auth/user/{id} - Get user profile
-- PUT /auth/user/{id} - Update user profile
-
-## Getting Started
-
-### Prerequisites
-- Node.js and npm (for React)
-- Java 17+ and Maven (for Spring Boot)
-- MySQL 8.0+
-
-### Frontend Setup
+Développement local
+ - Frontend (dev) :
 ```bash
 npm install
 npm run dev
 ```
-
-### Backend Setup
+ - Backend (dev) :
 ```bash
-cd api
-mvn clean install
-mvn spring-boot:run
+cd backend
+npm install
+npm start
 ```
 
-### Database Setup
-1. Create MySQL database:
-```sql
-CREATE DATABASE projetecolefinal;
+Variables d'environnement
+ - Pour éviter de placer des secrets dans `docker-compose.yml`, crée un fichier `.env` à la racine et ajoute par exemple :
 ```
-2. Hibernate will auto-create tables on first run (ddl-auto=update)
-### Docker (option alternative)
-
-If you have Docker installed you can run MySQL + API without installing Java/Maven locally:
-
-```bash
-docker compose up --build
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=projet_ecole_final
+MYSQL_USER=root
+MYSQL_PASSWORD=root
+PORT=8080
+SECRET=change_me
+FRONTEND_URL=http://localhost:5173
 ```
+Ensuite utilise `env_file` ou `docker compose --env-file .env` selon ton workflow.
 
-This will start MySQL (port 3306) and the API (port 8080). The API will use environment variables to connect to MySQL.
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Uploads
+ - Le backend sert les fichiers depuis `backend/uploads`. Si tu veux persister les uploads entre redémarrages, monte le volume :
+  - `./backend/uploads:/app/uploads` (ajouter sous la section `api` dans `docker-compose.yml`).
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Notes et recommandations
+ - J'ai ajouté un `backend/package.json` minimal pour que le build Docker puisse installer les dépendances (`express`, `mysql2`, `bcrypt`, `jsonwebtoken`, `multer`, `cors`).
+ - Change le `SECRET` avant mise en production ou utilise un système de secrets.
+ - Si tu veux que je :
+   - ajoute le montage `./backend/uploads` automatiquement, ou
+   - crée un `.env` et référence `env_file` dans `docker-compose.yml`,
+   dis-le moi et je l'ajoute.
