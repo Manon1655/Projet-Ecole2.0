@@ -3,15 +3,39 @@
     image: mysql:8.0
     container_name: projetecole_mysql
     environment:
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASS}
-      - DB_NAME=${DB_NAME}
-    ports: ['8080:8080']
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-  frontend:
-    build: .
-    container_name: projetecole_frontend
-    ports: ['80:80']
-    depends_on: [backend]
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: projet_ecole_final
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: projetecole_api
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_DATABASE=projet_ecole_final
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - PORT=8080
+      - SECRET=supersecret
+      - FRONTEND_URL=http://localhost:5173
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  db_data:

@@ -5,13 +5,13 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const app = express();
-const PORT = 8080;
-const SECRET = "SECRET_KEY";
+const PORT = process.env.PORT || 8080;
+const SECRET = process.env.SECRET || "SECRET_KEY";
 /* ===============================
    MIDDLEWARE
 ================================= */
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
   credentials: true
 }));
 app.use(express.json());
@@ -20,10 +20,10 @@ app.use("/uploads", express.static("uploads"));
    MYSQL CONNECTION
 ================================= */
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "projet_ecole_final"
+  host: process.env.MYSQL_HOST || "localhost",
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD || "root",
+  database: process.env.MYSQL_DATABASE || "projet_ecole_final"
 });
 /* ===============================
    REGISTER
