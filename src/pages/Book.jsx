@@ -177,6 +177,7 @@ export default function Book() {
         /* Left — sticky */
         .bk-left { position:sticky; top:118px; }
         .bk-cover-wrap { position:relative; margin-bottom:24px; }
+        .bk-cover-img { width:100%; height:340px; object-fit:cover; border-radius:3px 16px 16px 3px; display:block; box-shadow:10px 16px 50px rgba(0,0,0,.32), 2px 0 0 rgba(255,255,255,.04) inset; }
         .bk-cover-shadow {
           position:absolute; bottom:-18px; left:8%; right:8%;
           height:28px;
@@ -558,7 +559,7 @@ export default function Book() {
             <div className="bk-left">
               <div className="bk-cover-wrap">
                 {book.cover
-                  ? <img src={book.cover} alt={book.title} style={{ width:"100%", borderRadius:"3px 16px 16px 3px", boxShadow:"10px 16px 50px rgba(0,0,0,.32), 2px 0 0 rgba(255,255,255,.04) inset", display:"block" }}/>
+                  ? <img src={book.cover} alt={book.title} className="bk-cover-img" />
                   : <CSSCover title={book.title} author={book.author} category={book.category}/>
                 }
                 <div className="bk-cover-shadow"/>

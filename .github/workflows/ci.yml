@@ -36,6 +36,20 @@ jobs:
       - run: npm install
       - run: npm test || echo "pas de tests"
 
+  # 2.5️⃣ SONARQUBE ANALYSE
+  sonar:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: SonarQube
+        uses: SonarSource/sonarqube-scan-action@v2
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   # 3️⃣ BUILD DOCKER
   docker:
     needs: [lint, test]
@@ -77,3 +91,5 @@ jobs:
 
     steps:
       - run: echo "Déploiement production (validation requise)"
+
+        

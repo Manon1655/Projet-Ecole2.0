@@ -12,6 +12,21 @@ dist
 dist-ssr
 *.local
 
+# Env and uploads
+.env
+uploads/
+
+# Test coverage and build
+coverage/
+dist/
+build/
+.env.local
+.env.*
+
+# OS files
+Thumbs.db
+ehthumbs.db
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

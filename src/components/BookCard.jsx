@@ -41,13 +41,14 @@ export default function BookCard({ book }) {
     <div className="book-card">
 
       <Link to={`/book/${book.id}`}>
-
-        <img
-          src={imageUrl}
-          alt={book.title}
-          className="book-card-image"
-        />
-
+        <div className="card-image-container">
+          <img
+            src={imageUrl}
+            alt={book.title}
+            className="book-card-image"
+          />
+          {book.isBestseller && <div className="badge-bestseller">Best-seller</div>}
+        </div>
       </Link>
 
       <h3>{book.title}</h3>
