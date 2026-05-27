@@ -2,7 +2,7 @@
 
 ## Commande de lancement
 - Front (racine) : `npm install` puis `npm run dev` (Vite, port 5173)
-- Back : `cd backend` puis `npm install` et `npm start` (serveur Express, port 8080 par défaut)
+- Back : `cd backend` puis `npm install` et `cd backend && node server.js` (serveur Express, port 8080 par défaut)
 
 Si vous utilisez MySQL : démarrer MySQL et créer la base (`projet_ecole_final`) ou définir les variables d'environnement `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`.
 

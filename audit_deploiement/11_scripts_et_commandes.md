@@ -20,13 +20,12 @@ npm run dev
 - Lancer le back :
 ```bash
 cd backend
-npm install
-npm start
+node server.js
 ```
 
 ## Résultats attendus
 - `npm run dev` : démarrage du serveur Vite et affichage de l'interface à `http://localhost:5173`.
-- `cd backend && npm start` : serveur Express écoute sur le port 8080 (ou `PORT` défini). Certaines routes renverront des erreurs si MySQL n'est pas configuré.
+- `cd backend && node server.js` : serveur Express écoute sur le port 8080 (ou `PORT` défini). Certaines routes renverront des erreurs si MySQL n'est pas configuré.
 
 ## Commandes testées réellement (à exécuter localement)
 - `cd` dans la racine et `npm run dev` — vérifier que l'interface se charge.

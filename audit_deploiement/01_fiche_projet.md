@@ -1,7 +1,7 @@
 # 01_fiche_projet.md
 
 ## Nom du projet
-Projet Ecole Final
+OmbreLune
 
 ## Objectif
 Plateforme web de consultation et gestion d'une bibliothèque numérique : création et import de livres, gestion des utilisateurs (inscription / connexion), favoris, panier et commandes, profil utilisateur et upload de photos.

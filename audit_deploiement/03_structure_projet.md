@@ -25,5 +25,3 @@ Racine (extraits) :
 	- context/ (AuthContext, CartContext, CommentsContext, SubscriptionContext)
 - public/ (assets)
 - audit_deploiement/ (fichiers d'audit)
-
-Remarques : la séparation front / back est claire : front en `src/` + Vite, back en `backend/` avec un serveur Express et accès MySQL.

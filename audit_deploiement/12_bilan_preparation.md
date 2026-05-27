@@ -1,11 +1,11 @@
 # 12_bilan_preparation.md
 
 ## Améliorations réalisées cette séance
-1. ✅ `audit_deploiement` : fichiers 01→06 complétés
-2. ✅ Fichiers d'audit additionnels 07→12 complétés
-3. ✅ `.env.example` ajouté (variables identifiées)
-4. ✅ `.gitignore` complété pour exclure `.env` et `uploads/`
-5. ✅ Recommandations et priorités documentées (README, scripts, DB)
+1. `audit_deploiement` : fichiers 01→06 complétés
+2. Fichiers d'audit additionnels 07→12 complétés
+3. `.env.example` ajouté (variables identifiées)
+4. `.gitignore` complété pour exclure `.env` et `uploads/`
+5. Recommandations et priorités documentées (README, scripts, DB)
 
 ## Points restants à traiter
 - Tester le build production du front (`npm run build`) et valider le déploiement statique.
