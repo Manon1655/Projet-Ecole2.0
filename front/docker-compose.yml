@@ -30,7 +30,7 @@
       - MYSQL_PASSWORD=root
       - PORT=8080
       - SECRET=supersecret
-      - FRONTEND_URL=http://localhost:5173
+      - FRONTEND_URL=http://projet-ecole-mai-7pfj.vercel.app
     ports:
       - "8080:8080"
     depends_on:

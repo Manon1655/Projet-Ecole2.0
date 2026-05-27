@@ -5,6 +5,7 @@ import { useCart } from "../context/CartContext";
 import books from "../data/books.js";
 import "../styles/home.css";
 
+
 /* ─── HELPERS ─── */
 const stars  = r => "★".repeat(Math.floor(r || 0)) + (r % 1 !== 0 ? "½" : "");
 const price  = n => Number(n).toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
