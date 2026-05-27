@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
-import { useCart } from "./context/CartContext";
-import booksData from "./data/books";
-import "./styles/library.css";
+import { useAuth } from ".../context/AuthContext";
+import { useCart } from ".../context/CartContext";
+import booksData from ".../data/books";
+import ".../styles/library.css";
 
 const API_BASE = "http://localhost:8080";
 

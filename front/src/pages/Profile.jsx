@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
-import { useCart } from "./context/CartContext";
-import { useSubscription } from "./context/SubscriptionContext";
-import "./styles/profile.css";
+import { useAuth } from ".../context/AuthContext";
+import { useCart } from ".../context/CartContext";
+import { useSubscription } from ".../context/SubscriptionContext";
+import ".../styles/profile.css";
 
 const PLAN_ICONS  = { decouverte: "🌱", premium: "⭐", illimite: "♾️" };
 const PLAN_COLORS = { decouverte: "#6b8f6b", premium: "#c4882a", illimite: "#3d5c3d" };
