@@ -1,7 +1,7 @@
-import { useCart } from ".../context/CartContext";
+import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import ".../styles/checkout.css";
+import "../styles/checkout.css";
 
 const API = "http://localhost:8080";
 

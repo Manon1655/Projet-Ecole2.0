@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import ".../styles/orderConfirmation.css";
+import "../styles/orderConfirmation.css";
 
 export default function OrderConfirmation() {
   const navigate = useNavigate();

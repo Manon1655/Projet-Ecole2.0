@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useSubscription } from '.../context/SubscriptionContext';
-import { subscriptionPlans, annualPlans } from '.../data/subscriptions';
+import { useSubscription } from '../context/SubscriptionContext';
+import { subscriptionPlans, annualPlans } from '../data/subscriptions';
 import { useNavigate } from 'react-router-dom';
-import '.../styles/subscription.css';
+import '../styles/subscription.css';
 
 const FAQS = [
   { q: "Puis-je changer de plan ?",          a: "Oui, upgrade ou downgrade à tout moment. Les changements sont effectifs immédiatement." },

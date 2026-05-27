@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import { useAuth } from ".../context/AuthContext";
-import { useCart } from ".../context/CartContext";
-import books from ".../data/books";
-import ".../styles/home.css";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import books from "../data/books";
+import "../styles/home.css";
 
 /* ─── HELPERS ─── */
 const stars  = r => "★".repeat(Math.floor(r || 0)) + (r % 1 !== 0 ? "½" : "");

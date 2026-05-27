@@ -1,6 +1,6 @@
-import { useCart } from ".../context/CartContext";
+import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
-import ".../styles/cart.css";
+import "../styles/cart.css";
 
 const API = "http://localhost:8080";
 
