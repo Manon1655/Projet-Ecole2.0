@@ -353,6 +353,7 @@ export default function Navbar() {
   const [notifOpen,  setNotifOpen]  = useState(false);
   const [cartOpen,   setCartOpen]   = useState(false);
   const [userOpen,   setUserOpen]   = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled,   setScrolled]   = useState(false);
   const [scrollPct,  setScrollPct]  = useState(0);
   const [recent,     setRecent]     = useState(["Amélie Nothomb", "Dune", "Molière"]);
@@ -379,7 +380,7 @@ export default function Navbar() {
     const fn = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
         setMega(null); setSearchOpen(false); setNotifOpen(false);
-        setCartOpen(false); setUserOpen(false);
+        setCartOpen(false); setUserOpen(false); setMobileOpen(false);
       }
     };
     document.addEventListener("mousedown", fn);
@@ -407,6 +408,11 @@ export default function Navbar() {
     setNotifOpen(false); setCartOpen(false); setUserOpen(false);
   };
 
+  const toggleMobile = () => {
+    setMobileOpen((p) => !p);
+    setNotifOpen(false); setCartOpen(false); setUserOpen(false);
+  };
+
   const handleSearch = useCallback(
     (e) => {
       e.preventDefault();
@@ -421,7 +427,7 @@ export default function Navbar() {
 
   const handleNavigate = (path) => {
     navigate(path);
-    closeAll(); setMega(null);
+    closeAll(); setMega(null); setMobileOpen(false);
   };
 
   const handleLogout = () => {
@@ -444,19 +450,13 @@ export default function Navbar() {
      RENDER
   ══════════════════════════════════════════════════ */
   return (
-    <nav className={`nv${scrolled ? " nv--scrolled" : ""}`} ref={navRef}>
+    <>
+      <nav className={`nv${scrolled ? " nv--scrolled" : ""}`} ref={navRef}>
 
-      {/* ── Announce band ── */}
-      <div className="nv-band">
-        <span className="nv-band__spark">✦</span>
-        Code&nbsp;
-        <span className="nv-band__code">LUNE</span>
-        &nbsp;: 1&nbsp;mois offert sur le plan Premium&nbsp;·&nbsp;
-        <span className="nv-band__cta" onClick={() => navigate("/subscription")}>En profiter</span>
-      </div>
+      <div className="nv-inner">
 
-      {/* ── Main bar ── */}
-      <div className="nv-bar">
+        {/* ── Main bar ── */}
+        <div className="nv-bar">
         <div className="nv-prog" style={{ width: `${scrollPct}%` }} />
 
         {/* Logo */}
@@ -498,6 +498,24 @@ export default function Navbar() {
 
         {/* Right zone */}
         <div className="nv-right">
+
+          {/* Hamburger (mobile) */}
+          <button
+            className={`nv-hamburger ${mobileOpen ? "is-open" : ""}`}
+            onClick={() => toggleMobile()}
+            aria-label="Ouvrir le menu"
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M18 6L6 18" /><path d="M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M3 6h18" /><path d="M3 12h18" /><path d="M3 18h18" />
+              </svg>
+            )}
+          </button>
 
           {/* Search */}
           <div className="nv-icon-wrap">
@@ -616,7 +634,50 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ══ MEGA MENUS ══ */}
+        {/* ══ MEGA MENUS ══ */}
+      </div>
+      </nav>
+
+      {/* Announcement bar below navbar */}
+      <div className="nv-annonce">
+        <div className="nv-band__text">
+          <div><span className="nv-band__spark">✦</span> Code <strong className="nv-band__code">LUNE</strong> : 1 mois offert sur le plan Premium</div>
+          <div style={{textAlign:'right'}}><span className="nv-band__cta" onClick={() => navigate("/subscription")}>En profiter →</span></div>
+        </div>
+      </div>
+
+      {/* Mobile menu panel */}
+      {mobileOpen && (
+        <div className="nv-mobile-menu" role="dialog" aria-label="Menu mobile">
+          <div className="nv-mobile-links">
+            <Link to="/home" className="nv-link" onClick={() => setMobileOpen(false)}>Accueil</Link>
+            <Link to="/library" className="nv-link" onClick={() => setMobileOpen(false)}>Bibliothèque</Link>
+            <Link to="/subscription" className="nv-link" onClick={() => setMobileOpen(false)}>Abonnements</Link>
+            <Link to="/favorites" className="nv-link" onClick={() => setMobileOpen(false)}>Favoris</Link>
+            <Link to="/cart" className="nv-link" onClick={() => setMobileOpen(false)}>Panier</Link>
+          </div>
+
+          <div className="nv-mobile-user">
+            {user ? (
+              <>
+                <div style={{display:'flex', alignItems:'center', gap:12}}>
+                  <div className="nv-udrop-ava">{user.firstName ? user.firstName[0].toUpperCase() : user.email?.[0].toUpperCase()}</div>
+                  <div>
+                    <div style={{fontWeight:600}}>{user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user.email}</div>
+                    <div style={{fontSize:12, color:'var(--ink-mid)'}}>{plan ? plan.label : 'Utilisateur'}</div>
+                  </div>
+                </div>
+                <div style={{marginTop:10}}>
+                  <button className="nv-udrop-logout" onClick={() => { handleLogout(); setMobileOpen(false); }}>Se déconnecter</button>
+                </div>
+              </>
+            ) : (
+              <Link to="/login" className="nv-link" onClick={() => setMobileOpen(false)}>Se connecter</Link>
+            )}
+          </div>
+        </div>
+      )}
+
       {mega && MEGA[mega] && (
         <div
           className="nv-mega"
@@ -668,6 +729,7 @@ export default function Navbar() {
           </div>
         </div>
       )}
-    </nav>
+  </>
   );
+
 }

@@ -11,7 +11,7 @@ const SECRET = process.env.SECRET || "SECRET_KEY";
    MIDDLEWARE
 ================================= */
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://projet-ecole-mai-7pfj.vercel.app",
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
   credentials: true
 }));
 app.use(express.json());
