@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import React from "react";
-import { useCart } from "../context/CartContext";
-import { useSubscription } from "../context/SubscriptionContext";
-import Comments from "../components/Comments";
-import books from "../data/books";
+import { useCart } from "./context/CartContext";
+import { useSubscription } from "./context/SubscriptionContext";
+import Comments from "./components/Comments";
+import books from "./data/books";
 
 /* ── Stars ── */
 function Stars({ value, size = 16 }) {

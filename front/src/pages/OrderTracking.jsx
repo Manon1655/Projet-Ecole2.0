@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/orderTracking.css";
+import "./styles/orderTracking.css";
 
 export default function OrderTracking() {
   const navigate = useNavigate();

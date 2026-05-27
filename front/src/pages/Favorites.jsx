@@ -1,7 +1,7 @@
-import { useCart } from "../context/CartContext";
+import { useCart } from "./context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "../styles/favorites.css";
+import "./styles/favorites.css";
 
 const API = "http://localhost:8080";
 

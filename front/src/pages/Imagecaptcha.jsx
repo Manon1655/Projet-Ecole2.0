@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import "../styles/captcha.css";
+import "./styles/captcha.css";
 
 /* ═══════════════════════════════════════════════
    BANQUE DE DÉFIS  (images Unsplash, seed fixes)
