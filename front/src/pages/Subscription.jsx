@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSubscription } from '../context/SubscriptionContext';
-import { subscriptionPlans, annualPlans } from '../data/subscriptions';
+import { subscriptionPlans, annualPlans } from '../data/subscriptions.js';
 import { useNavigate } from 'react-router-dom';
 import '../styles/subscription.css';
 

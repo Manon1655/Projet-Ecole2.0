@@ -3,7 +3,7 @@ import React from "react";
 import { useCart } from "../context/CartContext";
 import { useSubscription } from "../context/SubscriptionContext";
 import Comments from "../components/Comments";
-import books from "../data/books";
+import books from "../data/books.js";
 
 /* ── Stars ── */
 function Stars({ value, size = 16 }) {

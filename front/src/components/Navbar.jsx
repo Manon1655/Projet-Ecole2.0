@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useSubscription } from "../context/SubscriptionContext";
-import "../navbar.css";
+import "../styles/navbar.css";
 
 /* ─── Constants ──────────────────────────────────────────────────────────────── */
 const PLAN_BADGE = {

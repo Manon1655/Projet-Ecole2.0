@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import books from "../data/books";
+import books from "../data/books.js";
 import "../styles/home.css";
 
 /* ─── HELPERS ─── */
